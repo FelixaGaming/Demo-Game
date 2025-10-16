@@ -755,7 +755,7 @@
 
     <footer class="footer" style="flex-direction: column; gap: 12px; align-items: center;">
       <div style="height: 1px; width: 100%; background: rgba(255,255,255,.08);"></div>
-      <img src="https://felixagaming.github.io/my-assets/Felixa_logo.png" alt="Felixa" class="footer-logo">
+      <img src="my-assets/Felixa_logo.png" alt="Felixa" class="footer-logo">
       <a href="https://www.felixagaming.com" target="_blank" rel="noopener noreferrer" class="footer-link">www.felixagaming.com</a>
     </footer>
 
@@ -1146,7 +1146,7 @@
 
       const fb = document.createElement('div');
       fb.className = 'feedback fade-in';
-      fb.innerHTML = `<img src="https://felixagaming.github.io/my-assets/Felixa_logo.png" alt="F" style="width: 20px; height: 20px; object-fit: contain; vertical-align: middle;"> ${opt.feelings.text}`;
+      fb.innerHTML = `<img src="my-assets/Felixa_logo.png" alt="F" style="width: 20px; height: 20px; object-fit: contain; vertical-align: middle;"> ${opt.feelings.text}`;
       wrap.insertAdjacentElement('beforeend', fb);
 
       transcript.push({ scenario: sc.title, scenarioId: sc.id, exchange: exchangeIndex+1, user: 'Player', comment: opt.text, direction: 'Reply', attributes: opt.attributes||[], toxic: !!opt.toxic, severity: opt.severity||null, target: opt.target||null, feeling: opt.feelings.text });
