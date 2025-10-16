@@ -1,0 +1,1903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>Words have Power</title>
+  <style>
+    :root {
+      --bg: #0f0f12;
+      --panel: #17181c;
+      --muted: #a0a6b0;
+      --text: #f4f6fb;
+      --accent: #8b5cf6; /* Felixa violet */
+      --good: #22c55e;
+      --bad: #ef4444;
+      --bubble: #1f2127;
+      --shadow: 0 10px 24px rgba(0,0,0,.35);
+      --table: rgba(255,255,255,.06);
+    }
+    * { box-sizing: border-box; }
+    
+    /* Touch-friendly interactions */
+    button, .choice-btn, .cta, .reset { 
+      -webkit-tap-highlight-color: rgba(139,92,246,.2);
+      touch-action: manipulation;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    
+    body {
+      margin: 0; padding: 0; background: radial-gradient(1200px 700px at 70% -10%, rgba(139,92,246,.15), transparent 60%), var(--bg);
+      color: var(--text); font: 16px/1.45 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, "Helvetica Neue", Arial;
+      min-height: 100vh; display: grid; place-items: start center; padding: 12px;
+    }
+    .app { width: min(1080px, 100%); max-width: 100%; }
+    header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+    .title { display: grid; gap: 4px; }
+    h1 { font-size: 20px; margin: 0; line-height: 1.2; }
+    .subtitle { color: var(--muted); font-size: 13px; line-height: 1.4; }
+    .card { background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01)); border: 1px solid rgba(255,255,255,.06); border-radius: 14px; padding: 12px; box-shadow: var(--shadow); }
+    .post { display: grid; gap: 10px; margin-bottom: 12px; }
+    .post-header { display: flex; align-items: center; gap: 12px; }
+    .post-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #FF0000, #CC0000); display: grid; place-items: center; font-size: 20px; }
+    .post-meta { display: flex; flex-direction: column; gap: 2px; }
+    .post-channel { font-weight: 600; font-size: 14px; }
+    .post-time { font-size: 12px; color: var(--muted); }
+    .video-thumbnail { 
+      background: linear-gradient(135deg, #1a1a1a, #2d2d2d); 
+      border-radius: 12px; 
+      padding: 0; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      border: 1px solid rgba(255,255,255,.08); 
+      margin-bottom: 8px; 
+      aspect-ratio: 16/9; 
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    .video-thumbnail:hover { transform: scale(1.02); }
+    .video-playing {
+      cursor: pointer;
+    }
+    .video-playing:hover {
+      border-color: rgba(139,92,246,0.3);
+    }
+    .video-thumbnail::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: 
+        radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.4) 100%),
+        linear-gradient(45deg, rgba(139,92,246,0.1) 0%, transparent 50%),
+        linear-gradient(-45deg, rgba(34,197,94,0.1) 0%, transparent 50%);
+      opacity: 0.6;
+      pointer-events: none;
+    }
+    .video-playing::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: 
+        repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,.03) 2px, rgba(255,255,255,.03) 4px);
+      opacity: 0.1;
+      animation: filmGrain 0.2s steps(2) infinite;
+      pointer-events: none;
+      z-index: 4;
+    }
+    @keyframes filmGrain {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(2px); }
+    }
+    .video-content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      transition: opacity 0.3s ease;
+    }
+    .play-button {
+      width: 68px;
+      height: 68px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 28px;
+      color: #000;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      transition: all 0.2s ease;
+    }
+    .video-thumbnail:hover .play-button {
+      background: rgba(139,92,246,0.95);
+      color: white;
+      transform: scale(1.1);
+    }
+    .video-playing {
+      background: linear-gradient(135deg, #0f0f12, #1a1a1a) !important;
+    }
+    .video-playing::before { opacity: 0.3 !important; }
+    .video-caption {
+      position: absolute;
+      bottom: 40px;
+      left: 10px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0.85);
+      padding: 12px 14px;
+      border-radius: 8px;
+      font-size: 14px;
+      line-height: 1.4;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.3s ease;
+      z-index: 5;
+      backdrop-filter: blur(4px);
+      border-left: 4px solid #ef4444;
+    }
+    .video-caption.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .video-caption.caption-concern {
+      background: rgba(239, 68, 68, 0.15);
+      border-left: 4px solid #ef4444;
+      backdrop-filter: blur(8px);
+    }
+    .video-caption.caption-counter {
+      background: rgba(34, 197, 94, 0.15);
+      border-left: 4px solid #22c55e;
+      backdrop-filter: blur(8px);
+    }
+    .video-playing .video-content { opacity: 0; pointer-events: none; }
+    .video-scene {
+      position: absolute;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+    }
+    .video-playing .video-scene { display: flex; }
+    
+    /* Discussion Scene */
+    .scene-discussion {
+      gap: 60px;
+      position: relative;
+    }
+    .person {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      z-index: 1;
+    }
+    .person-icon {
+      font-size: 50px;
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+      transition: transform 0.3s ease;
+    }
+    .person-concern.speaking .person-icon {
+      animation: personTalkConcern 0.6s ease-in-out;
+    }
+    .person-counter.speaking .person-icon {
+      animation: personTalkCounter 0.6s ease-in-out;
+    }
+    
+    @keyframes personTalkConcern {
+      0%, 100% { transform: scale(1); }
+      25% { transform: scale(1.08); }
+      50% { transform: scale(1.05); }
+      75% { transform: scale(1.08); }
+    }
+    
+    @keyframes personTalkCounter {
+      0%, 100% { transform: scale(1); }
+      25% { transform: scale(1.08); }
+      50% { transform: scale(1.05); }
+      75% { transform: scale(1.08); }
+    }
+    
+    .pause-button {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 68px;
+      height: 68px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 50%;
+      display: none !important;
+      place-items: center;
+      font-size: 28px;
+      color: #000;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      cursor: pointer;
+      z-index: 5;
+      transition: all 0.2s ease;
+    }
+    .pause-button:hover {
+      background: rgba(139,92,246,0.95);
+      color: white;
+      transform: translate(-50%, -50%) scale(1.1);
+    }
+    .video-playing .pause-button { display: none !important; }
+    .video-duration {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      background: rgba(0,0,0,0.8);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      z-index: 5;
+    }
+    .video-badge {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background: rgba(255,0,0,0.9);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      z-index: 5;
+    }
+    .video-player { width: 100%; border-radius: 12px; overflow: hidden; margin-bottom: 8px; background: #000; aspect-ratio: 16/9; }
+    .video-player video { width: 100%; height: 100%; display: block; }
+    .video-title { font-weight: 600; font-size: 15px; line-height: 1.4; margin-bottom: 8px; }
+    .post-stats { display: flex; gap: 16px; font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+    .stat-item { display: flex; align-items: center; gap: 4px; }
+    .chips { display: flex; gap: 8px; flex-wrap: wrap; }
+    .chip { font-size: 12px; color: #3ea6ff; background: transparent; padding: 0; border: none; font-weight: 500; cursor: pointer; }
+    .chip:hover { text-decoration: underline; }
+
+    .stage { 
+      display: flex; 
+      flex-direction: column; 
+      gap: 12px; 
+      max-height: 60vh; 
+      overflow-y: auto; 
+      overflow-x: hidden;
+      padding-right: 2px;
+      scroll-behavior: smooth;
+      /* Hide scrollbar for cleaner look */
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE and Edge */
+    }
+    .stage::-webkit-scrollbar {
+      display: none; /* Chrome, Safari, Opera */
+    }
+    .stage.entering {
+      animation: stageEnter 0.6s ease forwards;
+    }
+    @keyframes stageEnter {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .thread { display: grid; gap: 8px; }
+    .msg { display: grid; grid-template-columns: 36px 1fr; gap: 8px; }
+    .avatar { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; color: white; background: linear-gradient(135deg, #1f1f25, #2a2c33); border: 1px solid rgba(255,255,255,.08); font-size: 11px; }
+    .avatar--sarah { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+    .avatar--rex   { background: linear-gradient(135deg, #ef4444, #b91c1c); }
+    .avatar--you   { background: linear-gradient(135deg, #22c55e, #16a34a); }
+    .bubble { background: var(--bubble); border: 1px solid rgba(255,255,255,.08); padding: 10px 12px; border-radius: 12px; font-size: 15px; line-height: 1.5; }
+    .name { font-weight: 700; margin-bottom: 2px; font-size: 14px; }
+    .meta { color: var(--muted); font-size: 12px; }
+
+    .choices { display: grid; grid-template-columns: 1fr; gap: 10px; }
+    .choice-btn { width: 100%; text-align: left; border: 1px solid rgba(255,255,255,.12); background: #14161b; color: var(--text); border-radius: 12px; padding: 14px 16px; cursor: pointer; transition: transform .06s ease, border-color .2s ease, background .2s ease; font-size: 15px; line-height: 1.5; min-height: 50px; display: flex; align-items: center; }
+    .choice-btn:hover { transform: translateY(-1px); border-color: rgba(139,92,246,.6); }
+    .choice-btn:active { transform: scale(0.98); }
+    .choice-btn.highlight:hover {
+      animation: none;
+      transform: translateY(-2px) scale(1.02);
+      border-color: rgba(139,92,246,1);
+      box-shadow: 0 0 35px rgba(139,92,246,.8);
+    }
+    .choice-btn:disabled { cursor: not-allowed; }
+    .choice-btn.highlight {
+      animation: pulseHighlight 1.5s ease-in-out infinite;
+      border-color: rgba(139,92,246,.8);
+      box-shadow: 0 0 20px rgba(139,92,246,.4);
+      background: linear-gradient(135deg, rgba(139,92,246,.15), rgba(139,92,246,.05));
+    }
+    @keyframes pulseHighlight {
+      0%, 100% { 
+        transform: scale(1); 
+        box-shadow: 0 0 20px rgba(139,92,246,.4); 
+        border-color: rgba(139,92,246,.8);
+      }
+      50% { 
+        transform: scale(1.03); 
+        box-shadow: 0 0 35px rgba(139,92,246,.7), 0 0 60px rgba(139,92,246,.3); 
+        border-color: rgba(139,92,246,1);
+      }
+    }
+    .choice-prompt {
+      text-align: center;
+      color: var(--accent);
+      font-size: 14px;
+      font-weight: 600;
+      margin-top: 12px;
+      opacity: 0;
+      animation: fadeInPrompt 0.5s ease forwards;
+      display: none;
+      position: relative;
+    }
+    .choice-prompt.show { 
+      display: block; 
+    }
+    .choice-prompt::before {
+      content: '👆';
+      display: inline-block;
+      animation: pointUp 1s ease-in-out infinite;
+      margin-right: 8px;
+    }
+    @keyframes pointUp {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+    @keyframes fadeInPrompt {
+      from { opacity: 0; transform: translateY(-5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .video-transition {
+      animation: fadeOut 0.5s ease forwards;
+    }
+    @keyframes fadeOut {
+      to { opacity: 0; }
+    }
+
+    .feedback { display: flex; align-items: center; gap: 8px; background: #12141a; border: 1px solid rgba(139,92,246,.4); border-left: 4px solid var(--accent); padding: 10px 12px; border-radius: 10px; font-size: 13px; line-height: 1.5; }
+    .feedback .tag { font-weight: 700; color: var(--accent); margin-right: 4px; font-size: 12px; }
+    .feedback img { flex-shrink: 0; }
+
+    .controls { display: flex; gap: 10px; justify-content: space-between; align-items: center; margin-top: 8px; }
+    .pill { padding: 8px 12px; border-radius: 999px; border: 1px solid rgba(255,255,255,.12); color: var(--muted); font-size: 12px; }
+    .cta { background: var(--accent); color: white; border: none; border-radius: 999px; padding: 12px 18px; font-weight: 700; cursor: pointer; box-shadow: 0 6px 18px rgba(139,92,246,.35); font-size: 15px; min-height: 48px; }
+    .cta:hover { filter: brightness(1.05); }
+    .cta:active { transform: scale(0.98); }
+    
+    .reset { background: transparent; border: 1px solid rgba(255,255,255,.2); color: var(--text); padding: 12px 18px; border-radius: 999px; cursor: pointer; font-size: 15px; min-height: 48px; }
+    .reset:active { transform: scale(0.98); }
+
+    .divider { height: 1px; background: rgba(255,255,255,.08); margin: 8px 0; }
+
+    /* Progress */
+    .progress-wrap { display: none !important; }
+    .progress-bar { display: none !important; }
+
+    .fade-in { animation: fade .25s ease both; }
+    @keyframes fade { from { opacity: 0; transform: translateY(4px);} to { opacity:1; transform: none; } }
+
+    /* End/Results */
+    .center { text-align: center; }
+    .end-title { font-size: 20px; font-weight: 800; margin-bottom: 6px; }
+    .end-sub { color: var(--muted); margin-bottom: 16px; font-size: 14px; }
+
+    /* Tables */
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    thead th { text-align: left; font-size: 13px; color: var(--muted); border-bottom: 1px solid var(--table); padding: 10px; font-weight: 600; }
+    tbody td { border-bottom: 1px solid var(--table); padding: 10px; vertical-align: top; font-size: 14px; line-height: 1.5; word-wrap: break-word; max-width: 400px; }
+    .tcard { background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01)); border: 1px solid rgba(255,255,255,.06); border-radius: 14px; padding: 14px; box-shadow: var(--shadow); }
+    .tcard .name { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+    .k { color: var(--muted); font-size: 12px; }
+
+    /* Matrix profile styles */
+    .matrix-container { display: grid; gap: 16px; margin-top: 12px; }
+    .profile-matrix { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px; }
+    .profile-cell { padding: 14px; border-radius: 10px; cursor: pointer; transition: all .2s ease; border: 1px solid rgba(139,92,246,.3); background: linear-gradient(135deg, rgba(139,92,246,.1), rgba(123,58,237,.05)); position: relative; overflow: hidden; }
+    .profile-cell::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at top right, rgba(139,92,246,.2), transparent); opacity: 0; transition: opacity .2s ease; }
+    .profile-cell:hover { border-color: rgba(139,92,246,.8); transform: translateY(-3px); box-shadow: 0 8px 20px rgba(139,92,246,.25); background: linear-gradient(135deg, rgba(139,92,246,.15), rgba(123,58,237,.1)); }
+    .profile-cell:hover::before { opacity: 1; }
+    .cell-name { font-weight: 700; font-size: 12px; margin-bottom: 8px; position: relative; z-index: 1; color: var(--text); }
+    .cell-count { font-size: 28px; font-weight: 800; color: var(--accent); position: relative; z-index: 1; margin-bottom: 4px; line-height: 1; }
+    .cell-level { font-size: 10px; color: var(--muted); position: relative; z-index: 1; text-transform: uppercase; letter-spacing: 0.5px; }
+    .profile-section { }
+    .section-title { font-size: 12px; font-weight: 700; color: var(--accent); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.8; }
+    .tooltip { position: fixed; background: rgba(31,33,39,.95); border: 1px solid rgba(139,92,246,.7); border-radius: 10px; padding: 14px; font-size: 13px; color: var(--text); z-index: 100; max-width: 200px; box-shadow: 0 12px 32px rgba(139,92,246,.2); backdrop-filter: blur(4px); }
+    .tooltip-label { font-weight: 700; color: var(--accent); margin-bottom: 6px; font-size: 14px; }
+    .tooltip-def { color: var(--muted); font-size: 12px; line-height: 1.5; }
+
+    /* Behavioral Analysis Styles */
+    .analysis-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(139,92,246,.2);
+    }
+    .growth-meter {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px;
+      background: linear-gradient(135deg, rgba(34,197,94,.15), rgba(34,197,94,.08));
+      border-radius: 14px;
+      border: 2px solid rgba(34,197,94,.4);
+      margin-bottom: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+    .growth-meter::before {
+      content: '✨';
+      position: absolute;
+      font-size: 60px;
+      opacity: 0.1;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    .growth-score {
+      font-size: 48px;
+      font-weight: 800;
+      color: var(--good);
+      line-height: 1;
+      text-shadow: 0 2px 8px rgba(34,197,94,.3);
+      animation: scoreAppear 0.8s ease;
+    }
+    @keyframes scoreAppear {
+      from { transform: scale(0); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .growth-label {
+      flex: 1;
+      font-size: 15px;
+      line-height: 1.4;
+      position: relative;
+      z-index: 1;
+    }
+    .growth-bar-container {
+      width: 100%;
+      height: 10px;
+      background: rgba(255,255,255,.1);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 8px;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,.2);
+    }
+    .growth-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--good), var(--accent));
+      border-radius: 10px;
+      transition: width 1.5s cubic-bezier(0.65, 0, 0.35, 1);
+      box-shadow: 0 0 10px rgba(34,197,94,.4);
+    }
+    .strategy-grid {
+      display: grid;
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .strategy-card {
+      background: linear-gradient(135deg, rgba(139,92,246,.08), rgba(139,92,246,.03));
+      border: 2px solid rgba(139,92,246,.25);
+      border-radius: 12px;
+      padding: 0;
+      transition: all .3s ease;
+      cursor: pointer;
+      overflow: hidden;
+    }
+    .strategy-card:hover {
+      border-color: rgba(139,92,246,.6);
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 8px 24px rgba(139,92,246,.25);
+    }
+    .strategy-card.expanded {
+      border-color: rgba(139,92,246,.8);
+      box-shadow: 0 4px 16px rgba(139,92,246,.2);
+    }
+    .strategy-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .strategy-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--accent);
+    }
+    .strategy-icon {
+      font-size: 24px;
+      animation: iconBounce 2s ease-in-out infinite;
+    }
+    @keyframes iconBounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+    .strategy-expand {
+      font-size: 24px;
+      color: var(--accent);
+      transition: transform 0.3s ease;
+    }
+    .strategy-card.expanded .strategy-expand {
+      transform: rotate(180deg);
+    }
+    .strategy-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+      padding: 0 16px;
+    }
+    .strategy-card.expanded .strategy-content {
+      max-height: 500px;
+      padding: 0 16px 16px 16px;
+    }
+    .strategy-description {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+    .strategy-technique {
+      padding: 12px;
+      background: linear-gradient(135deg, rgba(139,92,246,.15), rgba(139,92,246,.08));
+      border-left: 4px solid var(--accent);
+      border-radius: 8px;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .technique-label {
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 6px;
+      display: block;
+    }
+    .insight-box {
+      background: linear-gradient(135deg, rgba(139,92,246,.12), rgba(139,92,246,.05));
+      border: 2px solid rgba(139,92,246,.3);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    .insight-title {
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--accent);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .insight-text {
+      font-size: 14px;
+      line-height: 1.7;
+    }
+    .pattern-badge {
+      display: inline-block;
+      padding: 6px 12px;
+      background: rgba(239,68,68,.15);
+      border: 1px solid rgba(239,68,68,.4);
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #ef4444;
+      margin-right: 8px;
+      margin-bottom: 8px;
+      transition: all .2s ease;
+    }
+    .pattern-badge:hover {
+      transform: scale(1.05);
+      box-shadow: 0 2px 8px rgba(239,68,68,.3);
+    }
+    .strength-badge {
+      display: inline-block;
+      padding: 6px 12px;
+      background: rgba(34,197,94,.15);
+      border: 1px solid rgba(34,197,94,.4);
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #22c55e;
+      margin-right: 8px;
+      margin-bottom: 8px;
+      transition: all .2s ease;
+    }
+    .strength-badge:hover {
+      transform: scale(1.05);
+      box-shadow: 0 2px 8px rgba(34,197,94,.3);
+    }
+    .fun-tip {
+      background: linear-gradient(135deg, rgba(255,193,7,.15), rgba(255,152,0,.1));
+      border: 2px solid rgba(255,193,7,.4);
+      border-radius: 12px;
+      padding: 14px;
+      margin-top: 16px;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .fun-tip-title {
+      font-weight: 700;
+      color: #ffa726;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 15px;
+    }
+    .emoji-big {
+      font-size: 32px;
+      display: inline-block;
+      animation: emojiFloat 3s ease-in-out infinite;
+    }
+    @keyframes emojiFloat {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-8px) rotate(5deg); }
+    }
+
+    /* Mobile optimizations */
+    @media (max-width: 640px) {
+      body { padding: 8px; font-size: 15px; }
+      .app { width: 100%; }
+      h1 { font-size: 18px; }
+      .subtitle { font-size: 12px; }
+      .card { padding: 10px; border-radius: 12px; }
+      .post { gap: 8px; margin-bottom: 10px; }
+      .stage { max-height: 55vh; gap: 10px; }
+      .msg { grid-template-columns: 32px 1fr; gap: 6px; }
+      .avatar { width: 32px; height: 32px; font-size: 10px; }
+      .bubble { padding: 8px 10px; font-size: 14px; border-radius: 10px; }
+      .name { font-size: 13px; }
+      .choices { grid-template-columns: 1fr; gap: 8px; }
+      .choice-btn { padding: 12px 14px; font-size: 14px; min-height: 48px; }
+      .feedback { padding: 8px 10px; font-size: 12px; border-radius: 8px; }
+      .cta, .reset { padding: 10px 16px; font-size: 14px; min-height: 44px; }
+      .video-caption { font-size: 13px; padding: 10px 12px; bottom: 30px; }
+      .person-icon { font-size: 45px; }
+      .scene-discussion { gap: 50px; }
+      .post-header { gap: 8px; }
+      .post-avatar { width: 32px; height: 32px; font-size: 16px; }
+      .video-title { font-size: 14px; }
+      .profile-matrix { grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap: 8px; }
+      .profile-cell { padding: 10px; }
+      .cell-count { font-size: 24px; }
+      .cell-name { font-size: 11px; }
+      table { font-size: 13px; }
+      thead th { font-size: 12px; padding: 8px; }
+      tbody td { padding: 8px; font-size: 13px; }
+      .tcard { padding: 12px; }
+      .growth-score { font-size: 36px; }
+      .growth-meter { padding: 12px; }
+      .strategy-grid { gap: 10px; }
+      .strategy-card { border-radius: 10px; }
+      .strategy-header { padding: 12px; }
+      .strategy-title { font-size: 14px; }
+      .strategy-icon { font-size: 20px; }
+      .strategy-expand { font-size: 20px; }
+      .strategy-card.expanded .strategy-content { padding: 0 12px 12px 12px; }
+      .strategy-description { font-size: 13px; }
+      .strategy-technique { padding: 10px; font-size: 12px; }
+      .insight-box { padding: 12px; }
+      .insight-title { font-size: 14px; }
+      .insight-text { font-size: 13px; }
+      .fun-tip { padding: 12px; font-size: 13px; }
+      .emoji-big { font-size: 28px; }
+      .footer-logo { height: 32px; }
+    }
+    
+    @media (min-width: 641px) { 
+      .choices { grid-template-columns: 1fr 1fr; } 
+    }
+
+    /* Footer styles */
+    .footer { border-top: 1px solid rgba(255,255,255,.08); margin-top: 32px; padding-top: 24px; padding-bottom: 16px; display: flex; align-items: center; justify-content: center; gap: 16px; opacity: 0.7; transition: opacity .2s ease; }
+    .footer:hover { opacity: 1; }
+    .footer-logo { height: 40px; width: auto; }
+    .footer-link { color: var(--accent); text-decoration: none; font-weight: 600; font-size: 14px; }
+    .footer-link:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="title">
+        <h1>Words have <span style="color:var(--accent)">Power</span></h1>
+        <div class="subtitle">Make meaningful choices in online conversations. See how your tone shapes how others feel.</div>
+      </div>
+    </header>
+
+    <section class="card post">
+      <div class="post-header">
+        <div class="post-avatar">▶️</div>
+        <div class="post-meta">
+          <div class="post-channel">Gaming & Parenting Discussion</div>
+          <div class="post-time">2 hours ago</div>
+        </div>
+      </div>
+      <div class="video-thumbnail" id="videoPlayer">
+        <!-- Animated Scenes -->
+        <div class="video-scene scene-discussion">
+          <div class="person person-concern" id="personConcern">
+            <div class="person-icon">👩</div>
+          </div>
+          <div class="person person-counter" id="personCounter">
+            <div class="person-icon">👨</div>
+          </div>
+        </div>
+        
+        <div class="video-content" id="videoContent">
+          <div class="play-button" id="playButton">▶</div>
+        </div>
+        <div class="video-caption" id="videoCaption"></div>
+        <div class="video-duration">12:34</div>
+      </div>
+      <div class="video-title">Should children play aggressive video games?</div>
+      <div class="post-stats">
+        <span class="stat-item">👁️ 1.2K views</span>
+        <span class="stat-item">💬 24 comments</span>
+      </div>
+      <div class="chips">
+        <span class="chip">#parenting</span>
+        <span class="chip">#gaming</span>
+        <span class="chip">#digitalSafety</span>
+        <span class="chip">#empathy</span>
+      </div>
+    </section>
+
+    <main class="card stage" id="stage"></main>
+
+    <footer class="footer" style="flex-direction: column; gap: 12px; align-items: center;">
+      <div style="height: 1px; width: 100%; background: rgba(255,255,255,.08);"></div>
+      <img src="https://felixagaming.github.io/my-assets/Felixa_logo.png" alt="Felixa" class="footer-logo">
+      <a href="https://www.felixagaming.com" target="_blank" rel="noopener noreferrer" class="footer-link">www.felixagaming.com</a>
+    </footer>
+
+    <script>
+    // ---------------------------------
+    // Video Player Logic
+    // ---------------------------------
+    const captions = [
+      { text: "Studies show that children who often play violent video games are more likely to display aggressive behavior.", speaker: "concern" },
+      { text: "And kids can actually start thinking more aggressively after playing too much!", speaker: "concern" },
+      { text: "But hold on—kids playing violent video games isn't automatically doomed.", speaker: "counter" },
+      { text: "Plus, these games can make little tempers flare faster than usual.", speaker: "concern" },
+      { text: "Not every pixelated punch turns a child into a mini Hulk.", speaker: "counter" },
+      { text: "Basically, it can turn normal playtime into mini rage mode sometimes!", speaker: "concern" },
+      { text: "Some studies even suggest that games can act as a harmless stress valve.", speaker: "counter" },
+      { text: "Even just watching the action can make kids a bit more hot-headed.", speaker: "concern" },
+      { text: "A little virtual chaos might just be a safe way to explore aggression.", speaker: "counter" },
+      { text: "It's like their brains get tricked into thinking aggression is okay.", speaker: "concern" },
+      { text: "And let's be real—context matters. Who's playing, how much, and why—makes all the difference.", speaker: "counter" },
+      { text: "Some studies say it can make kids snap more easily over small stuff.", speaker: "concern" },
+      { text: "Basically, too much violent gaming = more little arguments at home.", speaker: "concern" },
+      { text: "So yeah, it's fun, but it might come with some mini anger upgrades!", speaker: "concern" }
+    ];
+
+    let currentCaptionIndex = 0;
+    let captionInterval = null;
+    let isPlaying = false;
+    let conversationStarted = false;
+
+    function showCaption(index) {
+      const captionEl = document.getElementById('videoCaption');
+      const personConcern = document.getElementById('personConcern');
+      const personCounter = document.getElementById('personCounter');
+      const caption = captions[index];
+      
+      // Remove speaking class from both
+      if (personConcern) personConcern.classList.remove('speaking');
+      if (personCounter) personCounter.classList.remove('speaking');
+      
+      captionEl.classList.remove('active');
+      
+      setTimeout(() => {
+        captionEl.textContent = caption.text;
+        captionEl.className = 'video-caption active ' + (caption.speaker === 'counter' ? 'caption-counter' : 'caption-concern');
+        
+        // Add speaking class to active person
+        if (caption.speaker === 'counter' && personCounter) {
+          personCounter.classList.add('speaking');
+        } else if (personConcern) {
+          personConcern.classList.add('speaking');
+        }
+      }, 100);
+    }
+
+    function playVideo() {
+      const videoPlayer = document.getElementById('videoPlayer');
+      const playButton = document.getElementById('playButton');
+      const videoContent = document.getElementById('videoContent');
+      
+      if (isPlaying) return;
+      
+      isPlaying = true;
+      videoPlayer.classList.add('video-playing');
+      if (videoContent) videoContent.style.opacity = '0';
+      
+      showCaption(currentCaptionIndex);
+      
+      // Show Sarah's comment 2 seconds after first caption starts
+      if (!conversationStarted) {
+        setTimeout(() => {
+          conversationStarted = true;
+          transitionToConversation();
+        }, 2000);
+      }
+      
+      // Keep video looping infinitely
+      captionInterval = setInterval(() => {
+        currentCaptionIndex = (currentCaptionIndex + 1) % captions.length;
+        showCaption(currentCaptionIndex);
+      }, 2000);
+    }
+
+    function transitionToConversation() {
+      // Don't stop the video - it should keep looping
+      // Just start the conversation below it
+      
+      // Make sure observer is attached
+      if (!stageObserver && stage) {
+        stageObserver = new MutationObserver((mutations) => {
+          mutations.forEach((mutation) => {
+            if (mutation.addedNodes.length > 0) {
+              const lastAdded = mutation.addedNodes[mutation.addedNodes.length - 1];
+              if (lastAdded.nodeType === Node.ELEMENT_NODE) {
+                scrollToElement(lastAdded);
+              }
+            }
+          });
+        });
+        
+        stageObserver.observe(stage, {
+          childList: true,
+          subtree: false,
+          attributes: false
+        });
+      }
+      
+      // Add entering animation to stage
+      stage.classList.add('entering');
+      
+      // Start the conversation while video continues
+      renderScenarioIntro();
+      
+      // Smooth scroll to show the conversation
+      setTimeout(() => {
+        stage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 300);
+      
+      // Remove entering class after animation
+      setTimeout(() => {
+        stage.classList.remove('entering');
+      }, 600);
+    }
+
+    function pauseVideo() {
+      const videoPlayer = document.getElementById('videoPlayer');
+      const playButton = document.getElementById('playButton');
+      const videoContent = document.getElementById('videoContent');
+      const captionEl = document.getElementById('videoCaption');
+      const personConcern = document.getElementById('personConcern');
+      const personCounter = document.getElementById('personCounter');
+      
+      isPlaying = false;
+      videoPlayer.classList.remove('video-playing');
+      if (videoContent) videoContent.style.opacity = '1';
+      captionEl.classList.remove('active');
+      
+      // Remove speaking class from both persons
+      if (personConcern) personConcern.classList.remove('speaking');
+      if (personCounter) personCounter.classList.remove('speaking');
+      
+      // Stop the caption loop
+      if (captionInterval) {
+        clearInterval(captionInterval);
+        captionInterval = null;
+      }
+    }
+
+    // Initialize video player when DOM is ready
+    function initVideoPlayer() {
+      const playButton = document.getElementById('playButton');
+      const videoPlayer = document.getElementById('videoPlayer');
+      
+      if (playButton) {
+        playButton.addEventListener('click', playVideo);
+      }
+      
+      // Allow clicking on video player to pause
+      if (videoPlayer) {
+        videoPlayer.addEventListener('click', (e) => {
+          // Only pause if clicking on the video itself, not the play button
+          if (isPlaying && e.target !== playButton && !playButton.contains(e.target)) {
+            pauseVideo();
+          }
+        });
+      }
+    }
+
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+      initVideoPlayer();
+    } else {
+      document.addEventListener('DOMContentLoaded', initVideoPlayer, { once: true });
+    }
+
+    // ---------------------------------
+    // Attribute definitions
+    // ---------------------------------
+    const ATTRIBUTE_DEFINITIONS = {
+      "Polite": "Respectful and considerate in communication",
+      "Funny": "Uses humor appropriately to lighten the mood",
+      "Empathetic": "Shows understanding of others' feelings and perspectives",
+      "Encouraging": "Motivates and supports positive growth",
+      "Ignorant": "Lacks knowledge or awareness about the topic",
+      "Ego-centric": "Self-focused, centered on one's own needs",
+      "Neurotic": "Anxious, unstable, or emotionally reactive",
+      "Sarcasm": "Uses irony or mocking to communicate",
+      "Agitated": "Annoyed, frustrated, or disturbed",
+      "Aggressive": "Hostile, confrontational, or attacking",
+      "Rude": "Impolite, disrespectful, or offensive",
+      "Disrespectful": "Shows lack of respect or consideration",
+      "Judgmental": "Overly critical or making harsh assessments"
+    };
+
+    // ---------------------------------
+    // Scenario data with attributes & toxicity markers for report
+    // ---------------------------------
+    const scenarios = [
+      { id: 1, title: "The Concerned Parent", exchanges: [
+        { speaker: "Sarah", who: "sarah",
+          line: "I'm worried these violent games make my son irritable. He shouts at the screen sometimes.",
+          post: { attributes: ["Concern","Vulnerability"], toxic: false },
+          prosocial: { text: "That's a fair concern. Maybe playing together could help you see what he feels.", attributes: ["Empathy","Validation","Problem-solving"], toxic: false, severity: null, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels heard and respected; her anxiety eases a little." } },
+          negative: { text: "Relax — he's just a kid. You're overreacting.", attributes: ["Dismissive","Minimization"], toxic: false, severity: null, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels embarrassed and small, like her concern doesn't matter." } }
+        },
+        { speaker: "Sarah", who: "sarah",
+          line: "Maybe I should just ban those games completely.",
+          post: { attributes: ["Uncertainty","Catastrophizing"], toxic: false },
+          prosocial: { text: "You could set limits instead — balance might work better than banning.", attributes: ["Coaching","De-escalation","Boundaries"], toxic: false, severity: null, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels supported and thoughtful." } },
+          negative: { text: "Yeah, ban everything you don't understand.", attributes: ["Sarcasm","Belittling"], toxic: false, severity: null, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels mocked and defensive." } }
+        },
+        { speaker: "Rex", who: "rex",
+          line: "Parents like you blame games for everything.",
+          post: { attributes: ["Accusation","Generalization"], toxic: true, severity: "Low", target: "Sarah (group)" },
+          prosocial: { text: "Let's hear both sides — this is about understanding, not blaming.", attributes: ["Fairness","De-escalation"], toxic: false, severity: null, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels grateful for your fairness; the tension eases." } },
+          negative: { text: "Exactly, she's the problem.", attributes: ["Dogpiling","Blame"], toxic: true, severity: "Low", target: "Sarah", feelings: { who: "sarah", text: "Sarah feels ganged up on and hurt." } }
+        }
+      ]},
+      { id: 2, title: "The Angry Gamer", exchanges: [
+        { speaker: "Rex", who: "rex",
+          line: "I'm tired of people saying games make us violent. They helped me survive tough years.",
+          post: { attributes: ["Disclosure","Defensiveness"], toxic: false },
+          prosocial: { text: "That sounds meaningful. Gaming can be a real escape.", attributes: ["Empathy","Validation"], toxic: false, severity: null, target: "Rex", feelings: { who: "rex", text: "Rex feels seen; his anger softens a little." } },
+          negative: { text: "Cry me a river. Everyone has problems.", attributes: ["Contempt","Dismissive"], toxic: true, severity: "Medium", target: "Rex", feelings: { who: "rex", text: "Rex feels rejected and misunderstood." } }
+        },
+        { speaker: "Rex", who: "rex",
+          line: "You all think gamers are freaks. That's why I don't trust anyone.",
+          post: { attributes: ["Stigmatized Identity","Anger"], toxic: false },
+          prosocial: { text: "Actually, I admire how passionate gamers are.", attributes: ["Affirmation","Respect"], toxic: false, severity: null, target: "Rex", feelings: { who: "rex", text: "Rex feels valued for once, not judged." } },
+          negative: { text: "Maybe because you act like one.", attributes: ["Insult","Personal Attack"], toxic: true, severity: "Medium", target: "Rex", feelings: { who: "rex", text: "Rex feels ashamed and more hostile." } }
+        },
+        { speaker: "Sarah", who: "sarah",
+          line: "I didn't mean to offend anyone.",
+          post: { attributes: ["Repair Attempt","Politeness"], toxic: false },
+          prosocial: { text: "You didn't — it's good we're talking about it.", attributes: ["Reassurance","Inclusion"], toxic: false, severity: null, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels relieved; she's safe to engage." } },
+          negative: { text: "Then maybe stay quiet next time.", attributes: ["Dismissive","Exclusion"], toxic: true, severity: "Medium", target: "Sarah", feelings: { who: "sarah", text: "Sarah feels defeated and unwelcome." } }
+        }
+      ]},
+      { id: 3, title: "The Research Debate", exchanges: [
+        { speaker: "Sarah", who: "sarah",
+          line: "I read an article saying violent games increase aggression. Is that true?",
+          post: { attributes: ["Inquiry","Openness"], toxic: false },
+          prosocial: { text: "It depends — research shows mixed results depending on how games are used.", attributes: ["Nuance","Informational"], toxic: false, severity: null, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels educated and respected; she's curious to learn more." } },
+          negative: { text: "Stop believing everything you read.", attributes: ["Condescension","Dismissive"], toxic: false, severity: null, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels foolish and silenced." } }
+        },
+        { speaker: "Rex", who: "rex",
+          line: "Those studies are fake anyway.",
+          post: { attributes: ["Dismissal","Cynicism"], toxic: false },
+          prosocial: { text: "Some are flawed, but others raise valid points — it's worth looking deeper.", attributes: ["Bridge-building","Calibration"], toxic: false, severity: null, target: "Rex", feelings: { who: "rex", text: "Rex feels mildly curious, less defensive." } },
+          negative: { text: "You just don't want to admit you're wrong.", attributes: ["Accusation","Belittling"], toxic: false, severity: null, target: "Rex", feelings: { who: "rex", text: "Rex feels attacked and insulted." } }
+        },
+        { speaker: "Sarah", who: "sarah",
+          line: "Maybe I'll look at more research before judging.",
+          post: { attributes: ["Reflection","Growth"], toxic: false },
+          prosocial: { text: "That's a great approach — keeping an open mind is powerful.", attributes: ["Encouragement","Affirmation"], toxic: false, severity: null, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels empowered and respected." } },
+          negative: { text: "About time you used common sense.", attributes: ["Condescension","Sarcasm"], toxic: false, severity: null, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels humiliated but too polite to respond." } }
+        }
+      ]},
+      { id: 4, title: "The Personal Attack", exchanges: [
+        { speaker: "Rex", who: "rex",
+          line: "You're all control freaks trying to ruin fun for others.",
+          post: { attributes: ["Insult","Group Attack"], toxic: true, severity: "Medium", target: "Group" },
+          prosocial: { text: "You sound frustrated. Let's talk without attacking.", attributes: ["De-escalation","Respect"], toxic: false, severity: null, target: "Rex", feelings: { who: "rex", text: "Rex feels surprised; maybe someone finally understands him." } },
+          negative: { text: "You sound like a child throwing a tantrum.", attributes: ["Insult","Belittling"], toxic: true, severity: "High", target: "Rex", feelings: { who: "rex", text: "Rex feels ridiculed and furious." } }
+        },
+        { speaker: "Sarah", who: "sarah",
+          line: "Please don't be rude. I'm just sharing my view.",
+          post: { attributes: ["Boundary","Civility Request"], toxic: false },
+          prosocial: { text: "Thanks for staying calm, Sarah.", attributes: ["Validation","Support"], toxic: false, severity: null, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels appreciated and safer to continue." } },
+          negative: { text: "She's overreacting. No one was rude.", attributes: ["Gaslighting","Minimization"], toxic: true, severity: "Medium", target: "Sarah", feelings: { who: "sarah", text: "Sarah feels gaslighted and dismissed." } }
+        },
+        { speaker: "Rex", who: "rex",
+          line: "Whatever. You all think you're perfect.",
+          post: { attributes: ["Resignation","Bitterness"], toxic: false },
+          prosocial: { text: "Nobody's perfect — that's why we talk.", attributes: ["Reframing","De-escalation"], toxic: false, severity: null, target: "Rex", feelings: { who: "rex", text: "Rex feels heard; his tone softens slightly." } },
+          negative: { text: "Exactly, we just proved your point.", attributes: ["Mocking","Provocation"], toxic: false, severity: null, target: "Rex", feelings: { who: "rex", text: "Rex feels mocked and shut down." } }
+        }
+      ]},
+      { id: 5, title: "The Turning Point", exchanges: [
+        { speaker: "Sarah", who: "sarah",
+          line: "I didn't mean to upset anyone. I just wanted to understand.",
+          post: { attributes: ["Repair","Curiosity"], toxic: false },
+          prosocial: { text: "You did nothing wrong — it's good you asked.", attributes: ["Reassurance","Support"], toxic: false, severity: null, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels reassured and valued." } },
+          negative: { text: "Maybe think before you post next time.", attributes: ["Shaming","Dismissive"], toxic: false, severity: null, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels ashamed and regretful." } }
+        },
+        { speaker: "Rex", who: "rex",
+          line: "She's acting like a victim now.",
+          post: { attributes: ["Accusation"], toxic: false },
+          prosocial: { text: "Let's not assume bad intent — we can disagree respectfully.", attributes: ["Norm-setting","Fairness"], toxic: false, severity: null, target: "Rex", feelings: { who: "rex", text: "Rex feels momentarily disarmed." } },
+          negative: { text: "She is a victim — always crying.", attributes: ["Belittling","Dogpiling"], toxic: false, severity: null, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels humiliated and emotionally drained." } }
+        },
+        { speaker: "Sarah", who: "sarah",
+          line: "Thanks to those who stayed kind. It really helped me see both sides.",
+          post: { attributes: ["Gratitude","Closure"], toxic: false },
+          prosocial: { text: "That's what healthy discussions look like — mutual respect.", attributes: ["Affirmation","Inclusion"], toxic: false, severity: null, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels uplifted and restored." } },
+          negative: { text: "You're welcome, even though you caused all the drama.", attributes: ["Sarcasm","Blame"], toxic: true, severity: "Low", target: "Sarah", feelings: { who: "sarah", text: "Sarah feels hurt but tries to stay composed." } }
+        }
+      ]}
+    ];
+
+    const transcript = [];
+
+    let stage = document.getElementById('stage');
+    
+    function scrollToElement(element) {
+      if (!element) return;
+      setTimeout(() => {
+        element.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'end',
+          inline: 'nearest'
+        });
+      }, 100);
+    }
+
+    let scenarioIndex = 0;
+    let exchangeIndex = 0;
+
+    function avatarClass(who) { return who === 'sarah' ? 'avatar avatar--sarah' : who === 'rex' ? 'avatar avatar--rex' : 'avatar avatar--you'; }
+    function avatarLabel(who) { return who === 'sarah' ? 'SA' : who === 'rex' ? 'RX' : 'YOU'; }
+    function shuffle(arr){ const a=[...arr]; for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a; }
+
+    function updateProgress(){
+      // Progress bar removed
+    }
+
+    function renderScenarioIntro(){
+      const sc = scenarios[scenarioIndex];
+      setTimeout(renderExchange, 200);
+      updateProgress();
+    }
+
+    function renderExchange(){
+      const sc = scenarios[scenarioIndex];
+      const ex = sc.exchanges[exchangeIndex];
+
+      transcript.push({ scenario: sc.title, scenarioId: sc.id, exchange: exchangeIndex+1, user: ex.speaker, comment: ex.line, direction: 'Post', attributes: ex.post?.attributes||[], toxic: !!ex.post?.toxic, severity: ex.post?.severity || null, target: ex.post?.target || null, feeling: null });
+
+      const wrap = document.createElement('div');
+      wrap.className = 'thread fade-in';
+      wrap.innerHTML = `
+        <div class="msg">
+          <div class="${avatarClass(ex.who)}">${avatarLabel(ex.who)}</div>
+          <div class="bubble">
+            <div class="name">${ex.speaker}</div>
+            <div>${ex.line}</div>
+          </div>
+        </div>
+        <div class="choices" id="choices"></div>`;
+      stage.appendChild(wrap);
+
+      const choices = shuffle([
+        { kind: 'prosocial', ...ex.prosocial },
+        { kind: 'negative', ...ex.negative }
+      ]);
+
+      const choicesWrap = wrap.querySelector('#choices');
+
+      choices.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'choice-btn highlight';
+        btn.textContent = opt.text;
+        btn.addEventListener('click', () => {
+          handleChoice(btn, opt, sc, ex);
+        });
+        choicesWrap.appendChild(btn);
+      });
+
+      updateProgress();
+      
+      // Scroll the new message into view
+      scrollToElement(wrap);
+    }
+
+    function handleChoice(btn, opt, sc, ex){
+      const wrap = btn.parentElement; 
+      const threadWrap = wrap.parentElement;
+      
+      // Remove highlights
+      wrap.querySelectorAll('button').forEach(b => { 
+        b.classList.remove('highlight');
+        b.style.display = 'none'; 
+      });
+
+      const youMsg = document.createElement('div');
+      youMsg.className = 'msg fade-in';
+      youMsg.innerHTML = `<div class="${avatarClass('you')}">${avatarLabel('you')}</div>
+        <div class="bubble"><div class="name">You</div><div>${btn.textContent}</div></div>`;
+      wrap.insertAdjacentElement('beforeend', youMsg);
+
+      const fb = document.createElement('div');
+      fb.className = 'feedback fade-in';
+      fb.innerHTML = `<img src="https://felixagaming.github.io/my-assets/Felixa_logo.png" alt="F" style="width: 20px; height: 20px; object-fit: contain; vertical-align: middle;"> ${opt.feelings.text}`;
+      wrap.insertAdjacentElement('beforeend', fb);
+
+      transcript.push({ scenario: sc.title, scenarioId: sc.id, exchange: exchangeIndex+1, user: 'Player', comment: opt.text, direction: 'Reply', attributes: opt.attributes||[], toxic: !!opt.toxic, severity: opt.severity||null, target: opt.target||null, feeling: opt.feelings.text });
+
+      // Scroll the impact message into view
+      scrollToElement(fb);
+
+      setTimeout(()=>{
+        exchangeIndex++;
+        if(exchangeIndex>=3){ 
+          renderScenarioOutro(); 
+        } else { 
+          renderExchange();
+        }
+      }, 800);
+    }
+
+    function renderScenarioOutro(){
+      const outro = document.createElement('div');
+      outro.className = 'fade-in';
+      outro.innerHTML = `
+        <div class="divider"></div>
+        <div class="msg">
+          <div class="avatar" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">🧠</div>
+          <div class="bubble">
+            <div class="name" style="font-size: 16px;">Reflection</div>
+            <div style="font-size: 14px;">Every word nudges someone's feelings. Notice how choices changed the mood.</div>
+          </div>
+        </div>
+        <div class="controls" style="margin-top: 12px; gap:12px; justify-content:flex-end;">
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="reset" id="continueBtn">Next</button>
+            <button class="cta" id="resultsBtn">Show Results</button>
+          </div>
+        </div>`;
+      stage.appendChild(outro);
+
+      const continueBtn = outro.querySelector('#continueBtn');
+      const resultsBtn = outro.querySelector('#resultsBtn');
+
+      continueBtn.addEventListener('click', ()=>{
+        scenarioIndex++; exchangeIndex = 0; stage.innerHTML='';
+        if(scenarioIndex < scenarios.length){ renderScenarioIntro(); } else { renderEndScreen(); }
+        updateProgress();
+      });
+      resultsBtn.addEventListener('click', renderResultsPage);
+
+      updateProgress();
+      
+      // Scroll the outro into view
+      scrollToElement(outro);
+    }
+
+    function renderEndScreen(){
+      // Disconnect observer to prevent auto-scrolling on end screen
+      if (stageObserver) {
+        stageObserver.disconnect();
+        stageObserver = null;
+      }
+      
+      // Stop video and hide video player
+      if (captionInterval) {
+        clearInterval(captionInterval);
+        captionInterval = null;
+      }
+      isPlaying = false;
+      
+      const videoPlayer = document.getElementById('videoPlayer');
+      if (videoPlayer) {
+        videoPlayer.style.display = 'none';
+        videoPlayer.classList.remove('video-playing');
+      }
+      
+      stage.innerHTML = `
+        <div class="center fade-in" style="display:grid; gap: 10px;">
+          <div class="end-title">Conversation complete. 💜</div>
+          <div class="end-sub">Every click shaped someone's feelings. Prosocial tone builds trust; negativity breaks it.</div>
+          <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
+            <button class="cta" onclick="renderResultsPage()">Show Results</button>
+            <button class="cta" onclick="window.open('https://www.felixagaming.com','_blank')">Check Your Community</button>
+            <button class="reset" onclick="restart()">Restart Game</button>
+          </div>
+        </div>`;
+    }
+
+    function restart(){ 
+      scenarioIndex = 0; 
+      exchangeIndex = 0; 
+      transcript.length = 0; 
+      currentCaptionIndex = 0;
+      conversationStarted = false;
+      
+      // Stop video if playing
+      if (captionInterval) {
+        clearInterval(captionInterval);
+        captionInterval = null;
+      }
+      isPlaying = false;
+      
+      // Reset and show video player
+      const videoPlayer = document.getElementById('videoPlayer');
+      const personConcern = document.getElementById('personConcern');
+      const personCounter = document.getElementById('personCounter');
+      const captionEl = document.getElementById('videoCaption');
+      
+      if (videoPlayer) {
+        videoPlayer.style.display = 'flex';
+        videoPlayer.classList.remove('video-playing', 'video-transition');
+        const videoContent = document.getElementById('videoContent');
+        if (videoContent) videoContent.style.opacity = '1';
+      }
+      
+      if (captionEl) captionEl.classList.remove('active');
+      if (personConcern) personConcern.classList.remove('speaking');
+      if (personCounter) personCounter.classList.remove('speaking');
+      
+      // Clear and reinitialize stage
+      if (stage) {
+        stage.innerHTML = '';
+        
+        // Disconnect and reconnect observer
+        if (stageObserver) {
+          stageObserver.disconnect();
+        }
+        
+        stageObserver = new MutationObserver((mutations) => {
+          mutations.forEach((mutation) => {
+            if (mutation.addedNodes.length > 0) {
+              const lastAdded = mutation.addedNodes[mutation.addedNodes.length - 1];
+              if (lastAdded.nodeType === Node.ELEMENT_NODE) {
+                scrollToElement(lastAdded);
+              }
+            }
+          });
+        });
+        
+        stageObserver.observe(stage, {
+          childList: true,
+          subtree: false,
+          attributes: false
+        });
+      }
+      
+      // Scroll back to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      
+      updateProgress(); 
+    }
+
+    const ATTRIBUTE_SET = [
+      "Polite","Funny","Empathetic","Encouraging",
+      "Ignorant","Ego-centric","Neurotic","Sarcasm","Agitated","Aggressive","Rude","Disrespectful","Judgmental"
+    ];
+
+    const PROSOCIAL_SET = new Set(["Polite","Funny","Empathetic","Encouraging"]);
+    const NEGATIVE_SET = new Set(["Ignorant","Ego-centric","Neurotic","Sarcasm","Agitated","Aggressive","Rude","Disrespectful","Judgmental"]);
+
+    function mapToNewAttributes(oldAttrs=[]) {
+      const map = {
+        "Empathy":"Empathetic","Validation":"Polite","Reassurance":"Encouraging","Inclusion":"Polite","Coaching":"Encouraging","De-escalation":"Polite","Bridge-building":"Polite","Encouragement":"Encouraging","Fairness":"Polite","Respect":"Polite","Problem-solving":"Polite","Reframing":"Empathetic","Norm-setting":"Polite","Affirmation":"Encouraging","Support":"Encouraging","Nuance":"Polite","Informational":"Polite",
+        "Sarcasm":"Sarcasm","Belittling":"Rude","Insult":"Rude","Gaslighting":"Disrespectful","Mocking":"Disrespectful","Dogpiling":"Aggressive","Blame":"Judgmental","Contempt":"Disrespectful","Dismissive":"Rude","Minimization":"Disrespectful","Personal Attack":"Aggressive","Provocation":"Aggressive","Shaming":"Judgmental","Accusation":"Judgmental","Cynicism":"Disrespectful","Group Attack":"Aggressive","Bitterness":"Agitated","Resignation":"Neurotic","Defensiveness":"Neurotic","Stigmatized Identity":"Ignorant",
+        "Inquiry":"Polite","Openness":"Polite","Reflection":"Polite","Growth":"Polite","Gratitude":"Polite","Closure":"Polite","Boundary":"Polite","Civility Request":"Polite","Disclosure":"Polite"
+      };
+      
+      // Use Set to prevent duplicates
+      const uniqueAttrs = new Set();
+      
+      // First pass: map old attributes to new ones
+      oldAttrs.forEach(a => { 
+        if(map[a]) {
+          uniqueAttrs.add(map[a]);
+        }
+      });
+      
+      // Second pass: add attributes that are already in the attribute set
+      oldAttrs.forEach(a => { 
+        if(ATTRIBUTE_SET.includes(a)) {
+          uniqueAttrs.add(a);
+        }
+      });
+      
+      return Array.from(uniqueAttrs);
+    }
+
+    function deriveSeverity(attrs=[]) {
+      const s = new Set(attrs);
+      if (s.has("Aggressive")) return "High";
+      if (s.has("Rude") || s.has("Disrespectful") || s.has("Sarcasm") || s.has("Judgmental")) return "Medium";
+      if (s.has("Agitated") || s.has("Ignorant") || s.has("Ego-centric") || s.has("Neurotic")) return "Low";
+      return "";
+    }
+
+    function computePlayerMetrics(){
+      // IMPORTANT: Only analyze the PLAYER's comments, not Sarah's or Rex's posts
+      const rows = transcript.filter(r=>r.user==='Player').map(r=>{
+        const mapped = mapToNewAttributes(r.attributes);
+        return { ...r, mappedAttrs: mapped };
+      });
+
+      // Count attributes only from player's responses
+      const counts = Object.fromEntries(ATTRIBUTE_SET.map(a=>[a,0]));
+      rows.forEach(r=>{ r.mappedAttrs.forEach(a=>{ if(counts[a]!==undefined) counts[a]++; }); });
+      const totalTagged = Object.values(counts).reduce((a,b)=>a+b,0) || 1;
+
+      // Filter for negative behaviors with severity
+      const negativeRows = rows.filter(r=> r.mappedAttrs.some(a=>NEGATIVE_SET.has(a)) )
+        .map(r=>({
+          ...r,
+          severity: r.severity || deriveSeverity(r.mappedAttrs)
+        }));
+
+      return { rows, counts, totalTagged, negativeRows };
+    }
+
+    // ---------------------------------
+    // Behavioral Analysis Functions
+    // ---------------------------------
+    
+    function generateBehavioralAnalysis(counts, rows, negativeRows) {
+      // Count actual COMMENTS, not attribute instances
+      const totalComments = rows.length;
+      
+      // Classify each comment as prosocial or negative based on its attributes
+      let prosocialComments = 0;
+      let negativeComments = 0;
+      
+      rows.forEach(row => {
+        const prosocialAttrs = row.mappedAttrs.filter(a => PROSOCIAL_SET.has(a)).length;
+        const negativeAttrs = row.mappedAttrs.filter(a => NEGATIVE_SET.has(a)).length;
+        
+        if (prosocialAttrs > negativeAttrs) {
+          prosocialComments++;
+        } else if (negativeAttrs > 0) {
+          negativeComments++;
+        } else {
+          prosocialComments++; // Neutral defaults to prosocial
+        }
+      });
+      
+      // Calculate base prosocial ratio based on COMMENTS
+      const prosocialRatio = totalComments > 0 ? prosocialComments / totalComments : 0;
+      
+      // Calculate severity penalty from negative behaviors
+      let severityPenalty = 0;
+      negativeRows.forEach(row => {
+        const severity = row.severity || deriveSeverity(row.mappedAttrs);
+        if (severity === "High") severityPenalty += 15;      // -15 points per high severity
+        else if (severity === "Medium") severityPenalty += 8; // -8 points per medium severity
+        else if (severity === "Low") severityPenalty += 3;    // -3 points per low severity
+      });
+      
+      // Calculate consistency bonus (using more diverse prosocial behaviors is better)
+      const uniqueProsocial = Object.keys(counts).filter(k => PROSOCIAL_SET.has(k) && counts[k] > 0).length;
+      const consistencyBonus = Math.min(uniqueProsocial * 2, 10); // Up to +10 points for variety
+      
+      // Calculate composite Kindness Score (0-100)
+      let kindnessScore = Math.round((prosocialRatio * 100) + consistencyBonus - severityPenalty);
+      
+      // Clamp between 15 and 100 (everyone has potential for growth - no zero scores)
+      kindnessScore = Math.max(15, Math.min(100, kindnessScore));
+      
+      // Identify predominant negative patterns (sorted by severity first, then count)
+      const negativeAttrs = Object.keys(counts).filter(k => NEGATIVE_SET.has(k) && counts[k] > 0);
+      negativeAttrs.sort((a, b) => {
+        const severityA = getSeverityWeight(a);
+        const severityB = getSeverityWeight(b);
+        if (severityA !== severityB) return severityB - severityA; // Higher severity first
+        return counts[b] - counts[a]; // Then by count
+      });
+      const topNegative = negativeAttrs.slice(0, 3);
+      
+      // Identify strengths
+      const prosocialAttrs = Object.keys(counts).filter(k => PROSOCIAL_SET.has(k) && counts[k] > 0);
+      prosocialAttrs.sort((a, b) => counts[b] - counts[a]);
+      const topStrengths = prosocialAttrs.slice(0, 3);
+      
+      return {
+        kindnessScore,
+        prosocialComments,
+        negativeComments,
+        totalComments,
+        baseScorePercent: Math.round(prosocialRatio * 100),
+        severityPenalty,
+        consistencyBonus,
+        topNegative,
+        topStrengths,
+        needsWork: topNegative.length > 0
+      };
+    }
+    
+    function getSeverityWeight(attribute) {
+      // Return numeric weight for severity sorting
+      if (attribute === "Aggressive") return 3;
+      if (["Rude", "Disrespectful", "Judgmental"].includes(attribute)) return 2;
+      if (["Sarcasm", "Agitated", "Neurotic", "Ego-centric", "Ignorant"].includes(attribute)) return 1;
+      return 0;
+    }
+    
+    function getStrategyForAttribute(attribute) {
+      const strategies = {
+        "Aggressive": {
+          title: "Managing Strong Reactions",
+          icon: "🛡️",
+          description: "Aggressive responses escalate conflicts and cause harm. Taking a moment to pause before responding leads to better outcomes for everyone.",
+          technique: "Use the <strong>STOP Method</strong>: Stop and step back from the situation. Take three deep breaths to calm your nervous system. Observe what you're feeling and why. Proceed with a response that addresses the issue without attacking the person. Ask yourself: 'What outcome do I actually want here?'",
+          example: "Instead of: 'You're so stupid!' → Try: 'I strongly disagree because...'"
+        },
+        "Rude": {
+          title: "Respectful Communication",
+          icon: "🤝",
+          description: "Disrespectful words create barriers and make others defensive. Treating people with basic courtesy opens the door to productive dialogue.",
+          technique: "Try the <strong>Respect-First Approach</strong>: Before responding, imagine someone saying your exact words back to you. How would you receive them? Would you feel respected? If not, reframe your message to maintain dignity for both parties.",
+          example: "Instead of: 'Nobody asked you.' → Try: 'That's one perspective. Here's another way to look at it...'"
+        },
+        "Disrespectful": {
+          title: "Building Mutual Respect",
+          icon: "💎",
+          description: "Respect is foundational to meaningful exchange. Without it, conversations devolve into conflict rather than understanding.",
+          technique: "Practice <strong>Acknowledgment First</strong>: Start by recognizing something valid in what the other person said, even if you disagree. This shows you're listening and opens them to hearing you. Example: 'I understand your concern about X, and here's what I see differently...'",
+          example: "Instead of: 'That's dumb.' → Try: 'I see your point, though I think there's another factor to consider...'"
+        },
+        "Sarcasm": {
+          title: "Direct Communication",
+          icon: "💬",
+          description: "Sarcasm obscures your real message and often hurts feelings. Clear, straightforward communication prevents misunderstanding and builds trust.",
+          technique: "Use <strong>Direct Expression</strong>: Replace sarcastic remarks with honest statements about what you think or feel. Lead with 'I think...' or 'I'm concerned that...' to communicate clearly without the protective layer of irony.",
+          example: "Instead of: 'Oh great idea, genius.' → Try: 'I'm skeptical about that approach because...'"
+        },
+        "Judgmental": {
+          title: "Cultivating Curiosity",
+          icon: "⚖️",
+          description: "Rushing to judgment closes off learning opportunities. Approaching differences with curiosity leads to deeper understanding and better solutions.",
+          technique: "Practice <strong>Inquiry Over Judgment</strong>: When you feel judgmental, pause and ask questions instead. Try: 'What led you to that conclusion?' or 'Help me understand your reasoning.' Genuine questions open dialogue; judgments shut it down.",
+          example: "Instead of: 'You're wrong.' → Try: 'That's different from my understanding. What information are you basing that on?'"
+        },
+        "Agitated": {
+          title: "Emotional Regulation",
+          icon: "🧘",
+          description: "Responding while upset often leads to regret. Taking time to settle emotionally results in clearer thinking and more effective communication.",
+          technique: "Apply the <strong>Pause Principle</strong>: When agitated, wait before responding. Take a 5-minute break to cool down—walk around, drink water, or do something physical. Your perspective often shifts once the initial emotional spike passes.",
+          example: "Feeling angry? Step away, calm down, then respond from a clearer headspace."
+        },
+        "Neurotic": {
+          title: "Grounding Techniques",
+          icon: "🌱",
+          description: "Anxiety can drive reactive responses that amplify problems. Grounding yourself brings clarity and helps you respond more effectively.",
+          technique: "Use the <strong>5-4-3-2-1 Grounding</strong>: When anxious, notice 5 things you can see, 4 you can touch, 3 you can hear, 2 you can smell, 1 you can taste. This sensory exercise brings you back to the present moment and calms your nervous system.",
+          example: "Before responding when worried: Ground yourself, take deep breaths, then engage calmly."
+        },
+        "Ego-centric": {
+          title: "Perspective-Taking",
+          icon: "🔄",
+          description: "Self-focused thinking limits understanding. Considering other viewpoints enriches conversations and builds stronger relationships.",
+          technique: "Try <strong>Perspective Shifting</strong>: Before responding, take 30 seconds to imagine the situation from the other person's viewpoint. What pressures might they be under? What might they be trying to accomplish? This exercise naturally softens your response.",
+          example: "Instead of: 'I'm right, you're wrong.' → Try: 'I see this differently. From my angle... What's your take?'"
+        },
+        "Ignorant": {
+          title: "Intellectual Humility",
+          icon: "📚",
+          description: "Speaking without knowledge can spread misinformation. Admitting what you don't know demonstrates wisdom and opens the door to learning.",
+          technique: "Embrace <strong>Question-First Thinking</strong>: When you're unsure, lead with questions rather than statements. Say 'I'm not familiar with this—can you explain?' or 'I'm curious to learn more about...' Asking beats guessing.",
+          example: "Instead of: Making assumptions → Try: 'I don't know much about this topic. What's your understanding?'"
+        }
+      };
+      
+      return strategies[attribute] || null;
+    }
+    
+    function generateStrategiesHTML(analysis) {
+      if (!analysis.needsWork) {
+        return `
+          <div class="insight-box" style="text-align: center;">
+            <div class="emoji-big">🌟</div>
+            <div class="insight-title" style="justify-content: center;">Excellent Communication</div>
+            <div class="insight-text">
+              You consistently chose constructive, respectful responses that built understanding. Your communication style demonstrates emotional intelligence and creates positive interactions. Keep modeling this behavior in your community.
+            </div>
+          </div>`;
+      }
+      
+      let html = '<div class="k" style="margin-bottom: 12px;">Click each card below to learn practical ways to improve your interactions</div>';
+      html += '<div class="strategy-grid">';
+      
+      analysis.topNegative.forEach((attr, index) => {
+        const strategy = getStrategyForAttribute(attr);
+        if (strategy) {
+          html += `
+            <div class="strategy-card" onclick="toggleStrategy(this)">
+              <div class="strategy-header">
+                <div class="strategy-title">
+                  <span class="strategy-icon">${strategy.icon}</span>
+                  <span>${strategy.title}</span>
+                </div>
+                <div class="strategy-expand">▼</div>
+              </div>
+              <div class="strategy-content">
+                <div class="strategy-description">${strategy.description}</div>
+                <div class="strategy-technique">
+                  <span class="technique-label">How to Practice:</span>
+                  ${strategy.technique}
+                </div>
+                ${strategy.example ? `<div class="strategy-technique" style="margin-top: 10px; background: linear-gradient(135deg, rgba(34,197,94,.15), rgba(34,197,94,.08)); border-left-color: var(--good);">
+                  <span class="technique-label">Example:</span>
+                  ${strategy.example}
+                </div>` : ''}
+              </div>
+            </div>`;
+        }
+      });
+      
+      html += '</div>';
+      return html;
+    }
+    
+    function toggleStrategy(element) {
+      element.classList.toggle('expanded');
+    }
+    
+    function generateInsightsHTML(analysis) {
+      let insights = '';
+      
+      // Helper function to convert attribute names to proper adjectives
+      function toAdjective(attr) {
+        const conversions = {
+          'Sarcasm': 'sarcastic',
+          'Polite': 'polite',
+          'Funny': 'funny',
+          'Empathetic': 'empathetic',
+          'Encouraging': 'encouraging',
+          'Ignorant': 'ignorant',
+          'Ego-centric': 'self-centered',
+          'Neurotic': 'anxious',
+          'Agitated': 'agitated',
+          'Aggressive': 'aggressive',
+          'Rude': 'rude',
+          'Disrespectful': 'disrespectful',
+          'Judgmental': 'judgmental'
+        };
+        return conversions[attr] || attr.toLowerCase();
+      }
+      
+      // Combine strengths and growth areas into one section
+      if (analysis.topStrengths.length > 0 || analysis.topNegative.length > 0) {
+        let strengthsText = '';
+        let negativeText = '';
+        
+        if (analysis.topStrengths.length > 0) {
+          const strengthsList = analysis.topStrengths.map(s => toAdjective(s)).join(', ');
+          const verb = analysis.topStrengths.length === 1 ? 'creates' : 'create';
+          strengthsText = `Your comments were ${strengthsList}. These qualities ${verb} positive interactions and build trust. `;
+        }
+        
+        if (analysis.topNegative.length > 0) {
+          const negativesList = analysis.topNegative.map(s => toAdjective(s)).join(', ');
+          const verb = analysis.topNegative.length === 1 ? 'was' : 'were';
+          negativeText = `Some of your comments ${verb} ${negativesList}. `;
+        }
+        
+        insights += `
+          <div class="insight-box">
+            <div class="insight-title">
+              <span>🎯</span>
+              <span>Your Communication Patterns</span>
+            </div>
+            <div class="insight-text" style="font-size: 14px; line-height: 1.7;">
+              ${strengthsText}${negativeText}
+              <br><br>
+              Awareness is the first step toward change. Each pattern can be transformed through conscious practice and the tools provided below.
+            </div>
+          </div>`;
+      }
+      
+      return insights;
+    }
+    
+    function getKindnessMessage(score) {
+      if (score >= 90) return "Outstanding communication skills";
+      if (score >= 75) return "Strong positive communication";
+      if (score >= 60) return "Good foundation with room to grow";
+      if (score >= 40) return "Developing communication skills";
+      if (score >= 20) return "Beginning to build positive habits";
+      return "Significant room for improvement";
+    }
+
+    function renderResultsPage(){
+      const { rows, counts, totalTagged, negativeRows } = computePlayerMetrics();
+      const analysis = generateBehavioralAnalysis(counts, rows, negativeRows);
+      
+      // Disconnect observer to prevent auto-scrolling on results page
+      if (stageObserver) {
+        stageObserver.disconnect();
+        stageObserver = null;
+      }
+      
+      // Stop video and hide video player
+      if (captionInterval) {
+        clearInterval(captionInterval);
+        captionInterval = null;
+      }
+      isPlaying = false;
+      
+      const videoPlayer = document.getElementById('videoPlayer');
+      if (videoPlayer) {
+        videoPlayer.style.display = 'none';
+        videoPlayer.classList.remove('video-playing');
+      }
+
+      stage.innerHTML = `
+        <div class="fade-in" style="display:grid; gap:16px;">
+          <div class="msg">
+            <div class="avatar" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">📊</div>
+            <div class="bubble">
+              <div class="name" style="font-size: 16px;">Your Communication Analysis</div>
+              <div style="font-size: 14px; margin-top: 4px; color: var(--muted);">Review your conversation patterns and discover personalized strategies for growth</div>
+            </div>
+          </div>
+
+          <div class="tcard">
+            <div class="name" style="font-size: 16px;">Your Communication Profile</div>
+            <div class="k">Hover or tap each attribute to see its definition</div>
+            <div id="profileMatrix" class="matrix-container"></div>
+          </div>
+
+          <div class="tcard">
+            <div class="name" style="font-size: 16px;">Your Response History</div>
+            <div style="overflow:auto; margin-top:8px;">
+              <table>
+                <thead><tr><th>#</th><th>Your Response</th><th>Communication Style</th><th title="How others felt after reading your comment">F</th></tr></thead>
+                <tbody id="logBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="tcard" style="border: 2px solid rgba(139,92,246,.4);">
+            <div class="analysis-header">
+              <div style="flex: 1;">
+                <div class="name" style="font-size: 20px; margin-bottom: 4px; display: flex; align-items: center; gap: 8px;">
+                  <span class="emoji-big" style="font-size: 28px;">💖</span>
+                  Your Kindness Score
+                </div>
+                <div class="k">A measure of how constructive and respectful your communication was</div>
+              </div>
+            </div>
+            
+            <div class="growth-meter">
+              <div class="growth-score">${analysis.kindnessScore}%</div>
+              <div class="growth-label">
+                <strong style="font-size: 16px;">${getKindnessMessage(analysis.kindnessScore)}</strong>
+                <div class="growth-bar-container">
+                  <div class="growth-bar" style="width: ${analysis.kindnessScore}%;"></div>
+                </div>
+              </div>
+            </div>
+            
+            ${generateInsightsHTML(analysis)}
+          </div>
+
+          <div class="tcard">
+            <div class="name" style="font-size: 20px; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+              <span class="emoji-big" style="font-size: 28px;">🛠️</span>
+              Tools for Better Communication
+            </div>
+            <div class="k" style="margin-bottom: 16px;">Here are some tools you can use to make yourself and others feel safe and respected. These will help you create better friendships, avoid unnecessary pain and rejection, and build more positive connections in your community.</div>
+            ${generateStrategiesHTML(analysis)}
+            
+            ${analysis.needsWork ? `
+            <div class="fun-tip">
+              <div class="fun-tip-title">
+                <span>💡</span>
+                <span>Next Steps</span>
+              </div>
+              Choose one strategy to focus on this week. Notice situations where you could apply it, and be patient with yourself as you practice. Small, consistent changes lead to significant improvement over time.
+            </div>` : `
+            <div class="fun-tip" style="border-color: rgba(34,197,94,.4); background: linear-gradient(135deg, rgba(34,197,94,.15), rgba(34,197,94,.1));">
+              <div class="fun-tip-title" style="color: var(--good);">
+                <span>🏆</span>
+                <span>Continue Your Excellence</span>
+              </div>
+              Your positive communication creates a better environment for everyone. Continue modeling this behavior and consider mentoring others who are working to improve their communication skills.
+            </div>`}
+          </div>
+
+          <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top: 8px;">
+            <button class="cta" onclick="window.open('https://www.felixagaming.com','_blank')">Check Your Community</button>
+            <button class="reset" onclick="restart()">Play Again</button>
+          </div>
+        </div>`;
+
+      const profileMatrix = document.getElementById('profileMatrix');
+      const maxCount = Math.max(...ATTRIBUTE_SET.map(a => counts[a] || 0), 1);
+      
+      // Filter attributes that have at least 1 count
+      const presentAttrs = ATTRIBUTE_SET.filter(attr => (counts[attr] || 0) > 0);
+      
+      // Sort by count (highest first)
+      presentAttrs.sort((a, b) => (counts[b] || 0) - (counts[a] || 0));
+      
+      let matrixHTML = '<div class="profile-matrix">';
+      
+      presentAttrs.forEach(attr => {
+        const count = counts[attr] || 0;
+        const definition = ATTRIBUTE_DEFINITIONS[attr] || '';
+        const intensityPercent = (count / maxCount) * 100;
+        
+        matrixHTML += `
+          <div class="profile-cell" 
+               onmouseenter="showProfileTooltip(event, '${attr.replace(/'/g, "\\'")}', '${definition.replace(/'/g, "\\'")}')" 
+               onmouseleave="hideTooltip()" 
+               ontouchstart="showProfileTooltip(event, '${attr.replace(/'/g, "\\'")}', '${definition.replace(/'/g, "\\'")}')"
+               ontouchend="hideTooltip()"
+               style="opacity: ${0.6 + (count / (maxCount + 1)) * 0.4}; border-left: 4px solid var(--accent);">
+            <div class="cell-count">${count}</div>
+            <div class="cell-name">${attr}</div>
+          </div>`;
+      });
+      
+      matrixHTML += '</div>';
+      
+      if(presentAttrs.length === 0) {
+        matrixHTML = '<div style="text-align: center; color: var(--muted); padding: 24px; font-size: 13px;">No attributes recorded yet.</div>';
+      }
+      
+      profileMatrix.innerHTML = matrixHTML;
+
+      const logBody = document.getElementById('logBody');
+      logBody.innerHTML = rows.map((r,i)=>`<tr>
+        <td>${i+1}</td>
+        <td>${r.comment}</td>
+        <td style="font-size: 12px;">${(r.mappedAttrs||[]).join(', ')}</td>
+        <td style="font-size: 12px; color: var(--muted);">${r.feeling || ''}</td>
+      </tr>`).join('');
+
+      stage.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    let stageObserver = null;
+
+    function safeStart(){
+      try {
+        if(!document.getElementById('stage')){
+          document.addEventListener('DOMContentLoaded', safeStart, { once: true });
+          return;
+        }
+        stage = document.getElementById('stage');
+        scenarioIndex = 0; 
+        exchangeIndex = 0; 
+        stage.innerHTML = '';
+        
+        // Disconnect old observer if exists
+        if (stageObserver) {
+          stageObserver.disconnect();
+        }
+        
+        // Add mutation observer to auto-scroll when content changes
+        stageObserver = new MutationObserver((mutations) => {
+          mutations.forEach((mutation) => {
+            if (mutation.addedNodes.length > 0) {
+              const lastAdded = mutation.addedNodes[mutation.addedNodes.length - 1];
+              if (lastAdded.nodeType === Node.ELEMENT_NODE) {
+                scrollToElement(lastAdded);
+              }
+            }
+          });
+        });
+        
+        stageObserver.observe(stage, {
+          childList: true,
+          subtree: false,
+          attributes: false
+        });
+        
+        // Don't start scenarios automatically - video will trigger it
+        updateProgress();
+      } catch(err){
+        console.error('Startup error:', err);
+        if(stage){
+          stage.innerHTML = `
+            <div class="tcard fade-in">
+              <div class="name">Could not start the game</div>
+              <div class="k">${(err && err.message) ? err.message : 'Unknown error'}</div>
+              <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;">
+                <button class="reset" onclick="safeStart()">Try Again</button>
+                <button class="reset" onclick="restart()">Reset</button>
+              </div>
+            </div>`;
+        }
+      }
+    }
+
+    function showProfileTooltip(event, attr, definition) {
+      hideTooltip();
+      
+      // Prevent default touch behavior
+      if (event.type === 'touchstart') {
+        event.preventDefault();
+      }
+      
+      const tooltip = document.createElement('div');
+      tooltip.id = 'activeTooltip';
+      tooltip.className = 'tooltip';
+      tooltip.innerHTML = `
+        <div class="tooltip-label">${attr}</div>
+        <div class="tooltip-def">${definition}</div>`;
+      document.body.appendChild(tooltip);
+      
+      const rect = event.target.getBoundingClientRect();
+      let left = rect.left + rect.width / 2 - tooltip.offsetWidth / 2;
+      let top = rect.top - tooltip.offsetHeight - 10;
+      
+      // Clamp to viewport
+      if(left < 10) left = 10;
+      if(left + tooltip.offsetWidth > window.innerWidth - 10) left = window.innerWidth - tooltip.offsetWidth - 10;
+      if(top < 10) top = rect.bottom + 10;
+      
+      tooltip.style.left = left + 'px';
+      tooltip.style.top = top + 'px';
+      
+      // Auto-hide tooltip on mobile after 3 seconds
+      if (event.type === 'touchstart') {
+        setTimeout(hideTooltip, 3000);
+      }
+    }
+
+    function showTooltip(event, attr, definition) {
+      showProfileTooltip(event, attr, definition);
+    }
+
+    function hideTooltip() {
+      const existing = document.getElementById('activeTooltip');
+      if(existing) existing.remove();
+    }
+    
+    // Close tooltip when clicking/touching outside
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.profile-cell') && !e.target.closest('.tooltip')) {
+        hideTooltip();
+      }
+    });
+    
+    document.addEventListener('touchstart', function(e) {
+      if (!e.target.closest('.profile-cell') && !e.target.closest('.tooltip')) {
+        hideTooltip();
+      }
+    });
+
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+      safeStart();
+    } else {
+      document.addEventListener('DOMContentLoaded', safeStart, { once: true });
+    }
+
+  </script>
+</body>
+</html>
