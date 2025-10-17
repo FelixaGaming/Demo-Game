@@ -126,35 +126,36 @@
     .video-playing::before { opacity: 0.3 !important; }
     .video-caption {
       position: absolute;
-      bottom: 40px;
-      left: 10px;
-      right: 10px;
-      background: rgba(0, 0, 0, 0.85);
-      padding: 12px 14px;
-      border-radius: 8px;
-      font-size: 14px;
-      line-height: 1.4;
-      text-align: center;
+      bottom: 20px;
+      left: 20px;
+      right: 20px;
+      background: rgba(0, 0, 0, 0.9);
+      padding: 16px 18px;
+      border-radius: 10px;
+      font-size: 15px;
+      line-height: 1.5;
+      text-align: left;
       opacity: 0;
       transform: translateY(10px);
       transition: all 0.3s ease;
-      z-index: 5;
-      backdrop-filter: blur(4px);
+      z-index: 10;
+      backdrop-filter: blur(8px);
       border-left: 4px solid #ef4444;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
     }
     .video-caption.active {
       opacity: 1;
       transform: translateY(0);
     }
     .video-caption.caption-concern {
-      background: rgba(239, 68, 68, 0.15);
+      background: rgba(239, 68, 68, 0.25);
       border-left: 4px solid #ef4444;
-      backdrop-filter: blur(8px);
+      backdrop-filter: blur(12px);
     }
     .video-caption.caption-counter {
-      background: rgba(34, 197, 94, 0.15);
+      background: rgba(34, 197, 94, 0.25);
       border-left: 4px solid #22c55e;
-      backdrop-filter: blur(8px);
+      backdrop-filter: blur(12px);
     }
     .video-playing .video-content { opacity: 0; pointer-events: none; }
     .video-scene {
@@ -167,42 +168,11 @@
     }
     .video-playing .video-scene { display: flex; }
     
-    /* Discussion Scene */
+    /* Full-screen video scene */
     .scene-discussion {
-      gap: 60px;
       position: relative;
-    }
-    .person {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-      z-index: 1;
-    }
-    .person-icon {
-      font-size: 50px;
-      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
-      transition: transform 0.3s ease;
-    }
-    .person-concern.speaking .person-icon {
-      animation: personTalkConcern 0.6s ease-in-out;
-    }
-    .person-counter.speaking .person-icon {
-      animation: personTalkCounter 0.6s ease-in-out;
-    }
-    
-    @keyframes personTalkConcern {
-      0%, 100% { transform: scale(1); }
-      25% { transform: scale(1.08); }
-      50% { transform: scale(1.05); }
-      75% { transform: scale(1.08); }
-    }
-    
-    @keyframes personTalkCounter {
-      0%, 100% { transform: scale(1); }
-      25% { transform: scale(1.08); }
-      50% { transform: scale(1.05); }
-      75% { transform: scale(1.08); }
+      width: 100%;
+      height: 100%;
     }
     
     .pause-button {
@@ -231,27 +201,29 @@
     .video-playing .pause-button { display: none !important; }
     .video-duration {
       position: absolute;
-      bottom: 8px;
-      right: 8px;
-      background: rgba(0,0,0,0.8);
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-size: 12px;
-      font-weight: 600;
-      z-index: 5;
+      bottom: 10px;
+      right: 10px;
+      background: rgba(0,0,0,0.85);
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      z-index: 11;
+      backdrop-filter: blur(4px);
     }
     .video-badge {
       position: absolute;
-      top: 8px;
-      left: 8px;
-      background: rgba(255,0,0,0.9);
-      padding: 4px 8px;
-      border-radius: 4px;
-      font-size: 11px;
+      top: 10px;
+      left: 10px;
+      background: rgba(255,0,0,0.95);
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 12px;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      z-index: 5;
+      z-index: 11;
+      box-shadow: 0 2px 8px rgba(255,0,0,0.4);
     }
     .video-player { width: 100%; border-radius: 12px; overflow: hidden; margin-bottom: 8px; background: #000; aspect-ratio: 16/9; }
     .video-player video { width: 100%; height: 100%; display: block; }
@@ -287,10 +259,10 @@
     }
     .thread { display: grid; gap: 8px; }
     .msg { display: grid; grid-template-columns: 36px 1fr; gap: 8px; }
-    .avatar { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; color: white; background: linear-gradient(135deg, #1f1f25, #2a2c33); border: 1px solid rgba(255,255,255,.08); font-size: 11px; }
-    .avatar--sarah { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
-    .avatar--rex   { background: linear-gradient(135deg, #ef4444, #b91c1c); }
-    .avatar--you   { background: linear-gradient(135deg, #22c55e, #16a34a); }
+    .avatar { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; color: white; background: url('woman-talking-to-her-stream-1400x788_png.webp') center/cover; border: 1px solid rgba(255,255,255,.08); font-size: 0; }
+    .avatar--sarah { background: url('woman-talking-to-her-stream-1400x788_png.webp') center/cover; border: 2px solid #8b5cf6; }
+    .avatar--rex   { background: url('woman-talking-to-her-stream-1400x788_png.webp') center/cover; border: 2px solid #ef4444; }
+    .avatar--you   { background: url('woman-talking-to-her-stream-1400x788_png.webp') center/cover; border: 2px solid #22c55e; }
     .bubble { background: var(--bubble); border: 1px solid rgba(255,255,255,.08); padding: 10px 12px; border-radius: 12px; font-size: 15px; line-height: 1.5; }
     .name { font-weight: 700; margin-bottom: 2px; font-size: 14px; }
     .meta { color: var(--muted); font-size: 12px; }
@@ -659,9 +631,8 @@
       .choice-btn { padding: 12px 14px; font-size: 14px; min-height: 48px; }
       .feedback { padding: 8px 10px; font-size: 12px; border-radius: 8px; }
       .cta, .reset { padding: 10px 16px; font-size: 14px; min-height: 44px; }
-      .video-caption { font-size: 13px; padding: 10px 12px; bottom: 30px; }
-      .person-icon { font-size: 45px; }
-      .scene-discussion { gap: 50px; }
+      .video-caption { font-size: 13px; padding: 12px 14px; bottom: 15px; left: 10px; right: 10px; }
+      .scene-discussion { width: 100%; height: 100%; }
       .post-header { gap: 8px; }
       .post-avatar { width: 32px; height: 32px; font-size: 16px; }
       .video-title { font-size: 14px; }
@@ -715,7 +686,7 @@
 
     <section class="card post">
       <div class="post-header">
-        <div class="post-avatar">▶️</div>
+        <div class="post-avatar" style="background: url('woman-talking-to-her-stream-1400x788_png.webp') center/cover; font-size: 0;"></div>
         <div class="post-meta">
           <div class="post-channel">Gaming & Parenting Discussion</div>
           <div class="post-time">2 hours ago</div>
@@ -724,12 +695,8 @@
       <div class="video-thumbnail" id="videoPlayer">
         <!-- Animated Scenes -->
         <div class="video-scene scene-discussion">
-          <div class="person person-concern" id="personConcern">
-            <div class="person-icon">👩</div>
-          </div>
-          <div class="person person-counter" id="personCounter">
-            <div class="person-icon">👨</div>
-          </div>
+          <img src="woman-talking-to-her-stream-1400x788_png.webp" alt="Live Discussion" style="width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0;">
+          <div style="position: absolute; inset: 0; background: linear-gradient(180deg, transparent 0%, transparent 70%, rgba(0,0,0,0.7) 100%); pointer-events: none; z-index: 1;"></div>
         </div>
         
         <div class="video-content" id="videoContent">
@@ -1073,7 +1040,7 @@
     let exchangeIndex = 0;
 
     function avatarClass(who) { return who === 'sarah' ? 'avatar avatar--sarah' : who === 'rex' ? 'avatar avatar--rex' : 'avatar avatar--you'; }
-    function avatarLabel(who) { return who === 'sarah' ? 'SA' : who === 'rex' ? 'RX' : 'YOU'; }
+    function avatarLabel(who) { return ''; } // Empty since we're using images
     function shuffle(arr){ const a=[...arr]; for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a; }
 
     function updateProgress(){
