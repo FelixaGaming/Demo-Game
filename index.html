@@ -12,7 +12,7 @@
       --panel: #17181c;
       --muted: #a0a6b0;
       --text: #f4f6fb;
-      --accent: #8b5cf6 ; /* Felixa violet */
+      --accent: #8b5cf6; /* Felixa violet */
       --good: #22c55e;
       --bad: #ef4444;
       --bubble: #1f2127;
@@ -702,25 +702,6 @@
     .footer-logo { height: 40px; width: auto; }
     .footer-link { color: var(--accent); text-decoration: none; font-weight: 600; font-size: 14px; }
     .footer-link:hover { text-decoration: underline; }
-    <!-- Animated Scenes -->
-<div class="video-scene scene-discussion">
-  <div class="person person-concern" id="personConcern">
-    <div class="person-icon">
-      <img src="woman-talking-to-her-stream-1400x788_png.webp" alt="Streamer" class="streamer-avatar">
-    </div>
-  </div>
-  <div class="person person-counter" id="personCounter">
-    <div class="person-icon">
-      <img src="woman-talking-to-her-stream-1400x788_png.webp" alt="Streamer" class="streamer-avatar">
-    </div>
-  </div>
-</div>
-
-<div class="video-content" id="videoContent">
-  <div class="play-button" id="playButton">▶</div>
-</div>
-<div class="video-caption" id="videoCaption"></div>
-<div class="video-duration">12:34</div>
   </style>
 </head>
 <body>
@@ -741,25 +722,22 @@
         </div>
       </div>
       <div class="video-thumbnail" id="videoPlayer">
-     <!-- Animated Scenes -->
-<div class="video-scene scene-discussion">
-  <div class="person person-concern" id="personConcern">
-    <div class="person-icon">
-      <img src="woman-talking-to-her-stream-1400x788_png.webp" alt="Streamer" class="streamer-avatar">
-    </div>
-  </div>
-  <div class="person person-counter" id="personCounter">
-    <div class="person-icon">
-      <img src="woman-talking-to-her-stream-1400x788_png.webp" alt="Streamer" class="streamer-avatar">
-    </div>
-  </div>
-</div>
-
-<div class="video-content" id="videoContent">
-  <div class="play-button" id="playButton">▶</div>
-</div>
-<div class="video-caption" id="videoCaption"></div>
-<div class="video-duration">12:34</div>
+        <!-- Animated Scenes -->
+        <div class="video-scene scene-discussion">
+          <div class="person person-concern" id="personConcern">
+            <div class="person-icon">👩</div>
+          </div>
+          <div class="person person-counter" id="personCounter">
+            <div class="person-icon">👨</div>
+          </div>
+        </div>
+        
+        <div class="video-content" id="videoContent">
+          <div class="play-button" id="playButton">▶</div>
+        </div>
+        <div class="video-caption" id="videoCaption"></div>
+        <div class="video-duration">12:34</div>
+      </div>
       <div class="video-title">Should children play aggressive video games?</div>
       <div class="post-stats">
         <span class="stat-item">👁️ 1.2K views</span>
@@ -777,7 +755,7 @@
 
     <footer class="footer" style="flex-direction: column; gap: 12px; align-items: center;">
       <div style="height: 1px; width: 100%; background: rgba(255,255,255,.08);"></div>
-      <img src="Felixa%20logo.png" alt="Felixa" class="footer-logo">
+      <img src="Felixa_logo.png" alt="Felixa" class="footer-logo">
       <a href="https://www.felixagaming.com" target="_blank" rel="noopener noreferrer" class="footer-link">www.felixagaming.com</a>
     </footer>
 
@@ -1168,7 +1146,7 @@
 
       const fb = document.createElement('div');
       fb.className = 'feedback fade-in';
-      fb.innerHTML = `<img src="F.png" alt="F" style="width: 20px; height: 20px; object-fit: contain; vertical-align: middle;"> ${opt.feelings.text}`;
+      fb.innerHTML = `<img src="F_glow.png" alt="F" style="width: 20px; height: 20px; object-fit: contain; vertical-align: middle;"> ${opt.feelings.text}`;
       wrap.insertAdjacentElement('beforeend', fb);
 
       transcript.push({ scenario: sc.title, scenarioId: sc.id, exchange: exchangeIndex+1, user: 'Player', comment: opt.text, direction: 'Reply', attributes: opt.attributes||[], toxic: !!opt.toxic, severity: opt.severity||null, target: opt.target||null, feeling: opt.feelings.text });
@@ -1248,7 +1226,7 @@
           <div class="end-sub">Every click shaped someone's feelings. Prosocial tone builds trust; negativity breaks it.</div>
           <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
             <button class="cta" onclick="renderResultsPage()">Show Results</button>
-            <button class="cta" onclick="window.open('https://https://www.felixagaming.com/report/p/felixa-online-safety-report-for-parents-ptt5b','_blank')">Check Your Community</button>
+            <button class="cta" onclick="window.open('https://www.felixagaming.com','_blank')">Check Your Community</button>
             <button class="reset" onclick="restart()">Restart Game</button>
           </div>
         </div>`;
@@ -1384,7 +1362,7 @@
     }
 
     // ---------------------------------
-    // Behavioral Analysis Functions  🥇🥇🥇
+    // Behavioral Analysis Functions
     // ---------------------------------
     
     function generateBehavioralAnalysis(counts, rows, negativeRows) {
