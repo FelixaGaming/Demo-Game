@@ -259,10 +259,13 @@
     }
     .thread { display: grid; gap: 8px; }
     .msg { display: grid; grid-template-columns: 36px 1fr; gap: 8px; }
-    .avatar { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; color: white; background: url('woman-talking-to-her-stream-1400x788.png.webp') center/cover; border: 1px solid rgba(255,255,255,.08); font-size: 0; }
-    .avatar--sarah { background: url('woman-talking-to-her-stream-1400x788.png.webp') center/cover; border: 2px solid #8b5cf6; }
-    .avatar--rex   { background: url('woman-talking-to-her-stream-1400x788.png.webp') center/cover; border: 2px solid #ef4444; }
-    .avatar--you   { background: url('woman-talking-to-her-stream-1400x788.png.webp') center/cover; border: 2px solid #22c55e; }
+    .avatar { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; color: white; background: linear-gradient(135deg, #6366f1, #8b5cf6); border: 1px solid rgba(255,255,255,.08); font-size: 16px; }
+    .avatar--sarah { background: linear-gradient(135deg, #a78bfa, #8b5cf6); border: 2px solid #8b5cf6; }
+    .avatar--sarah::before { content: '👩'; }
+    .avatar--rex   { background: linear-gradient(135deg, #ef4444, #dc2626); border: 2px solid #ef4444; }
+    .avatar--rex::before { content: '🎮'; }
+    .avatar--you   { background: linear-gradient(135deg, #22c55e, #16a34a); border: 2px solid #22c55e; }
+    .avatar--you::before { content: '⭐'; }
     .bubble { background: var(--bubble); border: 1px solid rgba(255,255,255,.08); padding: 10px 12px; border-radius: 12px; font-size: 15px; line-height: 1.5; }
     .name { font-weight: 700; margin-bottom: 2px; font-size: 14px; }
     .meta { color: var(--muted); font-size: 12px; }
@@ -624,7 +627,7 @@
       .post { gap: 8px; margin-bottom: 10px; }
       .stage { max-height: 55vh; gap: 10px; }
       .msg { grid-template-columns: 32px 1fr; gap: 6px; }
-      .avatar { width: 32px; height: 32px; font-size: 10px; }
+      .avatar { width: 32px; height: 32px; font-size: 14px; }
       .bubble { padding: 8px 10px; font-size: 14px; border-radius: 10px; }
       .name { font-size: 13px; }
       .choices { grid-template-columns: 1fr; gap: 8px; }
