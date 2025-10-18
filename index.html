@@ -1874,6 +1874,20 @@
       // Store feedback in transcript for analytics
       transcript.push({ scenario: sc.title, scenarioId: sc.id, exchange: exchangeIndex+1, user: 'Player', comment: opt.text, direction: 'Reply', attributes: opt.attributes||[], toxic: !!opt.toxic, severity: opt.severity||null, likes: opt.likes||0, target: opt.target||null, feeling: opt.feelings.text });
       
+      // Send response to Google Sheet immediately
+      sendToGoogleSheet({
+        scenario: sc.title,
+        scenarioId: sc.id,
+        exchange: exchangeIndex+1,
+        comment: opt.text,
+        attributes: (opt.attributes||[]).join(', '),
+        toxic: !!opt.toxic,
+        severity: opt.severity||null,
+        likes: opt.likes||0,
+        feeling: opt.feelings.text,
+        timestamp: new Date().toLocaleString()
+      });
+      
       // Analytics: Track player choice with attributes and likes
       trackChoice(opt.toxic ? 'toxic' : 'positive', sc.id, opt.attributes || [], opt.likes || 0);
 
@@ -2650,6 +2664,16 @@
     function hideTooltip() {
       const existing = document.getElementById('activeTooltip');
       if(existing) existing.remove();
+    }
+    
+    // Send response data to Google Sheet
+    function sendToGoogleSheet(data) {
+      fetch('https://script.google.com/macros/s/AKfycbxujS_aicOj4H_oCy4brmLjr96Clnac9Vqz8dbforzz08b8bPcaCWRiAPKVm0vycJKBGQ/exec', {
+        method: 'POST',
+        body: JSON.stringify(data),
+        mode: 'no-cors'
+      })
+      .catch(error => console.error('Error sending to Google Sheet:', error));
     }
     
     // Close tooltip when clicking/touching outside
