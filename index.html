@@ -10,8 +10,8 @@
     :root {
       --bg: #ffffff;
       --panel: #ffffff;
-      --muted: #888888;
-      --text: #333333;
+      --muted: #555555;
+      --text: #1a1a1a;
       --accent: #FFD700; /* Gold */
       --good: #22c55e;
       --bad: #ef4444;
@@ -44,7 +44,7 @@
     header { display: none !important; }
     .title { display: grid; gap: 4px; }
     h1 { font-size: 20px; margin: 0; line-height: 1.2; }
-    .subtitle { color: var(--muted); font-size: 13px; line-height: 1.4; }
+    .subtitle { color: #555; font-size: 13px; line-height: 1.4; }
     .card { background: transparent !important; border: none !important; box-shadow: none !important; }
     .post { background: transparent !important; border: none !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; }
     .post-header { display: none !important; }
@@ -54,7 +54,7 @@
     .post-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #FFD700, #FFC700); display: grid; place-items: center; font-size: 20px; border: 2px solid rgba(255,215,0,0.3); }
     .post-meta { display: flex; flex-direction: column; gap: 3px; }
     .post-channel { font-weight: 600; font-size: 15px; }
-    .post-time { font-size: 12px; color: var(--muted); }
+    .post-time { font-size: 12px; color: #666; }
     .video-thumbnail { 
       display: flex !important;
       align-items: center !important;
@@ -272,7 +272,7 @@
     .avatar--clod24::before { content: '⚠️'; }
     .avatar--you   { background: linear-gradient(135deg, #22c55e, #16a34a); border: 2px solid #22c55e; }
     .avatar--you::before { content: '⭐'; }
-    .bubble { background: var(--bubble); border: 1px solid rgba(0,0,0,.08); padding: 12px 14px; border-radius: 12px; font-size: 15px; line-height: 1.6; word-wrap: break-word; }
+    .bubble { background: var(--bubble); border: 1px solid rgba(0,0,0,.08); padding: 12px 14px; border-radius: 12px; font-size: 15px; line-height: 1.6; word-wrap: break-word; color: #1a1a1a; }
     .name { font-weight: 700; margin-bottom: 2px; font-size: 13px; }
     .meta { color: var(--muted); font-size: 12px; }
 
@@ -334,7 +334,7 @@
       border-radius: 6px; 
       font-size: 13px; 
       line-height: 1.5;
-      color: #666;
+      color: #333;
       font-style: italic;
       margin-top: 12px;
       margin-left: 38px;
@@ -468,8 +468,8 @@
 
     /* Tables */
     table { width: 100%; border-collapse: collapse; font-size: 14px; }
-    thead th { text-align: left; font-size: 13px; color: var(--muted); border-bottom: 1px solid var(--table); padding: 10px; font-weight: 600; }
-    tbody td { border-bottom: 1px solid var(--table); padding: 10px; vertical-align: top; font-size: 14px; line-height: 1.5; word-wrap: break-word; max-width: 400px; }
+    thead th { text-align: left; font-size: 13px; color: #1a1a1a; border-bottom: 1px solid var(--table); padding: 10px; font-weight: 600; }
+    tbody td { border-bottom: 1px solid var(--table); padding: 10px; vertical-align: top; font-size: 14px; line-height: 1.5; word-wrap: break-word; max-width: 400px; color: #1a1a1a; }
     .tcard { background: linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,255,255,.98)); border: 1px solid rgba(0,0,0,.08); border-radius: 14px; padding: 14px; box-shadow: var(--shadow); }
     .tcard .name { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
     .k { color: var(--muted); font-size: 12px; }
@@ -592,7 +592,7 @@
       gap: 10px;
       font-weight: 700;
       font-size: 16px;
-      color: var(--accent);
+      color: #1a1a1a;
     }
     .strategy-icon {
       display: none;
@@ -645,7 +645,7 @@
     .insight-title {
       font-weight: 700;
       font-size: 16px;
-      color: var(--text);
+      color: #1a1a1a;
       margin-bottom: 10px;
       display: flex;
       align-items: center;
@@ -715,6 +715,23 @@
     @keyframes emojiFloat {
       0%, 100% { transform: translateY(0) rotate(0deg); }
       50% { transform: translateY(-8px) rotate(5deg); }
+    }
+
+    .play-count-display {
+      font-size: 13px;
+      color: #666;
+      text-align: center;
+      margin-top: 20px;
+      font-style: italic;
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin-top: 8px;
+    }
+    .table-wrapper table {
+      min-width: 100%;
     }
 
     /* Mobile optimizations */
@@ -863,6 +880,7 @@
           Join the chat and try to get as many likes as possible for your comments.
         </div>
         <button class="cta" onclick="startGameFromButton()" style="font-size: 18px; padding: 16px 32px;">▶ START CHATTING</button>
+        <div class="play-count-display">0 people have played</div>
       </div>
       <div class="video-title">Words Have Power - Make Meaningful Choices</div>
       <div class="post-stats">
@@ -964,7 +982,37 @@
       }, 2000);
     }
 
+
+    // Play counter tracking
+    function getPlayCount() {
+      const count = localStorage.getItem('wordsHavePowerPlayCount');
+      return count ? parseInt(count) : 0;
+    }
+
+    function incrementPlayCount() {
+      const currentCount = getPlayCount();
+      const newCount = currentCount + 1;
+      localStorage.setItem('wordsHavePowerPlayCount', newCount);
+      updatePlayCountDisplay();
+      return newCount;
+    }
+
+    function updatePlayCountDisplay() {
+      const count = getPlayCount();
+      const countElements = document.querySelectorAll('.play-count-display');
+      countElements.forEach(el => {
+        el.textContent = `${count} people have played`;
+      });
+    }
+
+    function initPlayCounter() {
+      updatePlayCountDisplay();
+    }
+
     function startGameFromButton() {
+      // Track this play
+      incrementPlayCount();
+      
       // Initialize game variables
       scenarioIndex = 0;
       exchangeIndex = 0;
@@ -2079,6 +2127,7 @@
             <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top: 8px;">
               <button class="cta" onclick="showResultsPage(2, window.resultsData)">Next</button>
             </div>
+            <div class="play-count-display">${getPlayCount()} people have played this game</div>
           </div>`;
         
         const profileMatrix = document.getElementById('profileMatrix');
@@ -2113,9 +2162,9 @@
           <div class="fade-in" style="display:grid; gap:16px;">
             <div class="tcard">
               <div class="name" style="font-size: 16px;">Your Response History</div>
-              <div style="overflow:auto; margin-top:8px;">
+              <div class="table-wrapper">
                 <table>
-                  <thead><tr><th>#</th><th>Your Response</th><th>Likes</th><th>Communication Style</th><th title="How others felt after reading your comment">Impact:: Your Communication Patterns</th></tr></thead>
+                  <thead><tr><th>#</th><th>Your Response</th><th>Likes</th><th>Style</th><th>Impact</th></tr></thead>
                   <tbody id="logBody"></tbody>
                 </table>
               </div>
@@ -2132,7 +2181,7 @@
           <td>${r.comment}</td>
           <td style="font-size: 14px; font-weight: 700; color: ${r.likes === 10 ? 'var(--good)' : r.likes === 3 ? '#ff9800' : 'var(--bad)'};">${r.likes || 0}</td>
           <td style="font-size: 12px;">${(r.mappedAttrs||[]).join(', ')}</td>
-          <td style="font-size: 12px; color: var(--muted);">${r.feeling || ''}</td>
+          <td style="font-size: 12px; color: #555;">${r.feeling || ''}</td>
         </tr>`).join('');
       }
       else if(pageNum === 3){
@@ -2299,8 +2348,12 @@
 
     if (document.readyState === 'complete' || document.readyState === 'interactive') {
       safeStart();
+      initPlayCounter();
     } else {
-      document.addEventListener('DOMContentLoaded', safeStart, { once: true });
+      document.addEventListener('DOMContentLoaded', function() {
+        safeStart();
+        initPlayCounter();
+      }, { once: true });
     }
 
   </script>
