@@ -51,6 +51,95 @@
     .video-title { display: none !important; }
     .post-stats { display: none !important; }
     .chips { display: none !important; }
+    
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      animation: fadeIn 0.3s ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    .modal.show {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal-content {
+      background-color: #ffffff;
+      padding: 32px;
+      border-radius: 16px;
+      max-width: 500px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      animation: slideIn 0.3s ease;
+    }
+    
+    @keyframes slideIn {
+      from {
+        transform: translateY(-50px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    
+    .modal-header {
+      font-size: 20px;
+      font-weight: 800;
+      margin-bottom: 20px;
+      color: #1a1a1a;
+    }
+    
+    .modal-body {
+      font-size: 15px;
+      line-height: 1.6;
+      color: #333;
+      margin-bottom: 20px;
+    }
+    
+    .modal-body p {
+      margin: 12px 0;
+    }
+    
+    .modal-footer {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 24px;
+    }
+    
+    .modal-close {
+      background: #FFD700;
+      color: #333;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s ease;
+    }
+    
+    .modal-close:hover {
+      background: #FFC700;
+      transform: scale(1.05);
+    }
     .post-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #FFD700, #FFC700); display: grid; place-items: center; font-size: 20px; border: 2px solid rgba(255,215,0,0.3); }
     .post-meta { display: flex; flex-direction: column; gap: 3px; }
     .post-channel { font-weight: 600; font-size: 15px; }
@@ -880,6 +969,10 @@
           Join the chat and try to get as many likes as possible for your comments.
         </div>
         <button class="cta" onclick="startGameFromButton()" style="font-size: 18px; padding: 16px 32px;">▶ START CHATTING</button>
+        <div style="display: flex; gap: 16px; margin-top: 16px; justify-content: center; flex-wrap: wrap;">
+          <a onclick="openHowToPlayModal()" style="color: #FFD700; text-decoration: none; font-weight: 600; font-size: 14px; padding: 8px 12px; border: 1px solid rgba(255,215,0,0.3); border-radius: 6px; transition: all 0.2s ease; cursor: pointer;" onmouseover="this.style.background='rgba(255,215,0,0.1)'; this.style.borderColor='#FFD700';" onmouseout="this.style.background='transparent'; this.style.borderColor='rgba(255,215,0,0.3)';">How to play</a>
+          <a onclick="openAboutModal()" style="color: #FFD700; text-decoration: none; font-weight: 600; font-size: 14px; padding: 8px 12px; border: 1px solid rgba(255,215,0,0.3); border-radius: 6px; transition: all 0.2s ease; cursor: pointer;" onmouseover="this.style.background='rgba(255,215,0,0.1)'; this.style.borderColor='#FFD700';" onmouseout="this.style.background='transparent'; this.style.borderColor='rgba(255,215,0,0.3)';">About the game</a>
+        </div>
         <div class="play-count-display">0 people have played</div>
       </div>
       <div class="video-title">Words Have Power - Make Meaningful Choices</div>
@@ -903,7 +996,114 @@
       <a href="https://www.felixagaming.com" target="_blank" rel="noopener noreferrer" class="footer-link">www.felixagaming.com</a>
     </footer>
 
+    <!-- How to Play Modal -->
+    <div id="howToPlayModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">How to Play the Game</div>
+        <div class="modal-body">
+          <p><strong>In Felixa: Words Have Power</strong>, you chat under posts to earn likes. Your comments can be positive or toxic — it's up to you.</p>
+          <p>Your impact profile shows how your words make people feel and react.</p>
+          <p>At Felixa, we believe it's okay to have your own opinion — as long as you share it in a way that makes others feel safe and respected.</p>
+          <p style="margin-top: 16px; font-size: 13px; color: #666;"><strong>Disclaimer:</strong> We do not collect any personal information. This game is just for fun, educational, and research purposes.</p>
+        </div>
+        <div class="modal-footer">
+          <button class="modal-close" onclick="closeHowToPlayModal()">Got it!</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- About the Game Modal -->
+    <div id="aboutModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">About the Game</div>
+        <div class="modal-body" style="font-size: 14px;">
+          <p><strong>Felixa: Words Have Power</strong> is a game that helps players understand the impact of their words online by putting them in the position of someone participating in online conversations. By allowing players to choose between positive, supportive comments and toxic, harmful ones, the game highlights how different communication styles influence others and shape online spaces.</p>
+          
+          <p>This document provides background information on how the game was developed, how it works, and the research and principles it is based on. It also explains the broader concept of online communication, disinhibition, and the social and psychological effects of cyberbullying.</p>
+          
+          <p>The game is designed to serve as an educational tool, helping players reflect on their own online behavior and develop healthier, more empathetic communication habits. It also includes tips for promoting positive engagement while demonstrating the real-world consequences of harmful interactions.</p>
+          
+          <p>This document is intended as an explainer for educators, parents, and program facilitators who wish to use Felixa: Words Have Power as a teaching or awareness tool. It also provides references and resources for further reading on online behavior, cyberbullying, and social-emotional learning.</p>
+          
+          <p style="margin-top: 16px; padding: 12px; background: rgba(255,215,0,0.1); border-left: 3px solid #FFD700; border-radius: 4px;"><strong>Disclaimer:</strong> The game does not collect personal information. It is intended purely for educational, research, and entertainment purposes.</p>
+          
+          <p style="margin-top: 16px; margin-bottom: 8px;"><strong>Psychological Foundations</strong></p>
+          <ol style="margin: 8px 0; padding-left: 20px;">
+            <li>Online Disinhibition Effect (Suler, 2004) — explaining why people behave differently behind screens.</li>
+            <li>Social Learning Theory (Bandura, 1977) — showing how behaviors are modeled and reinforced in digital environments.</li>
+            <li>Emotional Intelligence and Empathy Research — emphasizing awareness, self-regulation, and perspective-taking in communication.</li>
+            <li>Cyberbullying Studies — highlighting the emotional and cognitive consequences of online aggression.</li>
+          </ol>
+          
+          <p style="margin-top: 16px; margin-bottom: 8px;"><strong>Educational Applications</strong></p>
+          <p>Educators, parents, and facilitators can use the game as part of lessons or workshops on:</p>
+          <ol style="margin: 8px 0; padding-left: 20px;">
+            <li>Digital Citizenship and Online Safety</li>
+            <li>Social-Emotional Learning (SEL)</li>
+            <li>Media Literacy</li>
+            <li>Mental Health and Empathy Building</li>
+          </ol>
+          <p>The tool can be used independently or alongside classroom discussions, reflection exercises, and group activities. Each playthrough can serve as a conversation starter, helping participants explore how emotional awareness and empathy shape both online and offline relationships.</p>
+          
+          <p style="margin-top: 16px; margin-bottom: 8px;"><strong>Ethical Considerations and Privacy</strong></p>
+          <p>Felixa: Words Have Power does not collect personal data or store user responses. The experience is designed purely for educational, research, and entertainment purposes, emphasizing reflection and learning rather than performance or surveillance.</p>
+          
+          <p style="margin-top: 16px; margin-bottom: 8px;"><strong>Further Reading</strong></p>
+          <ol style="margin: 8px 0; padding-left: 20px; font-size: 13px;">
+            <li>Antczak, E. J., & Huang, A. (2025). The Psychology and Technology Behind Safer Gaming Communities: How Felixa Shapes Safe Online Interactions. PsyArXiv.</li>
+            <li>Bandura, A. (1977). Social Learning Theory. Prentice Hall.</li>
+            <li>Suler, J. (2004). The Online Disinhibition Effect. CyberPsychology & Behavior, 7(3), 321–326.</li>
+            <li>Kowalski, R. M., & Limber, S. P. (2013). Psychological, physical, and academic correlates of cyberbullying and traditional bullying. Journal of Adolescent Health, 53(1), S13–S20.</li>
+            <li>Goleman, D. (1995). Emotional Intelligence. Bantam Books.</li>
+          </ol>
+        </div>
+        <div class="modal-footer">
+          <button class="modal-close" onclick="closeAboutModal()">Close</button>
+        </div>
+      </div>
+    </div>
+
     <script>
+    // Modal functions
+    function openHowToPlayModal() {
+      const modal = document.getElementById('howToPlayModal');
+      if (modal) {
+        modal.classList.add('show');
+      }
+    }
+    
+    function closeHowToPlayModal() {
+      const modal = document.getElementById('howToPlayModal');
+      if (modal) {
+        modal.classList.remove('show');
+      }
+    }
+    
+    function openAboutModal() {
+      const modal = document.getElementById('aboutModal');
+      if (modal) {
+        modal.classList.add('show');
+      }
+    }
+    
+    function closeAboutModal() {
+      const modal = document.getElementById('aboutModal');
+      if (modal) {
+        modal.classList.remove('show');
+      }
+    }
+    
+    // Close modal when clicking outside of it
+    window.addEventListener('click', function(event) {
+      const howToPlayModal = document.getElementById('howToPlayModal');
+      const aboutModal = document.getElementById('aboutModal');
+      if (event.target === howToPlayModal) {
+        closeHowToPlayModal();
+      }
+      if (event.target === aboutModal) {
+        closeAboutModal();
+      }
+    });
     // ---------------------------------
     // Video Player Logic
     // ---------------------------------
