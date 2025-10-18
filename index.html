@@ -1936,24 +1936,19 @@
       }
       
       let html = '';
-      html += '<div class="strategy-grid">';
+      html += '<div style="display: grid; gap: 12px;">';
       
       analysis.topNegative.forEach((attr, index) => {
         const strategy = getStrategyForAttribute(attr);
         if (strategy) {
           html += `
-            <div class="strategy-card" onclick="toggleStrategy(this)">
-              <div class="strategy-header">
-                <div class="strategy-title">
-                  <span>${strategy.title}</span>
-                </div>
-                <div class="strategy-expand">▼</div>
-              </div>
-              <div class="strategy-content">
-                <div class="strategy-description">${strategy.description}</div>
-                <div class="strategy-technique">
-                  ${strategy.technique}
-                </div>
+            <div style="background: rgba(0,0,0,.02); border: 1px solid rgba(0,0,0,.05); border-radius: 10px; padding: 14px; transition: all 0.2s ease;">
+              <div style="font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: 8px;">Tip #${index + 1}</div>
+              <div style="font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 10px;">${strategy.title}</div>
+              <div style="font-size: 12px; color: var(--text); line-height: 1.5; margin-bottom: 10px;">${strategy.description}</div>
+              <div style="background: rgba(255,215,0,0.08); border-left: 3px solid var(--accent); padding: 10px 12px; border-radius: 6px; font-size: 12px; color: var(--text); line-height: 1.5;">
+                <div style="font-size: 10px; color: var(--muted); text-transform: uppercase; font-weight: 700; margin-bottom: 4px;">How to:</div>
+                ${strategy.technique}
               </div>
             </div>`;
         }
@@ -1961,10 +1956,6 @@
       
       html += '</div>';
       return html;
-    }
-    
-    function toggleStrategy(element) {
-      element.classList.toggle('expanded');
     }
     
     function generateInsightsHTML(analysis, totalLikes, maxPossibleLikes) {
@@ -2021,14 +2012,14 @@
       return insights;
     }
     
-    function getKindnessMessage(score) {
-      if (score >= 90) return "Outstanding communication skills";
-      if (score >= 75) return "Strong positive communication";
-      if (score >= 60) return "Good foundation with room to grow";
-      if (score >= 40) return "Developing communication skills";
-      if (score >= 20) return "Beginning to build positive habits";
-      return "Significant room for improvement";
-    }
+ function getKindnessMessage(score) {
+  if (score >= 90) return "Empathy Master 🌟 – You lift every chat you enter!";
+  if (score >= 75) return "Positive Vibes Pro ✨ – Your words make a real impact.";
+  if (score >= 60) return "Kind Communicator 💬 – Keep spreading good energy.";
+  if (score >= 40) return "On the Rise 🚀 – You’re learning the power of kind words.";
+  if (score >= 20) return "Starter Level 🌱 – Small changes can make big waves.";
+  return "Time to Reflect 🔍 – Every message is a chance to do better.";
+}
 
     function finishGame() {
       // End the game early and show results
@@ -2196,7 +2187,7 @@
               <div class="name" style="font-size: 20px; margin-bottom: 8px;">
                 Tools for Better Communication
               </div>
-              <div class="k" style="margin-bottom: 16px; font-size: 14px;">Click the cards below for quick tips to level up your chat game! 💬</div>
+              <div class="k" style="margin-bottom: 16px; font-size: 14px;">Quick tips to level up your chat game! 💬</div>
               ${generateStrategiesHTML(analysis)}
               
 
@@ -2213,11 +2204,11 @@
           <div class="fade-in" style="display:grid; gap:16px;">
             <div class="tcard">
               <div class="name" style="font-size: 18px;">Great Job!</div>
-              <div class="k">You've completed your communication analysis. Check your community or play again to continue improving.</div>
+              <div class="k"> Check how freindly is your community or play again.</div>
             </div>
             <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top: 8px;">
               <button class="reset" onclick="showResultsPage(3, window.resultsData)">Back</button>
-              <button class="cta" onclick="window.open('https://www.felixagaming.com','_blank')">Check Your Community</button>
+              <button class="cta" onclick="window.open('https://https://www.felixagaming.com/report/p/felixa-online-safety-report-for-parents-ptt5b','_blank')">Check Your Community</button>
               <button class="reset" onclick="restart()">Play Again</button>
             </div>
           </div>`;
