@@ -52,8 +52,8 @@
     .post-stats { display: none !important; }
     .chips { display: none !important; }
     .post-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #FFD700, #FFC700); display: grid; place-items: center; font-size: 20px; border: 2px solid rgba(255,215,0,0.3); }
-    .post-meta { display: flex; flex-direction: column; gap: 2px; }
-    .post-channel { font-weight: 600; font-size: 14px; }
+    .post-meta { display: flex; flex-direction: column; gap: 3px; }
+    .post-channel { font-weight: 600; font-size: 15px; }
     .post-time { font-size: 12px; color: var(--muted); }
     .video-thumbnail { 
       display: flex !important;
@@ -262,8 +262,8 @@
       to { opacity: 1; transform: translateY(0); }
     }
     .thread { display: grid; gap: 10px; margin-bottom: 16px; }
-    .msg { display: grid; grid-template-columns: 32px 1fr; gap: 6px; margin-bottom: 8px; }
-    .avatar { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; color: white; background: linear-gradient(135deg, #FFD700, #FFC700); border: 2px solid rgba(255,215,0,.4); font-size: 16px; }
+    .msg { display: grid; grid-template-columns: 36px 1fr; gap: 10px; margin-bottom: 12px; }
+    .avatar { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; color: white; background: linear-gradient(135deg, #FFD700, #FFC700); border: 2px solid rgba(255,215,0,.4); font-size: 16px; }
     .avatar--sarah { background: linear-gradient(135deg, #FFD700, #FFC700); border: 2px solid #FFD700; }
     .avatar--sarah::before { content: '👩'; }
     .avatar--rex   { background: linear-gradient(135deg, #ef4444, #dc2626); border: 2px solid #ef4444; }
@@ -272,12 +272,12 @@
     .avatar--clod24::before { content: '⚠️'; }
     .avatar--you   { background: linear-gradient(135deg, #22c55e, #16a34a); border: 2px solid #22c55e; }
     .avatar--you::before { content: '⭐'; }
-    .bubble { background: var(--bubble); border: 1px solid rgba(0,0,0,.08); padding: 8px 10px; border-radius: 12px; font-size: 15px; line-height: 1.5; }
+    .bubble { background: var(--bubble); border: 1px solid rgba(0,0,0,.08); padding: 12px 14px; border-radius: 12px; font-size: 15px; line-height: 1.6; word-wrap: break-word; }
     .name { font-weight: 700; margin-bottom: 2px; font-size: 13px; }
     .meta { color: var(--muted); font-size: 12px; }
 
-    .choices { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 12px; }
-    .choice-btn { width: 100%; text-align: left; border: 2px solid #FFD700; background: #ffffff; color: var(--text); border-radius: 12px; padding: 12px 14px; cursor: pointer; font-size: 14px; line-height: 1.4; min-height: 44px; display: flex; align-items: center; font-family: 'Courier New', Courier, Monaco, Consolas, monospace; }
+    .choices { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 14px; }
+    .choice-btn { width: 100%; text-align: left; border: 2px solid #FFD700; background: #ffffff; color: var(--text); border-radius: 12px; padding: 14px 16px; cursor: pointer; font-size: 15px; line-height: 1.5; min-height: 50px; display: flex; align-items: center; font-family: 'Courier New', Courier, Monaco, Consolas, monospace; }
     .choice-btn:hover { border-color: #FFA500; background: #fffef5; }
     .choice-btn:active { /* No animation */ }
     .choice-btn.highlight:hover {
@@ -476,14 +476,14 @@
 
     /* Matrix profile styles */
     .matrix-container { display: grid; gap: 16px; margin-top: 12px; }
-    .profile-matrix { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px; }
-    .profile-cell { padding: 14px; border-radius: 10px; cursor: pointer; transition: all .2s ease; border: 1px solid rgba(139,92,246,.3); background: linear-gradient(135deg, rgba(139,92,246,.1), rgba(123,58,237,.05)); position: relative; overflow: hidden; }
-    .profile-cell::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at top right, rgba(139,92,246,.2), transparent); opacity: 0; transition: opacity .2s ease; }
-    .profile-cell:hover { border-color: rgba(139,92,246,.8); transform: translateY(-3px); box-shadow: 0 8px 20px rgba(139,92,246,.25); background: linear-gradient(135deg, rgba(139,92,246,.15), rgba(123,58,237,.1)); }
-    .profile-cell:hover::before { opacity: 1; }
-    .cell-name { font-weight: 700; font-size: 12px; margin-bottom: 8px; position: relative; z-index: 1; color: var(--text); }
-    .cell-count { font-size: 28px; font-weight: 800; color: var(--accent); position: relative; z-index: 1; margin-bottom: 4px; line-height: 1; }
-    .cell-level { font-size: 10px; color: var(--muted); position: relative; z-index: 1; text-transform: uppercase; letter-spacing: 0.5px; }
+    .profile-matrix { display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 16px; }
+    .profile-cell { padding: 12px 8px; border-radius: 0; cursor: pointer; transition: opacity .2s ease; border: none; background: transparent; position: relative; text-align: center; }
+    .profile-cell::before { display: none; }
+    .profile-cell:hover { transform: none; box-shadow: none; }
+    .profile-cell:hover::before { opacity: 0; }
+    .cell-name { font-weight: 400; font-size: 13px; margin-bottom: 6px; position: relative; z-index: 1; color: var(--text); }
+    .cell-count { font-size: 16px; font-weight: 600; color: var(--text); position: relative; z-index: 1; margin-bottom: 4px; line-height: 1; }
+    .cell-level { display: none; }
     .profile-section { }
     .section-title { font-size: 12px; font-weight: 700; color: var(--accent); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.8; }
     .tooltip { position: fixed; background: rgba(31,33,39,.95); border: 1px solid rgba(139,92,246,.7); border-radius: 10px; padding: 14px; font-size: 13px; color: var(--text); z-index: 100; max-width: 200px; box-shadow: 0 12px 32px rgba(139,92,246,.2); backdrop-filter: blur(4px); }
@@ -561,8 +561,8 @@
       margin-top: 16px;
     }
     .strategy-card {
-      background: linear-gradient(135deg, rgba(139,92,246,.08), rgba(139,92,246,.03));
-      border: 2px solid rgba(139,92,246,.25);
+      background: transparent;
+      border: 2px solid #FFD700;
       border-radius: 12px;
       padding: 0;
       transition: all .3s ease;
@@ -570,13 +570,13 @@
       overflow: hidden;
     }
     .strategy-card:hover {
-      border-color: rgba(139,92,246,.6);
-      transform: translateY(-4px) scale(1.02);
-      box-shadow: 0 8px 24px rgba(139,92,246,.25);
+      border-color: #FFC700;
+      transform: none;
+      box-shadow: none;
     }
     .strategy-card.expanded {
-      border-color: rgba(139,92,246,.8);
-      box-shadow: 0 4px 16px rgba(139,92,246,.2);
+      border-color: #FFD700;
+      box-shadow: none;
     }
     .strategy-header {
       display: flex;
@@ -595,12 +595,7 @@
       color: var(--accent);
     }
     .strategy-icon {
-      font-size: 24px;
-      animation: iconBounce 2s ease-in-out infinite;
-    }
-    @keyframes iconBounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-4px); }
+      display: none;
     }
     .strategy-expand {
       font-size: 24px;
@@ -628,9 +623,9 @@
     }
     .strategy-technique {
       padding: 12px;
-      background: linear-gradient(135deg, rgba(139,92,246,.15), rgba(139,92,246,.08));
-      border-left: 4px solid var(--accent);
-      border-radius: 8px;
+      background: transparent;
+      border-left: 3px solid #FFD700;
+      border-radius: 0;
       font-size: 13px;
       line-height: 1.6;
     }
@@ -641,16 +636,16 @@
       display: block;
     }
     .insight-box {
-      background: linear-gradient(135deg, rgba(139,92,246,.12), rgba(139,92,246,.05));
-      border: 2px solid rgba(139,92,246,.3);
-      border-radius: 12px;
-      padding: 16px;
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      padding: 0;
       margin-bottom: 16px;
     }
     .insight-title {
       font-weight: 700;
       font-size: 16px;
-      color: var(--accent);
+      color: var(--text);
       margin-bottom: 10px;
       display: flex;
       align-items: center;
@@ -658,7 +653,7 @@
     }
     .insight-text {
       font-size: 14px;
-      line-height: 1.7;
+      line-height: 1.6;
     }
     .pattern-badge {
       display: inline-block;
@@ -695,8 +690,8 @@
       box-shadow: 0 2px 8px rgba(34,197,94,.3);
     }
     .fun-tip {
-      background: linear-gradient(135deg, rgba(255,193,7,.15), rgba(255,152,0,.1));
-      border: 2px solid rgba(255,193,7,.4);
+      background: transparent;
+      border: 2px solid #FFD700;
       border-radius: 12px;
       padding: 14px;
       margin-top: 16px;
@@ -705,7 +700,7 @@
     }
     .fun-tip-title {
       font-weight: 700;
-      color: #ffa726;
+      color: var(--text);
       margin-bottom: 8px;
       display: flex;
       align-items: center;
@@ -724,53 +719,56 @@
 
     /* Mobile optimizations */
     @media (max-width: 640px) {
-      body { padding: 8px; font-size: 15px; }
+      body { padding: 10px; font-size: 16px; }
       .app { width: 100%; }
-      h1 { font-size: 18px; }
-      .subtitle { font-size: 12px; }
-      .card { padding: 10px; border-radius: 12px; }
-      .post { gap: 8px; margin-bottom: 10px; }
-      .stage { max-height: 55vh; gap: 10px; }
-      .msg { grid-template-columns: 32px 1fr; gap: 6px; }
-      .avatar { width: 32px; height: 32px; font-size: 14px; }
-      .bubble { padding: 8px 10px; font-size: 14px; border-radius: 10px; }
-      .name { font-size: 13px; }
-      .choices { grid-template-columns: 1fr; gap: 8px; }
-      .choice-btn { padding: 12px 14px; font-size: 14px; min-height: 48px; }
-      .feedback { padding: 8px 10px; font-size: 12px; border-radius: 8px; }
-      .cta, .reset { padding: 10px 16px; font-size: 14px; min-height: 44px; }
-      .video-caption { font-size: 13px; padding: 12px 14px; bottom: 15px; left: 10px; right: 10px; }
+      h1 { font-size: 20px; }
+      .subtitle { font-size: 13px; }
+      .card { padding: 12px; border-radius: 12px; }
+      .post { gap: 12px; margin-bottom: 12px; }
+      .stage { max-height: 60vh; gap: 12px; }
+      .msg { grid-template-columns: 40px 1fr; gap: 8px; margin-bottom: 12px; }
+      .avatar { width: 40px; height: 40px; font-size: 16px; }
+      .bubble { padding: 12px 14px; font-size: 15px; border-radius: 12px; line-height: 1.5; }
+      .name { font-size: 14px; margin-bottom: 6px; }
+      .choices { grid-template-columns: 1fr; gap: 10px; }
+      .choice-btn { padding: 14px 16px; font-size: 15px; min-height: 52px; line-height: 1.4; }
+      .feedback { padding: 10px 12px; font-size: 13px; border-radius: 8px; line-height: 1.4; }
+      .cta, .reset { padding: 12px 18px; font-size: 16px; min-height: 48px; }
+      .video-caption { font-size: 14px; padding: 12px 14px; bottom: 15px; left: 10px; right: 10px; line-height: 1.5; }
       .scene-discussion { width: 100%; height: 100%; }
-      .post-header { gap: 8px; }
-      .post-avatar { width: 32px; height: 32px; font-size: 16px; }
-      .video-title { font-size: 14px; }
-      .profile-matrix { grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap: 8px; }
-      .profile-cell { padding: 10px; }
-      .cell-count { font-size: 24px; }
-      .cell-name { font-size: 11px; }
-      table { font-size: 13px; }
-      thead th { font-size: 12px; padding: 8px; }
-      tbody td { padding: 8px; font-size: 13px; }
-      .tcard { padding: 12px; }
-      .growth-score { font-size: 36px; }
-      .growth-meter { padding: 12px; }
-      .strategy-grid { gap: 10px; }
+      .post-header { gap: 10px; }
+      .post-avatar { width: 40px; height: 40px; font-size: 18px; }
+      .post-channel { font-size: 14px; }
+      .post-time { font-size: 12px; }
+      .video-title { font-size: 15px; }
+      .profile-matrix { grid-template-columns: repeat(auto-fit, minmax(85px, 1fr)); gap: 10px; }
+      .profile-cell { padding: 12px 8px; }
+      .cell-count { font-size: 18px; }
+      .cell-name { font-size: 13px; }
+      .k { font-size: 13px; line-height: 1.5; }
+      table { font-size: 14px; }
+      thead th { font-size: 13px; padding: 10px; }
+      tbody td { padding: 10px; font-size: 14px; line-height: 1.4; }
+      .tcard { padding: 14px; }
+      .growth-score { font-size: 40px; }
+      .growth-meter { padding: 14px; }
+      .strategy-grid { gap: 12px; }
       .strategy-card { border-radius: 10px; }
-      .strategy-header { padding: 12px; }
-      .strategy-title { font-size: 14px; }
+      .strategy-header { padding: 14px; }
+      .strategy-title { font-size: 15px; }
       .strategy-icon { font-size: 20px; }
       .strategy-expand { font-size: 20px; }
-      .strategy-card.expanded .strategy-content { padding: 0 12px 12px 12px; }
-      .strategy-description { font-size: 13px; }
-      .strategy-technique { padding: 10px; font-size: 12px; }
-      .insight-box { padding: 12px; }
-      .insight-title { font-size: 14px; }
-      .insight-text { font-size: 13px; }
-      .fun-tip { padding: 12px; font-size: 13px; }
+      .strategy-card.expanded .strategy-content { padding: 0 14px 14px 14px; }
+      .strategy-description { font-size: 14px; line-height: 1.5; }
+      .strategy-technique { padding: 12px; font-size: 13px; line-height: 1.5; }
+      .insight-box { padding: 14px; }
+      .insight-title { font-size: 15px; }
+      .insight-text { font-size: 14px; line-height: 1.5; }
+      .fun-tip { padding: 14px; font-size: 14px; line-height: 1.5; }
       .emoji-big { font-size: 28px; }
       .footer-logo { height: 32px; }
-      .like-icon { font-size: 15px; }
-      .likes-count { font-size: 12px; }
+      .like-icon { font-size: 16px; }
+      .likes-count { font-size: 13px; }
       .score-number { font-size: 80px; }
       .score-label { font-size: 20px; }
       .score-sublabel { font-size: 14px; }
@@ -860,7 +858,8 @@
         </div>
       </div>
       <div class="video-thumbnail" id="videoPlayer" style="display: flex; flex-direction: column; align-items: center; justify-content: center; background: #ffffff; border: 2px solid #dddddd; cursor: pointer; padding: 32px 20px; gap: 20px;">
-        <div style="text-align: center; color: #000; font-size: 16px; line-height: 1.5; max-width: 500px; font-weight: 500;">
+        <div style="text-align: center; background: linear-gradient(135deg, #FFD700, #FFC700); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: 48px; line-height: 1.1; max-width: 500px; font-weight: 800; margin-bottom: 24px; letter-spacing: -1px;">Words have<br><span style="background: linear-gradient(135deg, #FFD700, #FFC700, #FF9800); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Power</span></div>
+        <div style="text-align: center; color: #666; font-size: 16px; line-height: 1.6; max-width: 500px; font-weight: 400; margin-bottom: 28px;">
           Join the chat and try to get as many likes as possible for your comments.
         </div>
         <button class="cta" onclick="startGameFromButton()" style="font-size: 18px; padding: 16px 32px;">▶ START CHATTING</button>
@@ -1091,116 +1090,116 @@
     const scenarioPools = [
       { id: 1, title: "The Agitator Joins", exchangePool: [
         { speaker: "Clod24", who: "clod24",
-          line: "Video games are absolutely terrible. They destroy brain cells and turn people into mindless zombies.",
+          line: "Video games destroy brain cells and make people mindless.",
           post: { attributes: ["Aggressive","Generalization"], toxic: true, severity: "High", target: "Gamers (group)" },
-          prosocial: { text: "Games have different impacts on different people. What specifically concerns you?", attributes: ["Rational"], toxic: false, severity: "None", likes: 10, target: "Clod24", feelings: { who: "clod24", text: "Clod24 feels challenged but slightly less defensive." } },
-          negative: { text: "You're obviously an addict if you're defending them.", attributes: ["Accusation"], toxic: true, severity: "High", likes: 0, target: "Clod24", feelings: { who: "clod24", text: "Clod24 becomes more aggressive and doubles down." } }
+          prosocial: { text: "Games impact people differently. What's your specific concern?", attributes: ["Rational"], toxic: false, severity: "None", likes: 10, target: "Clod24", feelings: { who: "clod24", text: "Clod24 feels challenged but slightly less defensive." } },
+          negative: { text: "You're defending them because you're addicted.", attributes: ["Accusation"], toxic: true, severity: "High", likes: 0, target: "Clod24", feelings: { who: "clod24", text: "Clod24 becomes more aggressive and doubles down." } }
         },
         { speaker: "Sarah", who: "sarah",
-          line: "Now I'm really worried. My son plays every day and I didn't know it was that bad...",
+          line: "My son plays every day. I didn't know it was that bad.",
           post: { attributes: ["Anxiety","Catastrophizing"], toxic: false },
-          prosocial: { text: "Moderation and balance are key, not total avoidance. You could explore games together.", attributes: ["Reassuring"], toxic: false, severity: "None", likes: 10, target: "Sarah", feelings: { who: "sarah", text: "Sarah's anxiety eases; she feels supported." } },
-          negative: { text: "She's right to worry — better keep him away from screens.", attributes: ["Alarmist"], toxic: true, severity: "High", likes: 0, target: "Sarah", feelings: { who: "sarah", text: "Sarah spirals into panic and feels even more anxious." } }
+          prosocial: { text: "Balance is key, not total avoidance. Explore games together.", attributes: ["Reassuring"], toxic: false, severity: "None", likes: 10, target: "Sarah", feelings: { who: "sarah", text: "Sarah's anxiety eases; she feels supported." } },
+          negative: { text: "She's right. Keep him away from screens.", attributes: ["Alarmist"], toxic: true, severity: "High", likes: 0, target: "Sarah", feelings: { who: "sarah", text: "Sarah spirals into panic and feels even more anxious." } }
         },
         { speaker: "Clod24", who: "clod24",
-          line: "All of you are in denial. Games literally rewire your brain for the worse.",
+          line: "You're in denial. Games rewire your brain negatively.",
           post: { attributes: ["Alarmism","Pseudo-science"], toxic: true, severity: "Moderate" },
-          prosocial: { text: "I'd be curious to see peer-reviewed studies showing that. Gaming does create neural pathways, but not always negative ones.", attributes: ["Respectful","Factual"], toxic: false, severity: "None", likes: 10, target: "Clod24", feelings: { who: "clod24", text: "Clod24 feels somewhat deflated but continues arguing." } },
-          negative: { text: "You're just making excuses because you're addicted.", attributes: ["Ad Hominem"], toxic: true, severity: "High", likes: 0, target: "Clod24", feelings: { who: "clod24", text: "Clod24 feels even more justified in attacking gaming." } }
+          prosocial: { text: "Show me peer-reviewed studies. Games create neural pathways—not always negatively.", attributes: ["Respectful","Factual"], toxic: false, severity: "None", likes: 10, target: "Clod24", feelings: { who: "clod24", text: "Clod24 feels somewhat deflated but continues arguing." } },
+          negative: { text: "You're addicted. That's why you make excuses.", attributes: ["Ad Hominem"], toxic: true, severity: "High", likes: 0, target: "Clod24", feelings: { who: "clod24", text: "Clod24 feels even more justified in attacking gaming." } }
         },
         { speaker: "Rex", who: "rex",
-          line: "This is exactly why I don't talk to people like this online. Always judging.",
+          line: "This is why I don't talk online. Everyone judges.",
           post: { attributes: ["Frustration","Withdrawal"], toxic: false },
-          prosocial: { text: "I understand the frustration. Open-minded people do exist — this conversation is proof.", attributes: ["Empathetic"], toxic: false, severity: "None", likes: 10, target: "Rex", feelings: { who: "rex", text: "Rex feels a glimmer of hope." } },
-          negative: { text: "Yeah, you gamers always play the victim.", attributes: ["Dismissive"], toxic: true, severity: "Moderate", likes: 3, target: "Rex", feelings: { who: "rex", text: "Rex feels more isolated and angry." } }
+          prosocial: { text: "Open-minded people exist—this proves it.", attributes: ["Empathetic"], toxic: false, severity: "None", likes: 10, target: "Rex", feelings: { who: "rex", text: "Rex feels a glimmer of hope." } },
+          negative: { text: "Gamers always play victim.", attributes: ["Dismissive"], toxic: true, severity: "Moderate", likes: 3, target: "Rex", feelings: { who: "rex", text: "Rex feels more isolated and angry." } }
         },
         { speaker: "Clod24", who: "clod24",
-          line: "I'm not scared — I just see the damage clearly. You all are blind.",
+          line: "I see the damage clearly. You're blind to it.",
           post: { attributes: ["Defensive","Absolutism"], toxic: true, severity: "Moderate" },
-          prosocial: { text: "I appreciate your concern, even if we disagree. Maybe we can both learn something here.", attributes: ["Bridge-building"], toxic: false, severity: "None", likes: 10, target: "Clod24", feelings: { who: "clod24", text: "Clod24 pauses, slightly disarmed by kindness." } },
-          negative: { text: "Whatever. You're impossible to reason with.", attributes: ["Dismissive"], toxic: true, severity: "Moderate", likes: 3, target: "Clod24", feelings: { who: "clod24", text: "Clod24 feels confirmed in his worldview that no one listens." } }
+          prosocial: { text: "I appreciate your concern. We can learn.", attributes: ["Bridge-building"], toxic: false, severity: "None", likes: 10, target: "Clod24", feelings: { who: "clod24", text: "Clod24 pauses, slightly disarmed by kindness." } },
+          negative: { text: "You're impossible to reason with.", attributes: ["Dismissive"], toxic: true, severity: "Moderate", likes: 3, target: "Clod24", feelings: { who: "clod24", text: "Clod24 feels confirmed in his worldview that no one listens." } }
         },
         { speaker: "Clod24", who: "clod24",
-          line: "The gaming industry just wants your money. They don't care about your brain.",
+          line: "The gaming industry wants money, not your wellbeing.",
           post: { attributes: ["Cynical","Conspiratorial"], toxic: true, severity: "Moderate" },
-          prosocial: { text: "You raise a fair point about corporate interests. That's worth discussing separately from whether gaming itself is harmful.", attributes: ["Balanced"], toxic: false, severity: "None", likes: 10, target: "Clod24", feelings: { who: "clod24", text: "Clod24 feels partially understood, though still skeptical." } },
-          negative: { text: "Yeah, sounds like you're brainwashed by the industry yourself.", attributes: ["Accusatory"], toxic: true, severity: "High", likes: 0, target: "Clod24", feelings: { who: "clod24", text: "Clod24 feels his warning was dismissed." } }
+          prosocial: { text: "Corporate interests are worth discussing separately from gaming's harm.", attributes: ["Balanced"], toxic: false, severity: "None", likes: 10, target: "Clod24", feelings: { who: "clod24", text: "Clod24 feels partially understood, though still skeptical." } },
+          negative: { text: "You're brainwashed by the industry.", attributes: ["Accusatory"], toxic: true, severity: "High", likes: 0, target: "Clod24", feelings: { who: "clod24", text: "Clod24 feels his warning was dismissed." } }
         }
       ]},
       { id: 2, title: "The Concerned Parent", exchangePool: [
         { speaker: "Sarah", who: "sarah",
-          line: "I'm worried these violent games make my son irritable. He shouts at the screen sometimes.",
+          line: "Violent games make my son irritable. He shouts at the screen.",
           post: { attributes: ["Concern","Vulnerability"], toxic: false },
-          prosocial: { text: "That's a fair concern. Maybe playing together could help you see what he feels.", attributes: ["Empathetic"], toxic: false, severity: "None", likes: 10, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels heard and respected; her anxiety eases a little." } },
-          negative: { text: "Relax — he's just a kid. You're overreacting.", attributes: ["Judgmental"], toxic: true, severity: "High", likes: 0, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels embarrassed and small, like her concern doesn't matter." } }
+          prosocial: { text: "Valid concern. Play together—you'll understand him better.", attributes: ["Empathetic"], toxic: false, severity: "None", likes: 10, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels heard and respected; her anxiety eases a little." } },
+          negative: { text: "He's a kid. You're overreacting.", attributes: ["Judgmental"], toxic: true, severity: "High", likes: 0, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels embarrassed and small, like her concern doesn't matter." } }
         },
         { speaker: "Sarah", who: "sarah",
-          line: "Maybe I should just ban those games completely.",
+          line: "Maybe I should ban those games.",
           post: { attributes: ["Uncertainty","Catastrophizing"], toxic: false },
-          prosocial: { text: "You could set limits instead — balance might work better than banning.", attributes: ["Rational"], toxic: false, severity: "None", likes: 10, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels supported and thoughtful." } },
-          negative: { text: "Yeah, ban everything you don't understand.", attributes: ["Sarcasm"], toxic: true, severity: "Moderate", likes: 3, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels mocked and defensive." } }
+          prosocial: { text: "Set limits instead. Balance works better than banning.", attributes: ["Rational"], toxic: false, severity: "None", likes: 10, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels supported and thoughtful." } },
+          negative: { text: "Ban everything you don't understand.", attributes: ["Sarcasm"], toxic: true, severity: "Moderate", likes: 3, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels mocked and defensive." } }
         },
         { speaker: "Rex", who: "rex",
-          line: "Parents like you blame games for everything.",
+          line: "Parents blame games for everything.",
           post: { attributes: ["Accusation","Generalization"], toxic: true, severity: "Low", target: "Sarah (group)" },
-          prosocial: { text: "Let's hear both sides — this is about understanding, not blaming.", attributes: ["Mediating"], toxic: false, severity: "None", likes: 10, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels grateful for your fairness; the tension eases." } },
-          negative: { text: "Exactly, she's the problem.", attributes: ["Judgmental"], toxic: true, severity: "High", likes: 0, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels ganged up on and hurt." } }
+          prosocial: { text: "Let's understand both sides, not blame.", attributes: ["Mediating"], toxic: false, severity: "None", likes: 10, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels grateful for your fairness; the tension eases." } },
+          negative: { text: "She's the problem.", attributes: ["Judgmental"], toxic: true, severity: "High", likes: 0, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels ganged up on and hurt." } }
         },
         { speaker: "Sarah", who: "sarah",
-          line: "I just don't want him exposed to all that violence at his age.",
+          line: "I don't want him exposed to violence at his age.",
           post: { attributes: ["Protective","Worry"], toxic: false },
-          prosocial: { text: "Age-appropriate choices matter. Have you checked the game ratings together?", attributes: ["Helpful"], toxic: false, severity: "None", likes: 10, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels guided and less overwhelmed." } },
-          negative: { text: "Kids today are soft because of parents like you.", attributes: ["Judgmental"], toxic: true, severity: "High", likes: 0, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels attacked for caring." } }
+          prosocial: { text: "Check game ratings together—age matters.", attributes: ["Helpful"], toxic: false, severity: "None", likes: 10, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels guided and less overwhelmed." } },
+          negative: { text: "Parents like you make kids soft.", attributes: ["Judgmental"], toxic: true, severity: "High", likes: 0, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels attacked for caring." } }
         },
         { speaker: "Rex", who: "rex",
-          line: "Gaming taught me problem-solving. It's not just violence.",
+          line: "Gaming taught me problem-solving—it's not just violence.",
           post: { attributes: ["Defense","Personal Experience"], toxic: false },
-          prosocial: { text: "Good point — games can build skills when used thoughtfully.", attributes: ["Encouraging"], toxic: false, severity: "None", likes: 10, target: "Rex", feelings: { who: "rex", text: "Rex feels validated and appreciated." } },
-          negative: { text: "Sure, and I bet you're a genius now.", attributes: ["Sarcasm"], toxic: true, severity: "Moderate", likes: 3, target: "Rex", feelings: { who: "rex", text: "Rex feels mocked and unappreciated." } }
+          prosocial: { text: "Games build skills when used well.", attributes: ["Encouraging"], toxic: false, severity: "None", likes: 10, target: "Rex", feelings: { who: "rex", text: "Rex feels validated and appreciated." } },
+          negative: { text: "I bet you're a genius now.", attributes: ["Sarcasm"], toxic: true, severity: "Moderate", likes: 3, target: "Rex", feelings: { who: "rex", text: "Rex feels mocked and unappreciated." } }
         },
         { speaker: "Sarah", who: "sarah",
-          line: "Maybe I'm just scared because I don't understand gaming culture.",
+          line: "I'm scared because I don't understand gaming.",
           post: { attributes: ["Self-Awareness","Vulnerability"], toxic: false },
-          prosocial: { text: "That's brave to admit. Learning together with your son could be rewarding.", attributes: ["Empathetic"], toxic: false, severity: "None", likes: 10, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels encouraged to bridge the gap." } },
-          negative: { text: "Yeah, ignorance tends to breed fear.", attributes: ["Condescending"], toxic: true, severity: "Moderate", likes: 3, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels belittled for being honest." } }
+          prosocial: { text: "Brave admission. Learn with your son—it's rewarding.", attributes: ["Empathetic"], toxic: false, severity: "None", likes: 10, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels encouraged to bridge the gap." } },
+          negative: { text: "Ignorance breeds fear.", attributes: ["Condescending"], toxic: true, severity: "Moderate", likes: 3, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels belittled for being honest." } }
         }
       ]},
       { id: 3, title: "The Angry Gamer", exchangePool: [
         { speaker: "Rex", who: "rex",
-          line: "I'm tired of people saying games make us violent. They helped me survive tough years.",
+          line: "Games didn't make me violent. They helped me survive.",
           post: { attributes: ["Disclosure","Defensiveness"], toxic: false },
-          prosocial: { text: "That sounds meaningful. Gaming can be a real escape.", attributes: ["Empathetic"], toxic: false, severity: "None", likes: 10, target: "Rex", feelings: { who: "rex", text: "Rex feels seen; his anger softens a little." } },
-          negative: { text: "Cry me a river. Everyone has problems.", attributes: ["Sarcasm"], toxic: true, severity: "Moderate", likes: 3, target: "Rex", feelings: { who: "rex", text: "Rex feels rejected and misunderstood." } }
+          prosocial: { text: "Gaming is a real escape.", attributes: ["Empathetic"], toxic: false, severity: "None", likes: 10, target: "Rex", feelings: { who: "rex", text: "Rex feels seen; his anger softens a little." } },
+          negative: { text: "Everyone has problems.", attributes: ["Sarcasm"], toxic: true, severity: "Moderate", likes: 3, target: "Rex", feelings: { who: "rex", text: "Rex feels rejected and misunderstood." } }
         },
         { speaker: "Rex", who: "rex",
-          line: "You all think gamers are freaks. That's why I don't trust anyone.",
+          line: "You think gamers are freaks. That's why I don't trust you.",
           post: { attributes: ["Stigmatized Identity","Anger"], toxic: false },
-          prosocial: { text: "Actually, I admire how passionate gamers are.", attributes: ["Encouraging"], toxic: false, severity: "None", likes: 10, target: "Rex", feelings: { who: "rex", text: "Rex feels valued for once, not judged." } },
-          negative: { text: "Maybe because you act like one.", attributes: ["Disrespectful"], toxic: true, severity: "High", likes: 0, target: "Rex", feelings: { who: "rex", text: "Rex feels ashamed and more hostile." } }
+          prosocial: { text: "Gamers are passionate—I admire that.", attributes: ["Encouraging"], toxic: false, severity: "None", likes: 10, target: "Rex", feelings: { who: "rex", text: "Rex feels valued for once, not judged." } },
+          negative: { text: "You act like one.", attributes: ["Disrespectful"], toxic: true, severity: "High", likes: 0, target: "Rex", feelings: { who: "rex", text: "Rex feels ashamed and more hostile." } }
         },
         { speaker: "Sarah", who: "sarah",
-          line: "I didn't mean to offend anyone.",
+          line: "I didn't mean to offend.",
           post: { attributes: ["Repair Attempt","Politeness"], toxic: false },
-          prosocial: { text: "You didn't — it's good we're talking about it.", attributes: ["Supportive"], toxic: false, severity: "None", likes: 10, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels relieved; she's safe to engage." } },
-          negative: { text: "Then maybe stay quiet next time.", attributes: ["Rude"], toxic: true, severity: "High", likes: 0, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels defeated and unwelcome." } }
+          prosocial: { text: "It's good we're talking.", attributes: ["Supportive"], toxic: false, severity: "None", likes: 10, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels relieved; she's safe to engage." } },
+          negative: { text: "Stay quiet next time.", attributes: ["Rude"], toxic: true, severity: "High", likes: 0, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels defeated and unwelcome." } }
         },
         { speaker: "Rex", who: "rex",
-          line: "Gaming is the only place where I feel accepted.",
+          line: "Gaming is where I feel accepted.",
           post: { attributes: ["Vulnerability","Connection"], toxic: false },
-          prosocial: { text: "That community connection is powerful. You're not alone in that feeling.", attributes: ["Empathetic"], toxic: false, severity: "None", likes: 10, target: "Rex", feelings: { who: "rex", text: "Rex feels less isolated and understood." } },
-          negative: { text: "That's pretty sad if you think about it.", attributes: ["Judgmental"], toxic: true, severity: "High", likes: 0, target: "Rex", feelings: { who: "rex", text: "Rex feels pathetic and more withdrawn." } }
+          prosocial: { text: "That community is powerful. You're not alone.", attributes: ["Empathetic"], toxic: false, severity: "None", likes: 10, target: "Rex", feelings: { who: "rex", text: "Rex feels less isolated and understood." } },
+          negative: { text: "That's sad.", attributes: ["Judgmental"], toxic: true, severity: "High", likes: 0, target: "Rex", feelings: { who: "rex", text: "Rex feels pathetic and more withdrawn." } }
         },
         { speaker: "Sarah", who: "sarah",
-          line: "I'm sorry if my words came across wrong. I'm learning here.",
+          line: "My words came across wrong. I'm learning.",
           post: { attributes: ["Apology","Growth"], toxic: false },
-          prosocial: { text: "We appreciate your openness. That takes courage.", attributes: ["Encouraging"], toxic: false, severity: "None", likes: 10, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels safe to continue learning." } },
-          negative: { text: "A little late for apologies, don't you think?", attributes: ["Sarcasm"], toxic: true, severity: "Moderate", likes: 3, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels her effort was rejected." } }
+          prosocial: { text: "Your openness takes courage.", attributes: ["Encouraging"], toxic: false, severity: "None", likes: 10, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels safe to continue learning." } },
+          negative: { text: "Late for apologies?", attributes: ["Sarcasm"], toxic: true, severity: "Moderate", likes: 3, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels her effort was rejected." } }
         },
         { speaker: "Rex", who: "rex",
-          line: "Nobody gets what it's like to be judged for your hobbies.",
+          line: "Nobody understands being judged for hobbies.",
           post: { attributes: ["Frustration","Alienation"], toxic: false },
-          prosocial: { text: "Being misunderstood is tough. What would help people understand better?", attributes: ["Curious"], toxic: false, severity: "None", likes: 10, target: "Rex", feelings: { who: "rex", text: "Rex feels someone actually wants to listen." } },
-          negative: { text: "Stop playing the victim card already.", attributes: ["Dismissive"], toxic: true, severity: "High", likes: 0, target: "Rex", feelings: { who: "rex", text: "Rex feels invalidated and angry." } }
+          prosocial: { text: "Being misunderstood is tough. What would help?", attributes: ["Curious"], toxic: false, severity: "None", likes: 10, target: "Rex", feelings: { who: "rex", text: "Rex feels someone actually wants to listen." } },
+          negative: { text: "Stop playing victim.", attributes: ["Dismissive"], toxic: true, severity: "High", likes: 0, target: "Rex", feelings: { who: "rex", text: "Rex feels invalidated and angry." } }
         }
       ]},
       { id: 4, title: "The Research Debate", exchangePool: [
@@ -2141,8 +2140,7 @@
         stage.innerHTML = `
           <div class="fade-in" style="display:grid; gap:16px;">
             <div class="tcard">
-              <div class="name" style="font-size: 20px; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
-                <span class="emoji-big" style="font-size: 28px;">🛠️</span>
+              <div class="name" style="font-size: 20px; margin-bottom: 8px;">
                 Tools for Better Communication
               </div>
               <div class="k" style="margin-bottom: 16px;">Here are some tools you can use to make yourself and others feel safe and respected. These will help you create better friendships, avoid unnecessary pain and rejection, and build more positive connections in your community.</div>
@@ -2308,5 +2306,3 @@
   </script>
 </body>
 </html>
-
-
