@@ -2668,12 +2668,24 @@
     
     // Send response data to Google Sheet
     function sendToGoogleSheet(data) {
-      fetch('https://script.google.com/macros/s/AKfycbxujS_aicOj4H_oCy4brmLjr96Clnac9Vqz8dbforzz08b8bPcaCWRiAPKVm0vycJKBGQ/exec', {
+      const url = 'https://script.google.com/macros/s/AKfycbxD-nTcK8MTK7zf39w3SUpuaNtazdfytHgxspr47Cz0Iu9PFPsjHRZkdyW_3W5GmijLcA/exec';
+      
+      console.log('📤 Sending to Google Sheet:', data);
+      
+      fetch(url, {
         method: 'POST',
         body: JSON.stringify(data),
         mode: 'no-cors'
       })
-      .catch(error => console.error('Error sending to Google Sheet:', error));
+      .then(response => {
+        console.log('✅ Response received (no-cors mode):', response.status);
+        return response;
+      })
+      .catch(error => {
+        console.error('❌ Error sending to Google Sheet:', error);
+        console.error('URL:', url);
+        console.error('Data:', data);
+      });
     }
     
     // Close tooltip when clicking/touching outside
