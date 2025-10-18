@@ -1860,6 +1860,10 @@
       const wrap = btn.parentElement; 
       const threadWrap = wrap.parentElement;
       
+      // Calculate response time
+      const responseTime = responseStartTime ? (Date.now() - responseStartTime) / 1000 : 0;
+      responseStartTime = Date.now(); // Reset for next response
+      
       // Hide ALL buttons instantly
       wrap.querySelectorAll('button').forEach(b => { 
         b.style.display = 'none';
@@ -1872,20 +1876,35 @@
       wrap.insertAdjacentElement('beforeend', youMsg);
 
       // Store feedback in transcript for analytics
-      transcript.push({ scenario: sc.title, scenarioId: sc.id, exchange: exchangeIndex+1, user: 'Player', comment: opt.text, direction: 'Reply', attributes: opt.attributes||[], toxic: !!opt.toxic, severity: opt.severity||null, likes: opt.likes||0, target: opt.target||null, feeling: opt.feelings.text });
+      transcript.push({ 
+        scenario: sc.title, 
+        scenarioId: sc.id, 
+        exchange: exchangeIndex+1, 
+        user: 'Player', 
+        comment: opt.text, 
+        direction: 'Reply', 
+        attributes: opt.attributes||[], 
+        toxic: !!opt.toxic, 
+        severity: opt.severity||null, 
+        likes: opt.likes||0, 
+        target: opt.target||null, 
+        feeling: opt.feelings.text,
+        responseTime: responseTime
+      });
       
-      // Send response to Google Sheet immediately
+      // Send enhanced response data to Google Sheet
       sendToGoogleSheet({
         scenario: sc.title,
-        scenarioId: sc.id,
-        exchange: exchangeIndex+1,
-        comment: opt.text,
-        attributes: (opt.attributes||[]).join(', '),
-        toxic: !!opt.toxic,
-        severity: opt.severity||null,
-        likes: opt.likes||0,
-        feeling: opt.feelings.text,
-        timestamp: new Date().toLocaleString()
+        exchange: exchangeIndex + 1,
+        responseChoice: opt.toxic ? 'Negative' : 'Prosocial',
+        communicationStyle: opt.type || (opt.toxic ? 'Dismissive' : 'Supportive'),
+        toneAttributes: (opt.attributes || []).join(', '),
+        likesReceived: opt.likes || 0,
+        emotionalImpact: opt.feelings.text,
+        responseText: opt.text,
+        timeTaken: responseTime.toFixed(1),
+        location: 'Unknown', // Can be updated if you collect location
+        ageGroup: 'Not specified' // Can be updated if you collect age
       });
       
       // Analytics: Track player choice with attributes and likes
@@ -2377,6 +2396,32 @@
       const { rows, counts, totalTagged, negativeRows, totalLikes, maxPossibleLikes } = computePlayerMetrics();
       const analysis = generateBehavioralAnalysis(counts, rows, negativeRows);
       
+      // Calculate session summary statistics
+      const prosocialCount = rows.filter(r => !r.toxic).length;
+      const negativeCount = rows.filter(r => r.toxic).length;
+      const avgResponseTime = rows.reduce((sum, r) => sum + (r.responseTime || 0), 0) / rows.length;
+      const sessionDuration = (Date.now() - (window.sessionStartTime || Date.now())) / 1000;
+      
+      // Create attribute summary
+      const attributeSummary = {};
+      counts.forEach(attr => {
+        attributeSummary[attr.name] = attr.count;
+      });
+      
+      // Send session summary to Google Sheets
+      sendToGoogleSheet({
+        totalResponses: rows.length,
+        prosocialCount: prosocialCount,
+        negativeCount: negativeCount,
+        attributeSummary: attributeSummary,
+        avgResponseTime: avgResponseTime.toFixed(1),
+        sessionDuration: sessionDuration.toFixed(0),
+        completionRate: (rows.length / 15 * 100).toFixed(0), // 15 total possible responses
+        totalLikes: totalLikes,
+        maxPossibleLikes: maxPossibleLikes,
+        scorePercentage: ((totalLikes / maxPossibleLikes) * 100).toFixed(1)
+      });
+      
       // Store these for the detailed page
       window.resultsData = { rows, counts, totalTagged, negativeRows, totalLikes, maxPossibleLikes, analysis };
       
@@ -2582,6 +2627,14 @@
         exchangeIndex = 0; 
         stage.innerHTML = '';
         
+        // Initialize session tracking
+        window.sessionStartTime = Date.now();
+        window.currentSessionId = 'S' + Date.now() + Math.random().toString(36).substr(2, 5);
+        responseStartTime = Date.now();
+        
+        console.log('🎮 New session started:', window.currentSessionId);
+        console.log('👤 Player ID:', getOrCreatePlayerId());
+        
         // Disconnect old observer if exists
         if (stageObserver) {
           stageObserver.disconnect();
@@ -2666,25 +2719,85 @@
       if(existing) existing.remove();
     }
     
-    // Send response data to Google Sheet
+    // ========================================
+    // GOOGLE SHEETS INTEGRATION
+    // ========================================
+    
+    // Your Google Apps Script Web App URL is now configured!
+    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxY1FL33yDrkfE4zI0C-bXYnS1YfyC027470IIInVsoghMyctgubaXKTGPWxpLdGDc9kA/exec';
+    
+    // Session tracking
+    window.currentSessionId = 'S' + Date.now() + Math.random().toString(36).substr(2, 5);
+    let responseStartTime = Date.now();
+    
+    // Generate or get player ID
+    function getOrCreatePlayerId() {
+      let playerId = localStorage.getItem('wordsHavePower_playerId');
+      if (!playerId) {
+        playerId = 'P' + Date.now() + Math.random().toString(36).substr(2, 5);
+        localStorage.setItem('wordsHavePower_playerId', playerId);
+      }
+      return playerId;
+    }
+    
+    // Enhanced send to Google Sheet function
     function sendToGoogleSheet(data) {
-      const url = 'https://script.google.com/macros/s/AKfycbxD-nTcK8MTK7zf39w3SUpuaNtazdfytHgxspr47Cz0Iu9PFPsjHRZkdyW_3W5GmijLcA/exec';
+      // Check if URL is configured
+      if (GOOGLE_SCRIPT_URL === 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE') {
+        console.warn('⚠️ Google Apps Script URL not configured!');
+        console.log('📊 Data that would be sent:', data);
+        
+        // Show setup instructions once
+        if (!window.setupShown) {
+          window.setupShown = true;
+          console.log(`
+🔧 SETUP REQUIRED:
+
+1. Open your Google Sheet:
+   https://docs.google.com/spreadsheets/d/1Aqs8fCINYmpXsIMM4z6zEf6fT25Ub1EV4dEy6PYzZc0/
+
+2. Go to Extensions → Apps Script
+
+3. Copy the Google Apps Script code from 'google_apps_script.gs'
+
+4. Deploy as Web App (Execute as: Me, Access: Anyone)
+
+5. Copy the Web App URL and replace 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE' in this file
+
+6. Save and reload the game
+
+The game will then automatically send analytics to your spreadsheet!
+          `);
+        }
+        return;
+      }
       
-      console.log('📤 Sending to Google Sheet:', data);
+      // Enrich data with session and device info
+      const enrichedData = {
+        ...data,
+        sessionId: window.currentSessionId,
+        playerId: getOrCreatePlayerId(),
+        deviceType: /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) ? 'Mobile' : 'Desktop',
+        browserInfo: navigator.userAgent.substring(0, 100),
+        screenSize: `${window.innerWidth}x${window.innerHeight}`,
+        platform: navigator.platform,
+        language: navigator.language,
+        timestamp: new Date().toISOString()
+      };
       
-      fetch(url, {
+      console.log('📤 Sending to Google Sheet:', enrichedData);
+      
+      fetch(GOOGLE_SCRIPT_URL, {
         method: 'POST',
-        body: JSON.stringify(data),
+        body: JSON.stringify(enrichedData),
         mode: 'no-cors'
       })
       .then(response => {
-        console.log('✅ Response received (no-cors mode):', response.status);
+        console.log('✅ Data sent to Google Sheets');
         return response;
       })
       .catch(error => {
         console.error('❌ Error sending to Google Sheet:', error);
-        console.error('URL:', url);
-        console.error('Data:', data);
       });
     }
     
