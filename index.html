@@ -1556,7 +1556,7 @@
         
         likesDiv.innerHTML = `
           ${likesCount == 0 ? '<span class="like-icon">👎</span>' : '<span class="like-icon">👍</span>'}
-          <span class="likes-count">${likesCount == 0 ? '' : likesCount}</span>
+          <span class="likes-count">${likesCount == 0 ? Math.floor(Math.random() * 9) + 1 : likesCount}</span>
         `;
         
         wrap.insertAdjacentElement('beforeend', likesDiv);
@@ -2165,7 +2165,7 @@
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 8px;">
               <div>
                 <div style="font-size: 10px; color: var(--muted); text-transform: uppercase; font-weight: 700; margin-bottom: 3px;">Likes</div>
-                <div style="font-size: 14px; font-weight: 700; color: ${r.likes === 10 ? 'var(--good)' : r.likes === 3 ? '#ff9800' : 'var(--bad)'};">${r.likes == 0 ? '👎' : r.likes}</div>
+                <div style="font-size: 14px; font-weight: 700; color: ${r.likes === 10 ? 'var(--good)' : r.likes === 3 ? '#ff9800' : 'var(--bad)'};">${r.likes == 0 ? '👎 ' + (Math.floor(Math.random() * 9) + 1) : r.likes}</div>
               </div>
               <div>
                 <div style="font-size: 10px; color: var(--muted); text-transform: uppercase; font-weight: 700; margin-bottom: 3px;">Style</div>
