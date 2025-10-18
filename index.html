@@ -1066,6 +1066,7 @@
     <script>
     // Modal functions
     function openHowToPlayModal() {
+      trackModalView('how_to_play');
       const modal = document.getElementById('howToPlayModal');
       if (modal) {
         modal.classList.add('show');
@@ -1080,6 +1081,7 @@
     }
     
     function openAboutModal() {
+      trackModalView('about_game');
       const modal = document.getElementById('aboutModal');
       if (modal) {
         modal.classList.add('show');
@@ -1104,6 +1106,74 @@
         closeAboutModal();
       }
     });
+    
+    // ---------------------------------
+    // ANALYTICS - Google Sheets Integration
+    // ---------------------------------
+    const SHEET_URL = 'https://script.google.com/macros/s/AKfycbw7fgsnu-xif19gHjx0VSQg4pg3FzFv44GRPcHAt0fkN5T3w2j9E4R589rHF9UeMr7DQQ/exec';
+    
+    // Get or create anonymous session ID
+    function getSessionId() {
+      let sessionId = sessionStorage.getItem('whp_sessionId');
+      if (!sessionId) {
+        sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        sessionStorage.setItem('whp_sessionId', sessionId);
+      }
+      return sessionId;
+    }
+    
+    // Send analytics to Google Sheets
+    function sendAnalytics(eventName, eventData = {}) {
+      try {
+        const payload = {
+          event: eventName,
+          choiceType: eventData.choiceType || '',
+          scenario: eventData.scenario || '',
+          timeSpent: eventData.timeSpent || '',
+          sessionId: getSessionId()
+        };
+        
+        // Send to Google Sheets via webhook (non-blocking)
+        fetch(SHEET_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        }).catch(err => console.log('Analytics sent'));
+      } catch(err) {
+        console.log('Analytics error (non-critical):', err);
+      }
+    }
+    
+    // Track when game starts
+    function trackGameStart() {
+      sendAnalytics('game_started', {});
+    }
+    
+    // Track when player makes a choice
+    function trackChoice(choiceType, scenarioNum) {
+      sendAnalytics('choice_made', {
+        choiceType: choiceType,
+        scenario: scenarioNum
+      });
+    }
+    
+    // Track when game is completed
+    function trackGameCompleted(totalTime) {
+      sendAnalytics('game_completed', {
+        timeSpent: totalTime
+      });
+    }
+    
+    // Track modal views
+    function trackModalView(modalName) {
+      sendAnalytics('modal_viewed', {
+        scenario: modalName
+      });
+    }
+    
     // ---------------------------------
     // Video Player Logic
     // ---------------------------------
@@ -1212,6 +1282,8 @@
     function startGameFromButton() {
       // Track this play
       incrementPlayCount();
+      trackGameStart(); // Analytics: Game started
+      window.gameStartTime = Date.now(); // Record start time for duration tracking
       
       // Initialize game variables
       scenarioIndex = 0;
@@ -1743,6 +1815,9 @@
 
       // Store feedback in transcript for analytics
       transcript.push({ scenario: sc.title, scenarioId: sc.id, exchange: exchangeIndex+1, user: 'Player', comment: opt.text, direction: 'Reply', attributes: opt.attributes||[], toxic: !!opt.toxic, severity: opt.severity||null, likes: opt.likes||0, target: opt.target||null, feeling: opt.feelings.text });
+      
+      // Analytics: Track player choice
+      trackChoice(opt.toxic ? 'toxic' : 'positive', sc.id);
 
       // Scroll the message into view
       scrollToElement(youMsg);
@@ -2298,6 +2373,11 @@
     function showResultsPage(pageNum, data){
       const { rows, counts, totalTagged, negativeRows, totalLikes, maxPossibleLikes, analysis } = data;
       window.resultsPage = pageNum;
+      
+      // Analytics: Track game completion on first results page
+      if(pageNum === 1) {
+        trackGameCompleted(Math.round((Date.now() - window.gameStartTime) / 1000));
+      }
       
       if(pageNum === 1){
         // Page 1: Communication Profile + Online Reputation
