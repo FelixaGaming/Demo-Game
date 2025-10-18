@@ -1108,15 +1108,15 @@
     });
     
     // ---------------------------------
-    // ANALYTICS - Google Sheets Integration
+    // ANALYTICS - Google Sheets Integration with Individual Responses
     // ---------------------------------
     const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzUocVRndPIOinhLWgYZYCW1822xLxFtkaApIVDNPaPHk7Gc906Uqxd8llX5d9a3O2Usg/exec';
     
-    // Session data aggregation
+    // Session data with individual response tracking
     window.sessionData = {
       sessionId: null,
       startTime: null,
-      choices: [],
+      responses: [],  // NEW: Track each individual response
       totalLikes: 0,
       attributes: {},
       scenariosPlayed: []
@@ -1130,7 +1130,7 @@
       
       let sessionId = sessionStorage.getItem('whp_sessionId');
       if (!sessionId) {
-        sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        sessionId = 'Player_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
         sessionStorage.setItem('whp_sessionId', sessionId);
       }
       window.sessionData.sessionId = sessionId;
@@ -1142,40 +1142,39 @@
       window.sessionData = {
         sessionId: getSessionId(),
         startTime: Date.now(),
-        choices: [],
+        responses: [],  // NEW: Individual responses
         totalLikes: 0,
         attributes: {},
-        scenariosPlayed: [],
-        positiveCount: 0,
-        toxicCount: 0
+        scenariosPlayed: []
       };
     }
     
-    // Track a choice during gameplay
-    function addChoiceToSession(choiceType, scenarioId, attributes, likes) {
-      window.sessionData.choices.push({
-        type: choiceType,
-        scenario: scenarioId,
-        attributes: attributes || [],
-        likes: likes || 0
+    // NEW: Track individual response with all details
+    function trackIndividualResponse(responseText, likes, responseType, attributes) {
+      window.sessionData.responses.push({
+        text: responseText || '',
+        likes: likes || 0,
+        type: responseType || 'unknown',
+        attributes: (attributes && Array.isArray(attributes)) ? attributes.join(', ') : ''
       });
-      
-      // Count positive/toxic
-      if (choiceType === 'toxic') {
-        window.sessionData.toxicCount++;
-      } else {
-        window.sessionData.positiveCount++;
-      }
       
       // Add to total likes
       window.sessionData.totalLikes += (likes || 0);
       
-      // Track attributes (count occurrences)
+      // Track attributes
       if (attributes && Array.isArray(attributes)) {
         attributes.forEach(attr => {
           window.sessionData.attributes[attr] = (window.sessionData.attributes[attr] || 0) + 1;
         });
       }
+      
+      console.log('Response tracked:', {text: responseText, likes: likes, type: responseType, attributes: attributes});
+    }
+    
+    // Track a choice during gameplay
+    function addChoiceToSession(choiceType, scenarioId, attributes, likes, responseText) {
+      // Use new individual response tracking
+      trackIndividualResponse(responseText, likes, choiceType, attributes);
       
       // Track scenarios
       if (scenarioId && !window.sessionData.scenariosPlayed.includes(scenarioId)) {
@@ -1183,25 +1182,23 @@
       }
     }
     
-    // Send final aggregated session data to Google Sheets
+    // Send final session data with all individual responses to Google Sheets
     function sendFinalSessionData(totalTime) {
       try {
         const attributesList = Object.keys(window.sessionData.attributes)
           .map(attr => `${attr}(${window.sessionData.attributes[attr]})`)
           .join(', ');
         
+        // NEW: Build payload with individual responses
         const payload = {
-          event: 'session_complete',
           sessionId: window.sessionData.sessionId,
-          totalChoices: window.sessionData.choices.length,
-          positiveChoices: window.sessionData.positiveCount,
-          toxicChoices: window.sessionData.toxicCount,
           totalLikes: window.sessionData.totalLikes,
           attributesUsed: attributesList || 'none',
-          scenariosPlayed: window.sessionData.scenariosPlayed.join(',') || '',
           timeSpent: totalTime,
-          timestamp: new Date().toLocaleString()
+          responses: window.sessionData.responses  // NEW: Send all responses
         };
+        
+        console.log('Sending payload to Google Sheets:', payload);
         
         // Send to Google Sheets
         fetch(SHEET_URL, {
@@ -1211,7 +1208,10 @@
             'Content-Type': 'application/json'
           },
           body: JSON.stringify(payload)
-        }).catch(err => console.log('Session data sent'));
+        })
+        .then(() => console.log('✅ All responses sent to Google Sheets successfully'))
+        .catch(err => console.log('Response data sent (no-cors mode):', err));
+        
       } catch(err) {
         console.log('Analytics error (non-critical):', err);
       }
@@ -1223,8 +1223,8 @@
     }
     
     // Track when player makes a choice
-    function trackChoice(choiceType, scenarioNum, attributes, likes) {
-      addChoiceToSession(choiceType, scenarioNum, attributes, likes);
+    function trackChoice(choiceType, scenarioNum, attributes, likes, responseText) {
+      addChoiceToSession(choiceType, scenarioNum, attributes, likes, responseText);
     }
     
     // Track when game is completed
