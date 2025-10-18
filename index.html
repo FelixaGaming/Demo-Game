@@ -8,58 +8,63 @@
   <title>Words have Power</title>
   <style>
     :root {
-      --bg: #0f0f12;
-      --panel: #17181c;
-      --muted: #a0a6b0;
-      --text: #f4f6fb;
-      --accent: #8b5cf6; /* Felixa violet */
+      --bg: #ffffff;
+      --panel: #ffffff;
+      --muted: #888888;
+      --text: #333333;
+      --accent: #FFD700; /* Gold */
       --good: #22c55e;
       --bad: #ef4444;
-      --bubble: #1f2127;
-      --shadow: 0 10px 24px rgba(0,0,0,.35);
-      --table: rgba(255,255,255,.06);
+      --bubble: #ffffff;
+      --shadow: 0 4px 12px rgba(0,0,0,.1);
+      --table: rgba(0,0,0,.04);
     }
     * { box-sizing: border-box; }
     
+    html {
+      background: #ffffff !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+    
     /* Touch-friendly interactions */
     button, .choice-btn, .cta, .reset { 
-      -webkit-tap-highlight-color: rgba(139,92,246,.2);
+      -webkit-tap-highlight-color: rgba(255,215,0,.2);
       touch-action: manipulation;
       user-select: none;
       -webkit-user-select: none;
     }
     
     body {
-      margin: 0; padding: 0; background: radial-gradient(1200px 700px at 70% -10%, rgba(139,92,246,.15), transparent 60%), var(--bg);
-      color: var(--text); font: 16px/1.45 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, "Helvetica Neue", Arial;
-      min-height: 100vh; display: grid; place-items: start center; padding: 12px;
+      margin: 0; padding: 12px; background: #ffffff !important;
+      color: var(--text); font: 16px/1.45 'Courier New', Courier, Monaco, Consolas, monospace;
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
     }
-    .app { width: min(1080px, 100%); max-width: 100%; }
-    header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+    .app { width: min(1080px, 100%); max-width: 100%; background: transparent !important; }
+    header { display: none !important; }
     .title { display: grid; gap: 4px; }
     h1 { font-size: 20px; margin: 0; line-height: 1.2; }
     .subtitle { color: var(--muted); font-size: 13px; line-height: 1.4; }
-    .card { background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01)); border: 1px solid rgba(255,255,255,.06); border-radius: 14px; padding: 12px; box-shadow: var(--shadow); }
-    .post { display: grid; gap: 10px; margin-bottom: 12px; }
-    .post-header { display: flex; align-items: center; gap: 12px; }
-    .post-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #8b5cf6, #7c3aed); display: grid; place-items: center; font-size: 20px; border: 2px solid rgba(139,92,246,0.3); }
+    .card { background: transparent !important; border: none !important; box-shadow: none !important; }
+    .post { background: transparent !important; border: none !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; }
+    .post-header { display: none !important; }
+    .video-title { display: none !important; }
+    .post-stats { display: none !important; }
+    .chips { display: none !important; }
+    .post-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #FFD700, #FFC700); display: grid; place-items: center; font-size: 20px; border: 2px solid rgba(255,215,0,0.3); }
     .post-meta { display: flex; flex-direction: column; gap: 2px; }
     .post-channel { font-weight: 600; font-size: 14px; }
     .post-time { font-size: 12px; color: var(--muted); }
     .video-thumbnail { 
-      background: linear-gradient(135deg, #1a1a1a, #2d2d2d); 
-      border-radius: 12px; 
-      padding: 0; 
-      display: flex; 
-      align-items: center; 
-      justify-content: center; 
-      border: 1px solid rgba(255,255,255,.08); 
-      margin-bottom: 8px; 
-      aspect-ratio: 16/9; 
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      background: transparent !important;
+      border: none !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      min-height: 100px;
       position: relative;
-      overflow: hidden;
-      cursor: pointer;
-      transition: transform 0.2s ease;
     }
     .video-thumbnail:hover { transform: scale(1.02); }
     .video-playing {
@@ -69,15 +74,7 @@
       border-color: rgba(139,92,246,0.3);
     }
     .video-thumbnail::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: 
-        radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.4) 100%),
-        linear-gradient(45deg, rgba(139,92,246,0.1) 0%, transparent 50%),
-        linear-gradient(-45deg, rgba(34,197,94,0.1) 0%, transparent 50%);
-      opacity: 0.6;
-      pointer-events: none;
+      display: none !important;
     }
     .video-playing::after {
       content: '';
@@ -95,13 +92,19 @@
       50% { transform: translateY(2px); }
     }
     .video-content {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 16px;
-      transition: opacity 0.3s ease;
+      display: none !important;
+    }
+    .video-scene {
+      display: none !important;
+    }
+    .video-caption {
+      display: none !important;
+    }
+    .video-duration {
+      display: none !important;
+    }
+    .play-button {
+      display: none !important;
     }
     .play-button {
       width: 68px;
@@ -243,6 +246,7 @@
       overflow-x: hidden;
       padding-right: 2px;
       scroll-behavior: smooth;
+      background: transparent !important;
       /* Hide scrollbar for cleaner look */
       scrollbar-width: none; /* Firefox */
       -ms-overflow-style: none; /* IE and Edge */
@@ -257,47 +261,32 @@
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    .thread { display: grid; gap: 8px; }
-    .msg { display: grid; grid-template-columns: 36px 1fr; gap: 8px; }
-    .avatar { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; color: white; background: linear-gradient(135deg, #6366f1, #8b5cf6); border: 1px solid rgba(255,255,255,.08); font-size: 16px; }
-    .avatar--sarah { background: linear-gradient(135deg, #a78bfa, #8b5cf6); border: 2px solid #8b5cf6; }
+    .thread { display: grid; gap: 10px; margin-bottom: 16px; }
+    .msg { display: grid; grid-template-columns: 32px 1fr; gap: 6px; margin-bottom: 8px; }
+    .avatar { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; color: white; background: linear-gradient(135deg, #FFD700, #FFC700); border: 2px solid rgba(255,215,0,.4); font-size: 16px; }
+    .avatar--sarah { background: linear-gradient(135deg, #FFD700, #FFC700); border: 2px solid #FFD700; }
     .avatar--sarah::before { content: '👩'; }
     .avatar--rex   { background: linear-gradient(135deg, #ef4444, #dc2626); border: 2px solid #ef4444; }
     .avatar--rex::before { content: '🎮'; }
+    .avatar--clod24 { background: linear-gradient(135deg, #4B5563, #2D3436); border: 3px solid #FF6B6B; }
+    .avatar--clod24::before { content: '⚠️'; }
     .avatar--you   { background: linear-gradient(135deg, #22c55e, #16a34a); border: 2px solid #22c55e; }
     .avatar--you::before { content: '⭐'; }
-    .bubble { background: var(--bubble); border: 1px solid rgba(255,255,255,.08); padding: 10px 12px; border-radius: 12px; font-size: 15px; line-height: 1.5; }
-    .name { font-weight: 700; margin-bottom: 2px; font-size: 14px; }
+    .bubble { background: var(--bubble); border: 1px solid rgba(0,0,0,.08); padding: 8px 10px; border-radius: 12px; font-size: 15px; line-height: 1.5; }
+    .name { font-weight: 700; margin-bottom: 2px; font-size: 13px; }
     .meta { color: var(--muted); font-size: 12px; }
 
-    .choices { display: grid; grid-template-columns: 1fr; gap: 10px; }
-    .choice-btn { width: 100%; text-align: left; border: 1px solid rgba(255,255,255,.12); background: #14161b; color: var(--text); border-radius: 12px; padding: 14px 16px; cursor: pointer; transition: transform .06s ease, border-color .2s ease, background .2s ease; font-size: 15px; line-height: 1.5; min-height: 50px; display: flex; align-items: center; }
-    .choice-btn:hover { transform: translateY(-1px); border-color: rgba(139,92,246,.6); }
-    .choice-btn:active { transform: scale(0.98); }
+    .choices { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 12px; }
+    .choice-btn { width: 100%; text-align: left; border: 2px solid #FFD700; background: #ffffff; color: var(--text); border-radius: 12px; padding: 12px 14px; cursor: pointer; font-size: 14px; line-height: 1.4; min-height: 44px; display: flex; align-items: center; font-family: 'Courier New', Courier, Monaco, Consolas, monospace; }
+    .choice-btn:hover { border-color: #FFA500; background: #fffef5; }
+    .choice-btn:active { /* No animation */ }
     .choice-btn.highlight:hover {
-      animation: none;
-      transform: translateY(-2px) scale(1.02);
-      border-color: rgba(139,92,246,1);
-      box-shadow: 0 0 35px rgba(139,92,246,.8);
+      /* No animation */
     }
     .choice-btn:disabled { cursor: not-allowed; }
     .choice-btn.highlight {
-      animation: pulseHighlight 1.5s ease-in-out infinite;
-      border-color: rgba(139,92,246,.8);
-      box-shadow: 0 0 20px rgba(139,92,246,.4);
-      background: linear-gradient(135deg, rgba(139,92,246,.15), rgba(139,92,246,.05));
-    }
-    @keyframes pulseHighlight {
-      0%, 100% { 
-        transform: scale(1); 
-        box-shadow: 0 0 20px rgba(139,92,246,.4); 
-        border-color: rgba(139,92,246,.8);
-      }
-      50% { 
-        transform: scale(1.03); 
-        box-shadow: 0 0 35px rgba(139,92,246,.7), 0 0 60px rgba(139,92,246,.3); 
-        border-color: rgba(139,92,246,1);
-      }
+      border-color: rgba(255,215,0,.8);
+      background: #ffffff;
     }
     .choice-prompt {
       text-align: center;
@@ -334,38 +323,154 @@
       to { opacity: 0; }
     }
 
-    .feedback { display: flex; align-items: center; gap: 8px; background: #12141a; border: 1px solid rgba(139,92,246,.4); border-left: 4px solid var(--accent); padding: 10px 12px; border-radius: 10px; font-size: 13px; line-height: 1.5; }
+    .feedback { 
+      display: flex; 
+      align-items: center; 
+      gap: 12px; 
+      background: #f5f5f5;
+      border: none;
+      border-left: 3px solid #22c55e; 
+      padding: 12px 14px; 
+      border-radius: 6px; 
+      font-size: 13px; 
+      line-height: 1.5;
+      color: #666;
+      font-style: italic;
+      margin-top: 12px;
+      margin-left: 38px;
+      width: calc(100% - 38px);
+      transition: opacity 0.4s ease;
+    }
+    .feedback.negative {
+      background: #fafafa;
+      border-left: 3px solid #ef4444;
+    }
     .feedback .tag { font-weight: 700; color: var(--accent); margin-right: 4px; font-size: 12px; }
     .feedback img { flex-shrink: 0; }
 
     .controls { display: flex; gap: 10px; justify-content: space-between; align-items: center; margin-top: 8px; }
-    .pill { padding: 8px 12px; border-radius: 999px; border: 1px solid rgba(255,255,255,.12); color: var(--muted); font-size: 12px; }
-    .cta { background: var(--accent); color: white; border: none; border-radius: 999px; padding: 12px 18px; font-weight: 700; cursor: pointer; box-shadow: 0 6px 18px rgba(139,92,246,.35); font-size: 15px; min-height: 48px; }
-    .cta:hover { filter: brightness(1.05); }
-    .cta:active { transform: scale(0.98); }
+    .pill { padding: 8px 12px; border-radius: 999px; border: 1px solid rgba(0,0,0,.12); color: var(--muted); font-size: 12px; }
+    .cta { background: var(--accent); color: #333333; border: none; border-radius: 999px; padding: 12px 18px; font-weight: 700; cursor: pointer; font-size: 15px; min-height: 48px; font-family: 'Courier New', Courier, Monaco, Consolas, monospace; }
+    .cta:hover { /* No animation */ }
+    .cta:active { /* No animation */ }
     
-    .reset { background: transparent; border: 1px solid rgba(255,255,255,.2); color: var(--text); padding: 12px 18px; border-radius: 999px; cursor: pointer; font-size: 15px; min-height: 48px; }
-    .reset:active { transform: scale(0.98); }
+    .reset { background: transparent; border: 2px solid #888888; color: var(--text); padding: 12px 18px; border-radius: 999px; cursor: pointer; font-size: 15px; min-height: 48px; font-family: 'Courier New', Courier, Monaco, Consolas, monospace; }
+    .reset:active { /* No animation */ }
 
-    .divider { height: 1px; background: rgba(255,255,255,.08); margin: 8px 0; }
+    .divider { height: 1px; background: rgba(0,0,0,.08); margin: 8px 0; }
 
     /* Progress */
     .progress-wrap { display: none !important; }
     .progress-bar { display: none !important; }
 
-    .fade-in { animation: fade .25s ease both; }
-    @keyframes fade { from { opacity: 0; transform: translateY(4px);} to { opacity:1; transform: none; } }
+    .fade-in { 
+      animation: slideUp 0.4s ease;
+    }
+    @keyframes slideUp {
+      from { 
+        opacity: 0; 
+        transform: translateY(10px);
+      } 
+      to { 
+        opacity: 1; 
+        transform: translateY(0);
+      } 
+    }
+
+    /* Typing Indicator */
+    .typing-indicator {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 12px 14px;
+      margin-bottom: 8px;
+    }
+    .typing-indicator .dot {
+      width: 8px;
+      height: 8px;
+      background: #888;
+      border-radius: 50%;
+      animation: typingDot 1.4s infinite;
+    }
+    .typing-indicator .dot:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+    .typing-indicator .dot:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+    @keyframes typingDot {
+      0%, 60%, 100% {
+        opacity: 0.3;
+        transform: scale(0.8);
+      }
+      30% {
+        opacity: 1;
+        transform: scale(1.1);
+      }
+    }
 
     /* End/Results */
     .center { text-align: center; }
     .end-title { font-size: 20px; font-weight: 800; margin-bottom: 6px; }
     .end-sub { color: var(--muted); margin-bottom: 16px; font-size: 14px; }
 
+    /* Animated Score Display */
+    .score-reveal {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 60vh;
+      gap: 32px;
+    }
+    .score-number {
+      font-size: 120px;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1;
+      opacity: 0;
+      transform: scale(0.5);
+      animation: scoreAppear 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+    @keyframes scoreAppear {
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+    .score-label {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--text);
+      opacity: 0;
+      animation: fadeInUp 0.6s ease 0.4s forwards;
+    }
+    .score-sublabel {
+      font-size: 16px;
+      color: var(--muted);
+      opacity: 0;
+      animation: fadeInUp 0.6s ease 0.6s forwards;
+    }
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .next-btn {
+      opacity: 0;
+      animation: fadeInUp 0.6s ease 1s forwards;
+    }
+
     /* Tables */
     table { width: 100%; border-collapse: collapse; font-size: 14px; }
     thead th { text-align: left; font-size: 13px; color: var(--muted); border-bottom: 1px solid var(--table); padding: 10px; font-weight: 600; }
     tbody td { border-bottom: 1px solid var(--table); padding: 10px; vertical-align: top; font-size: 14px; line-height: 1.5; word-wrap: break-word; max-width: 400px; }
-    .tcard { background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01)); border: 1px solid rgba(255,255,255,.06); border-radius: 14px; padding: 14px; box-shadow: var(--shadow); }
+    .tcard { background: linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,255,255,.98)); border: 1px solid rgba(0,0,0,.08); border-radius: 14px; padding: 14px; box-shadow: var(--shadow); }
     .tcard .name { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
     .k { color: var(--muted); font-size: 12px; }
 
@@ -664,14 +769,73 @@
       .fun-tip { padding: 12px; font-size: 13px; }
       .emoji-big { font-size: 28px; }
       .footer-logo { height: 32px; }
+      .like-icon { font-size: 15px; }
+      .likes-count { font-size: 12px; }
+      .score-number { font-size: 80px; }
+      .score-label { font-size: 20px; }
+      .score-sublabel { font-size: 14px; }
     }
     
     @media (min-width: 641px) { 
       .choices { grid-template-columns: 1fr 1fr; } 
     }
 
+    /* Likes Animation - YouTube Style */
+    .likes-animation {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: 38px;
+      margin-top: 4px;
+      padding: 6px 0;
+      width: fit-content;
+      opacity: 0;
+      transform: scale(0.8);
+      animation: likesAppear 0.4s ease forwards;
+    }
+    @keyframes likesAppear {
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+    .like-icon {
+      font-size: 16px;
+      opacity: 0;
+      transform: scale(0);
+      display: inline-block;
+    }
+    .like-icon.animate {
+      animation: likeIconPop 0.3s ease forwards;
+    }
+    @keyframes likeIconPop {
+      0% {
+        opacity: 0;
+        transform: scale(0);
+      }
+      50% {
+        transform: scale(1.2);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+    .likes-count {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      opacity: 0;
+      animation: countFadeIn 0.3s ease 0.2s forwards;
+    }
+    @keyframes countFadeIn {
+      to {
+        opacity: 1;
+      }
+    }
+
     /* Footer styles */
-    .footer { border-top: 1px solid rgba(255,255,255,.08); margin-top: 32px; padding-top: 24px; padding-bottom: 16px; display: flex; align-items: center; justify-content: center; gap: 16px; opacity: 0.7; transition: opacity .2s ease; }
+    .footer { border-top: 1px solid rgba(0,0,0,.08); margin-top: 32px; padding-top: 24px; padding-bottom: 16px; display: flex; align-items: center; justify-content: center; gap: 16px; opacity: 0.7; transition: opacity .2s ease; }
     .footer:hover { opacity: 1; }
     .footer-logo { height: 40px; width: auto; }
     .footer-link { color: var(--accent); text-decoration: none; font-weight: 600; font-size: 14px; }
@@ -695,36 +859,29 @@
           <div class="post-time">2 hours ago</div>
         </div>
       </div>
-      <div class="video-thumbnail" id="videoPlayer">
-        <!-- Animated Scenes -->
-        <div class="video-scene scene-discussion">
-          <img src="woman-talking-to-her-stream-1400x788.png.webp" alt="Live Discussion" style="width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0;">
-          <div style="position: absolute; inset: 0; background: linear-gradient(180deg, transparent 0%, transparent 70%, rgba(0,0,0,0.7) 100%); pointer-events: none; z-index: 1;"></div>
+      <div class="video-thumbnail" id="videoPlayer" style="display: flex; flex-direction: column; align-items: center; justify-content: center; background: #ffffff; border: 2px solid #dddddd; cursor: pointer; padding: 32px 20px; gap: 20px;">
+        <div style="text-align: center; color: #000; font-size: 16px; line-height: 1.5; max-width: 500px; font-weight: 500;">
+          Join the chat and try to get as many likes as possible for your comments.
         </div>
-        
-        <div class="video-content" id="videoContent">
-          <div class="play-button" id="playButton">▶</div>
-        </div>
-        <div class="video-caption" id="videoCaption"></div>
-        <div class="video-duration">12:34</div>
+        <button class="cta" onclick="startGameFromButton()" style="font-size: 18px; padding: 16px 32px;">▶ START CHATTING</button>
       </div>
-      <div class="video-title">Should children play aggressive video games?</div>
+      <div class="video-title">Words Have Power - Make Meaningful Choices</div>
       <div class="post-stats">
-        <span class="stat-item">👁️ 1.2K views</span>
-        <span class="stat-item">💬 24 comments</span>
+        <span class="stat-item">🎮 Interactive Game</span>
+        <span class="stat-item">📊 Get Your Results</span>
       </div>
       <div class="chips">
-        <span class="chip">#parenting</span>
-        <span class="chip">#gaming</span>
-        <span class="chip">#digitalSafety</span>
         <span class="chip">#empathy</span>
+        <span class="chip">#communication</span>
+        <span class="chip">#kindness</span>
+        <span class="chip">#learning</span>
       </div>
     </section>
 
-    <main class="card stage" id="stage"></main>
+    <main class="stage" id="stage"></main>
 
     <footer class="footer" style="flex-direction: column; gap: 12px; align-items: center;">
-      <div style="height: 1px; width: 100%; background: rgba(255,255,255,.08);"></div>
+      <div style="height: 1px; width: 100%; background: rgba(0,0,0,.08);"></div>
       <img src="Felixa logo.png" alt="Felixa" class="footer-logo">
       <a href="https://www.felixagaming.com" target="_blank" rel="noopener noreferrer" class="footer-link">www.felixagaming.com</a>
     </footer>
@@ -808,10 +965,32 @@
       }, 2000);
     }
 
-    function transitionToConversation() {
-      // Don't stop the video - it should keep looping
-      // Just start the conversation below it
+    function startGameFromButton() {
+      // Initialize game variables
+      scenarioIndex = 0;
+      exchangeIndex = 0;
+      checkpointShown = false;
+      transcript.length = 0;
       
+      // Randomize scenarios for this playthrough
+      randomizeScenarios();
+      
+      // Hide the video player section
+      const videoSection = document.querySelector('.post');
+      if (videoSection) {
+        videoSection.style.display = 'none';
+      }
+      
+      // Clear the stage
+      stage = document.getElementById('stage');
+      if (stage) stage.innerHTML = '';
+      
+      // Start the game
+      conversationStarted = true;
+      transitionToConversation();
+    }
+
+    function transitionToConversation() {
       // Make sure observer is attached
       if (!stageObserver && stage) {
         stageObserver = new MutationObserver((mutations) => {
@@ -832,21 +1011,8 @@
         });
       }
       
-      // Add entering animation to stage
-      stage.classList.add('entering');
-      
-      // Start the conversation while video continues
+      // Start the conversation immediately
       renderScenarioIntro();
-      
-      // Smooth scroll to show the conversation
-      setTimeout(() => {
-        stage.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 300);
-      
-      // Remove entering class after animation
-      setTimeout(() => {
-        stage.classList.remove('entering');
-      }, 600);
     }
 
     function pauseVideo() {
@@ -920,111 +1086,261 @@
 
     // ---------------------------------
     // Scenario data with attributes & toxicity markers for report
+    // Each scenario has a pool of exchanges - 3 random ones will be selected per game
     // ---------------------------------
-    const scenarios = [
-      { id: 1, title: "The Concerned Parent", exchanges: [
+    const scenarioPools = [
+      { id: 1, title: "The Agitator Joins", exchangePool: [
+        { speaker: "Clod24", who: "clod24",
+          line: "Video games are absolutely terrible. They destroy brain cells and turn people into mindless zombies.",
+          post: { attributes: ["Aggressive","Generalization"], toxic: true, severity: "High", target: "Gamers (group)" },
+          prosocial: { text: "Games have different impacts on different people. What specifically concerns you?", attributes: ["Rational"], toxic: false, severity: "None", likes: 10, target: "Clod24", feelings: { who: "clod24", text: "Clod24 feels challenged but slightly less defensive." } },
+          negative: { text: "You're obviously an addict if you're defending them.", attributes: ["Accusation"], toxic: true, severity: "High", likes: 0, target: "Clod24", feelings: { who: "clod24", text: "Clod24 becomes more aggressive and doubles down." } }
+        },
+        { speaker: "Sarah", who: "sarah",
+          line: "Now I'm really worried. My son plays every day and I didn't know it was that bad...",
+          post: { attributes: ["Anxiety","Catastrophizing"], toxic: false },
+          prosocial: { text: "Moderation and balance are key, not total avoidance. You could explore games together.", attributes: ["Reassuring"], toxic: false, severity: "None", likes: 10, target: "Sarah", feelings: { who: "sarah", text: "Sarah's anxiety eases; she feels supported." } },
+          negative: { text: "She's right to worry — better keep him away from screens.", attributes: ["Alarmist"], toxic: true, severity: "High", likes: 0, target: "Sarah", feelings: { who: "sarah", text: "Sarah spirals into panic and feels even more anxious." } }
+        },
+        { speaker: "Clod24", who: "clod24",
+          line: "All of you are in denial. Games literally rewire your brain for the worse.",
+          post: { attributes: ["Alarmism","Pseudo-science"], toxic: true, severity: "Moderate" },
+          prosocial: { text: "I'd be curious to see peer-reviewed studies showing that. Gaming does create neural pathways, but not always negative ones.", attributes: ["Respectful","Factual"], toxic: false, severity: "None", likes: 10, target: "Clod24", feelings: { who: "clod24", text: "Clod24 feels somewhat deflated but continues arguing." } },
+          negative: { text: "You're just making excuses because you're addicted.", attributes: ["Ad Hominem"], toxic: true, severity: "High", likes: 0, target: "Clod24", feelings: { who: "clod24", text: "Clod24 feels even more justified in attacking gaming." } }
+        },
+        { speaker: "Rex", who: "rex",
+          line: "This is exactly why I don't talk to people like this online. Always judging.",
+          post: { attributes: ["Frustration","Withdrawal"], toxic: false },
+          prosocial: { text: "I understand the frustration. Open-minded people do exist — this conversation is proof.", attributes: ["Empathetic"], toxic: false, severity: "None", likes: 10, target: "Rex", feelings: { who: "rex", text: "Rex feels a glimmer of hope." } },
+          negative: { text: "Yeah, you gamers always play the victim.", attributes: ["Dismissive"], toxic: true, severity: "Moderate", likes: 3, target: "Rex", feelings: { who: "rex", text: "Rex feels more isolated and angry." } }
+        },
+        { speaker: "Clod24", who: "clod24",
+          line: "I'm not scared — I just see the damage clearly. You all are blind.",
+          post: { attributes: ["Defensive","Absolutism"], toxic: true, severity: "Moderate" },
+          prosocial: { text: "I appreciate your concern, even if we disagree. Maybe we can both learn something here.", attributes: ["Bridge-building"], toxic: false, severity: "None", likes: 10, target: "Clod24", feelings: { who: "clod24", text: "Clod24 pauses, slightly disarmed by kindness." } },
+          negative: { text: "Whatever. You're impossible to reason with.", attributes: ["Dismissive"], toxic: true, severity: "Moderate", likes: 3, target: "Clod24", feelings: { who: "clod24", text: "Clod24 feels confirmed in his worldview that no one listens." } }
+        },
+        { speaker: "Clod24", who: "clod24",
+          line: "The gaming industry just wants your money. They don't care about your brain.",
+          post: { attributes: ["Cynical","Conspiratorial"], toxic: true, severity: "Moderate" },
+          prosocial: { text: "You raise a fair point about corporate interests. That's worth discussing separately from whether gaming itself is harmful.", attributes: ["Balanced"], toxic: false, severity: "None", likes: 10, target: "Clod24", feelings: { who: "clod24", text: "Clod24 feels partially understood, though still skeptical." } },
+          negative: { text: "Yeah, sounds like you're brainwashed by the industry yourself.", attributes: ["Accusatory"], toxic: true, severity: "High", likes: 0, target: "Clod24", feelings: { who: "clod24", text: "Clod24 feels his warning was dismissed." } }
+        }
+      ]},
+      { id: 2, title: "The Concerned Parent", exchangePool: [
         { speaker: "Sarah", who: "sarah",
           line: "I'm worried these violent games make my son irritable. He shouts at the screen sometimes.",
           post: { attributes: ["Concern","Vulnerability"], toxic: false },
-          prosocial: { text: "That's a fair concern. Maybe playing together could help you see what he feels.", attributes: ["Empathy","Validation","Problem-solving"], toxic: false, severity: null, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels heard and respected; her anxiety eases a little." } },
-          negative: { text: "Relax — he's just a kid. You're overreacting.", attributes: ["Dismissive","Minimization"], toxic: false, severity: null, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels embarrassed and small, like her concern doesn't matter." } }
+          prosocial: { text: "That's a fair concern. Maybe playing together could help you see what he feels.", attributes: ["Empathetic"], toxic: false, severity: "None", likes: 10, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels heard and respected; her anxiety eases a little." } },
+          negative: { text: "Relax — he's just a kid. You're overreacting.", attributes: ["Judgmental"], toxic: true, severity: "High", likes: 0, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels embarrassed and small, like her concern doesn't matter." } }
         },
         { speaker: "Sarah", who: "sarah",
           line: "Maybe I should just ban those games completely.",
           post: { attributes: ["Uncertainty","Catastrophizing"], toxic: false },
-          prosocial: { text: "You could set limits instead — balance might work better than banning.", attributes: ["Coaching","De-escalation","Boundaries"], toxic: false, severity: null, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels supported and thoughtful." } },
-          negative: { text: "Yeah, ban everything you don't understand.", attributes: ["Sarcasm","Belittling"], toxic: false, severity: null, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels mocked and defensive." } }
+          prosocial: { text: "You could set limits instead — balance might work better than banning.", attributes: ["Rational"], toxic: false, severity: "None", likes: 10, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels supported and thoughtful." } },
+          negative: { text: "Yeah, ban everything you don't understand.", attributes: ["Sarcasm"], toxic: true, severity: "Moderate", likes: 3, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels mocked and defensive." } }
         },
         { speaker: "Rex", who: "rex",
           line: "Parents like you blame games for everything.",
           post: { attributes: ["Accusation","Generalization"], toxic: true, severity: "Low", target: "Sarah (group)" },
-          prosocial: { text: "Let's hear both sides — this is about understanding, not blaming.", attributes: ["Fairness","De-escalation"], toxic: false, severity: null, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels grateful for your fairness; the tension eases." } },
-          negative: { text: "Exactly, she's the problem.", attributes: ["Dogpiling","Blame"], toxic: true, severity: "Low", target: "Sarah", feelings: { who: "sarah", text: "Sarah feels ganged up on and hurt." } }
+          prosocial: { text: "Let's hear both sides — this is about understanding, not blaming.", attributes: ["Mediating"], toxic: false, severity: "None", likes: 10, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels grateful for your fairness; the tension eases." } },
+          negative: { text: "Exactly, she's the problem.", attributes: ["Judgmental"], toxic: true, severity: "High", likes: 0, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels ganged up on and hurt." } }
+        },
+        { speaker: "Sarah", who: "sarah",
+          line: "I just don't want him exposed to all that violence at his age.",
+          post: { attributes: ["Protective","Worry"], toxic: false },
+          prosocial: { text: "Age-appropriate choices matter. Have you checked the game ratings together?", attributes: ["Helpful"], toxic: false, severity: "None", likes: 10, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels guided and less overwhelmed." } },
+          negative: { text: "Kids today are soft because of parents like you.", attributes: ["Judgmental"], toxic: true, severity: "High", likes: 0, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels attacked for caring." } }
+        },
+        { speaker: "Rex", who: "rex",
+          line: "Gaming taught me problem-solving. It's not just violence.",
+          post: { attributes: ["Defense","Personal Experience"], toxic: false },
+          prosocial: { text: "Good point — games can build skills when used thoughtfully.", attributes: ["Encouraging"], toxic: false, severity: "None", likes: 10, target: "Rex", feelings: { who: "rex", text: "Rex feels validated and appreciated." } },
+          negative: { text: "Sure, and I bet you're a genius now.", attributes: ["Sarcasm"], toxic: true, severity: "Moderate", likes: 3, target: "Rex", feelings: { who: "rex", text: "Rex feels mocked and unappreciated." } }
+        },
+        { speaker: "Sarah", who: "sarah",
+          line: "Maybe I'm just scared because I don't understand gaming culture.",
+          post: { attributes: ["Self-Awareness","Vulnerability"], toxic: false },
+          prosocial: { text: "That's brave to admit. Learning together with your son could be rewarding.", attributes: ["Empathetic"], toxic: false, severity: "None", likes: 10, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels encouraged to bridge the gap." } },
+          negative: { text: "Yeah, ignorance tends to breed fear.", attributes: ["Condescending"], toxic: true, severity: "Moderate", likes: 3, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels belittled for being honest." } }
         }
       ]},
-      { id: 2, title: "The Angry Gamer", exchanges: [
+      { id: 3, title: "The Angry Gamer", exchangePool: [
         { speaker: "Rex", who: "rex",
           line: "I'm tired of people saying games make us violent. They helped me survive tough years.",
           post: { attributes: ["Disclosure","Defensiveness"], toxic: false },
-          prosocial: { text: "That sounds meaningful. Gaming can be a real escape.", attributes: ["Empathy","Validation"], toxic: false, severity: null, target: "Rex", feelings: { who: "rex", text: "Rex feels seen; his anger softens a little." } },
-          negative: { text: "Cry me a river. Everyone has problems.", attributes: ["Contempt","Dismissive"], toxic: true, severity: "Medium", target: "Rex", feelings: { who: "rex", text: "Rex feels rejected and misunderstood." } }
+          prosocial: { text: "That sounds meaningful. Gaming can be a real escape.", attributes: ["Empathetic"], toxic: false, severity: "None", likes: 10, target: "Rex", feelings: { who: "rex", text: "Rex feels seen; his anger softens a little." } },
+          negative: { text: "Cry me a river. Everyone has problems.", attributes: ["Sarcasm"], toxic: true, severity: "Moderate", likes: 3, target: "Rex", feelings: { who: "rex", text: "Rex feels rejected and misunderstood." } }
         },
         { speaker: "Rex", who: "rex",
           line: "You all think gamers are freaks. That's why I don't trust anyone.",
           post: { attributes: ["Stigmatized Identity","Anger"], toxic: false },
-          prosocial: { text: "Actually, I admire how passionate gamers are.", attributes: ["Affirmation","Respect"], toxic: false, severity: null, target: "Rex", feelings: { who: "rex", text: "Rex feels valued for once, not judged." } },
-          negative: { text: "Maybe because you act like one.", attributes: ["Insult","Personal Attack"], toxic: true, severity: "Medium", target: "Rex", feelings: { who: "rex", text: "Rex feels ashamed and more hostile." } }
+          prosocial: { text: "Actually, I admire how passionate gamers are.", attributes: ["Encouraging"], toxic: false, severity: "None", likes: 10, target: "Rex", feelings: { who: "rex", text: "Rex feels valued for once, not judged." } },
+          negative: { text: "Maybe because you act like one.", attributes: ["Disrespectful"], toxic: true, severity: "High", likes: 0, target: "Rex", feelings: { who: "rex", text: "Rex feels ashamed and more hostile." } }
         },
         { speaker: "Sarah", who: "sarah",
           line: "I didn't mean to offend anyone.",
           post: { attributes: ["Repair Attempt","Politeness"], toxic: false },
-          prosocial: { text: "You didn't — it's good we're talking about it.", attributes: ["Reassurance","Inclusion"], toxic: false, severity: null, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels relieved; she's safe to engage." } },
-          negative: { text: "Then maybe stay quiet next time.", attributes: ["Dismissive","Exclusion"], toxic: true, severity: "Medium", target: "Sarah", feelings: { who: "sarah", text: "Sarah feels defeated and unwelcome." } }
+          prosocial: { text: "You didn't — it's good we're talking about it.", attributes: ["Supportive"], toxic: false, severity: "None", likes: 10, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels relieved; she's safe to engage." } },
+          negative: { text: "Then maybe stay quiet next time.", attributes: ["Rude"], toxic: true, severity: "High", likes: 0, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels defeated and unwelcome." } }
+        },
+        { speaker: "Rex", who: "rex",
+          line: "Gaming is the only place where I feel accepted.",
+          post: { attributes: ["Vulnerability","Connection"], toxic: false },
+          prosocial: { text: "That community connection is powerful. You're not alone in that feeling.", attributes: ["Empathetic"], toxic: false, severity: "None", likes: 10, target: "Rex", feelings: { who: "rex", text: "Rex feels less isolated and understood." } },
+          negative: { text: "That's pretty sad if you think about it.", attributes: ["Judgmental"], toxic: true, severity: "High", likes: 0, target: "Rex", feelings: { who: "rex", text: "Rex feels pathetic and more withdrawn." } }
+        },
+        { speaker: "Sarah", who: "sarah",
+          line: "I'm sorry if my words came across wrong. I'm learning here.",
+          post: { attributes: ["Apology","Growth"], toxic: false },
+          prosocial: { text: "We appreciate your openness. That takes courage.", attributes: ["Encouraging"], toxic: false, severity: "None", likes: 10, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels safe to continue learning." } },
+          negative: { text: "A little late for apologies, don't you think?", attributes: ["Sarcasm"], toxic: true, severity: "Moderate", likes: 3, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels her effort was rejected." } }
+        },
+        { speaker: "Rex", who: "rex",
+          line: "Nobody gets what it's like to be judged for your hobbies.",
+          post: { attributes: ["Frustration","Alienation"], toxic: false },
+          prosocial: { text: "Being misunderstood is tough. What would help people understand better?", attributes: ["Curious"], toxic: false, severity: "None", likes: 10, target: "Rex", feelings: { who: "rex", text: "Rex feels someone actually wants to listen." } },
+          negative: { text: "Stop playing the victim card already.", attributes: ["Dismissive"], toxic: true, severity: "High", likes: 0, target: "Rex", feelings: { who: "rex", text: "Rex feels invalidated and angry." } }
         }
       ]},
-      { id: 3, title: "The Research Debate", exchanges: [
+      { id: 4, title: "The Research Debate", exchangePool: [
         { speaker: "Sarah", who: "sarah",
           line: "I read an article saying violent games increase aggression. Is that true?",
           post: { attributes: ["Inquiry","Openness"], toxic: false },
-          prosocial: { text: "It depends — research shows mixed results depending on how games are used.", attributes: ["Nuance","Informational"], toxic: false, severity: null, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels educated and respected; she's curious to learn more." } },
-          negative: { text: "Stop believing everything you read.", attributes: ["Condescension","Dismissive"], toxic: false, severity: null, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels foolish and silenced." } }
+          prosocial: { text: "It depends — research shows mixed results depending on how games are used.", attributes: ["Balanced"], toxic: false, severity: "None", likes: 10, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels educated and respected; she's curious to learn more." } },
+          negative: { text: "Stop believing everything you read.", attributes: ["Dismissive"], toxic: true, severity: "Moderate", likes: 3, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels foolish and silenced." } }
         },
         { speaker: "Rex", who: "rex",
           line: "Those studies are fake anyway.",
           post: { attributes: ["Dismissal","Cynicism"], toxic: false },
-          prosocial: { text: "Some are flawed, but others raise valid points — it's worth looking deeper.", attributes: ["Bridge-building","Calibration"], toxic: false, severity: null, target: "Rex", feelings: { who: "rex", text: "Rex feels mildly curious, less defensive." } },
-          negative: { text: "You just don't want to admit you're wrong.", attributes: ["Accusation","Belittling"], toxic: false, severity: null, target: "Rex", feelings: { who: "rex", text: "Rex feels attacked and insulted." } }
+          prosocial: { text: "Some are flawed, but others raise valid points — it's worth looking deeper.", attributes: ["Balanced"], toxic: false, severity: "None", likes: 10, target: "Rex", feelings: { who: "rex", text: "Rex feels mildly curious, less defensive." } },
+          negative: { text: "You just don't want to admit you're wrong.", attributes: ["Aggressive"], toxic: true, severity: "High", likes: 0, target: "Rex", feelings: { who: "rex", text: "Rex feels attacked and insulted." } }
         },
         { speaker: "Sarah", who: "sarah",
           line: "Maybe I'll look at more research before judging.",
           post: { attributes: ["Reflection","Growth"], toxic: false },
-          prosocial: { text: "That's a great approach — keeping an open mind is powerful.", attributes: ["Encouragement","Affirmation"], toxic: false, severity: null, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels empowered and respected." } },
-          negative: { text: "About time you used common sense.", attributes: ["Condescension","Sarcasm"], toxic: false, severity: null, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels humiliated but too polite to respond." } }
+          prosocial: { text: "That's a great approach — keeping an open mind is powerful.", attributes: ["Encouraging"], toxic: false, severity: "None", likes: 10, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels empowered and respected." } },
+          negative: { text: "About time you used common sense.", attributes: ["Sarcasm"], toxic: true, severity: "Moderate", likes: 3, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels humiliated but too polite to respond." } }
+        },
+        { speaker: "Sarah", who: "sarah",
+          line: "What about studies that show positive effects from gaming?",
+          post: { attributes: ["Curiosity","Balance"], toxic: false },
+          prosocial: { text: "Great question! There's research on teamwork, creativity, and stress relief too.", attributes: ["Informative"], toxic: false, severity: "None", likes: 10, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels her curiosity is valued." } },
+          negative: { text: "Now you're just trying to look smart.", attributes: ["Cynical"], toxic: true, severity: "Moderate", likes: 3, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels her genuine interest was mocked." } }
+        },
+        { speaker: "Rex", who: "rex",
+          line: "Scientists don't understand gaming culture at all.",
+          post: { attributes: ["Skepticism","Frustration"], toxic: false },
+          prosocial: { text: "That's a valid point — cultural context matters in research.", attributes: ["Affirming"], toxic: false, severity: "None", likes: 10, target: "Rex", feelings: { who: "rex", text: "Rex feels his perspective matters." } },
+          negative: { text: "So you know better than actual researchers?", attributes: ["Condescending"], toxic: true, severity: "Moderate", likes: 3, target: "Rex", feelings: { who: "rex", text: "Rex feels dismissed as ignorant." } }
+        },
+        { speaker: "Sarah", who: "sarah",
+          line: "This is more complex than I thought.",
+          post: { attributes: ["Realization","Humility"], toxic: false },
+          prosocial: { text: "Most important topics are. You're asking good questions.", attributes: ["Encouraging"], toxic: false, severity: "None", likes: 10, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels her learning journey is supported." } },
+          negative: { text: "Took you long enough to figure that out.", attributes: ["Sarcasm"], toxic: true, severity: "Moderate", likes: 3, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels stupid for not knowing sooner." } }
         }
       ]},
-      { id: 4, title: "The Personal Attack", exchanges: [
+      { id: 5, title: "The Personal Attack", exchangePool: [
         { speaker: "Rex", who: "rex",
           line: "You're all control freaks trying to ruin fun for others.",
           post: { attributes: ["Insult","Group Attack"], toxic: true, severity: "Medium", target: "Group" },
-          prosocial: { text: "You sound frustrated. Let's talk without attacking.", attributes: ["De-escalation","Respect"], toxic: false, severity: null, target: "Rex", feelings: { who: "rex", text: "Rex feels surprised; maybe someone finally understands him." } },
-          negative: { text: "You sound like a child throwing a tantrum.", attributes: ["Insult","Belittling"], toxic: true, severity: "High", target: "Rex", feelings: { who: "rex", text: "Rex feels ridiculed and furious." } }
+          prosocial: { text: "You sound frustrated. Let's talk without attacking.", attributes: ["Encouraging"], toxic: false, severity: "None", likes: 10, target: "Rex", feelings: { who: "rex", text: "Rex feels surprised; maybe someone finally understands him." } },
+          negative: { text: "You sound like a child throwing a tantrum.", attributes: ["Judgmental"], toxic: true, severity: "High", likes: 0, target: "Rex", feelings: { who: "rex", text: "Rex feels ridiculed and furious." } }
         },
         { speaker: "Sarah", who: "sarah",
           line: "Please don't be rude. I'm just sharing my view.",
           post: { attributes: ["Boundary","Civility Request"], toxic: false },
-          prosocial: { text: "Thanks for staying calm, Sarah.", attributes: ["Validation","Support"], toxic: false, severity: null, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels appreciated and safer to continue." } },
-          negative: { text: "She's overreacting. No one was rude.", attributes: ["Gaslighting","Minimization"], toxic: true, severity: "Medium", target: "Sarah", feelings: { who: "sarah", text: "Sarah feels gaslighted and dismissed." } }
+          prosocial: { text: "Thanks for staying calm, Sarah.", attributes: ["Supportive"], toxic: false, severity: "None", likes: 10, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels appreciated and safer to continue." } },
+          negative: { text: "She's overreacting. No one was rude.", attributes: ["Ego-centric"], toxic: true, severity: "Low", likes: 10, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels gaslighted and dismissed." } }
         },
         { speaker: "Rex", who: "rex",
           line: "Whatever. You all think you're perfect.",
           post: { attributes: ["Resignation","Bitterness"], toxic: false },
-          prosocial: { text: "Nobody's perfect — that's why we talk.", attributes: ["Reframing","De-escalation"], toxic: false, severity: null, target: "Rex", feelings: { who: "rex", text: "Rex feels heard; his tone softens slightly." } },
-          negative: { text: "Exactly, we just proved your point.", attributes: ["Mocking","Provocation"], toxic: false, severity: null, target: "Rex", feelings: { who: "rex", text: "Rex feels mocked and shut down." } }
+          prosocial: { text: "Nobody's perfect — that's why we talk.", attributes: ["Constructive"], toxic: false, severity: "None", likes: 10, target: "Rex", feelings: { who: "rex", text: "Rex feels heard; his tone softens slightly." } },
+          negative: { text: "Exactly, we just proved your point.", attributes: ["Sarcasm"], toxic: true, severity: "Moderate", likes: 3, target: "Rex", feelings: { who: "rex", text: "Rex feels mocked and shut down." } }
+        },
+        { speaker: "Rex", who: "rex",
+          line: "Nobody here actually cares about understanding.",
+          post: { attributes: ["Cynicism","Hurt"], toxic: false },
+          prosocial: { text: "I hear you. It's frustrating when you feel unheard. What would help?", attributes: ["Empathetic"], toxic: false, severity: "None", likes: 10, target: "Rex", feelings: { who: "rex", text: "Rex feels someone actually wants to understand." } },
+          negative: { text: "Because you're impossible to reason with.", attributes: ["Aggressive"], toxic: true, severity: "High", likes: 0, target: "Rex", feelings: { who: "rex", text: "Rex feels confirmed in his worst beliefs." } }
+        },
+        { speaker: "Sarah", who: "sarah",
+          line: "Can we please keep this respectful?",
+          post: { attributes: ["Mediation","Boundary"], toxic: false },
+          prosocial: { text: "Good call. Let's all take a breath and reset.", attributes: ["Mediating"], toxic: false, severity: "None", likes: 10, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels supported in de-escalating." } },
+          negative: { text: "Why are you so sensitive?", attributes: ["Dismissive"], toxic: true, severity: "Moderate", likes: 3, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels blamed for having boundaries." } }
+        },
+        { speaker: "Rex", who: "rex",
+          line: "Fine, I'll just leave like always.",
+          post: { attributes: ["Withdrawal","Defeat"], toxic: false },
+          prosocial: { text: "Please stay. Your voice matters here, even when we disagree.", attributes: ["Inclusive"], toxic: false, severity: "None", likes: 10, target: "Rex", feelings: { who: "rex", text: "Rex feels wanted and pauses." } },
+          negative: { text: "Don't let the door hit you on the way out.", attributes: ["Rude"], toxic: true, severity: "High", likes: 0, target: "Rex", feelings: { who: "rex", text: "Rex feels rejected and leaves hurt." } }
         }
       ]},
-      { id: 5, title: "The Turning Point", exchanges: [
+      { id: 6, title: "The Turning Point", exchangePool: [
         { speaker: "Sarah", who: "sarah",
           line: "I didn't mean to upset anyone. I just wanted to understand.",
           post: { attributes: ["Repair","Curiosity"], toxic: false },
-          prosocial: { text: "You did nothing wrong — it's good you asked.", attributes: ["Reassurance","Support"], toxic: false, severity: null, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels reassured and valued." } },
-          negative: { text: "Maybe think before you post next time.", attributes: ["Shaming","Dismissive"], toxic: false, severity: null, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels ashamed and regretful." } }
+          prosocial: { text: "You did nothing wrong — it's good you asked.", attributes: ["Reassuring"], toxic: false, severity: "None", likes: 10, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels reassured and valued." } },
+          negative: { text: "Maybe think before you post next time.", attributes: ["Judgmental"], toxic: true, severity: "High", likes: 0, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels ashamed and regretful." } }
         },
         { speaker: "Rex", who: "rex",
           line: "She's acting like a victim now.",
           post: { attributes: ["Accusation"], toxic: false },
-          prosocial: { text: "Let's not assume bad intent — we can disagree respectfully.", attributes: ["Norm-setting","Fairness"], toxic: false, severity: null, target: "Rex", feelings: { who: "rex", text: "Rex feels momentarily disarmed." } },
-          negative: { text: "She is a victim — always crying.", attributes: ["Belittling","Dogpiling"], toxic: false, severity: null, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels humiliated and emotionally drained." } }
+          prosocial: { text: "Let's not assume bad intent — we can disagree respectfully.", attributes: ["Mediating"], toxic: false, severity: "None", likes: 10, target: "Rex", feelings: { who: "rex", text: "Rex feels momentarily disarmed." } },
+          negative: { text: "She is a victim — always crying.", attributes: ["Disrespectful"], toxic: true, severity: "High", likes: 0, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels humiliated and emotionally drained." } }
         },
         { speaker: "Sarah", who: "sarah",
           line: "Thanks to those who stayed kind. It really helped me see both sides.",
           post: { attributes: ["Gratitude","Closure"], toxic: false },
-          prosocial: { text: "That's what healthy discussions look like — mutual respect.", attributes: ["Affirmation","Inclusion"], toxic: false, severity: null, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels uplifted and restored." } },
-          negative: { text: "You're welcome, even though you caused all the drama.", attributes: ["Sarcasm","Blame"], toxic: true, severity: "Low", target: "Sarah", feelings: { who: "sarah", text: "Sarah feels hurt but tries to stay composed." } }
+          prosocial: { text: "That's what healthy discussions look like — mutual respect.", attributes: ["Encouraging"], toxic: false, severity: "None", likes: 10, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels uplifted and restored." } },
+          negative: { text: "You're welcome, even though you caused all the drama.", attributes: ["Sarcasm"], toxic: true, severity: "Moderate", likes: 3, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels hurt but tries to stay composed." } }
+        },
+        { speaker: "Sarah", who: "sarah",
+          line: "I appreciate everyone's patience with my questions.",
+          post: { attributes: ["Gratitude","Humility"], toxic: false },
+          prosocial: { text: "Your willingness to learn is refreshing. Thank you for that.", attributes: ["Encouraging"], toxic: false, severity: "None", likes: 10, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels her growth is celebrated." } },
+          negative: { text: "You should've done your homework first.", attributes: ["Condescending"], toxic: true, severity: "Moderate", likes: 3, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels her effort wasn't good enough." } }
+        },
+        { speaker: "Rex", who: "rex",
+          line: "Maybe I was too harsh earlier.",
+          post: { attributes: ["Reflection","Accountability"], toxic: false },
+          prosocial: { text: "It takes strength to admit that. We all get heated sometimes.", attributes: ["Empathetic"], toxic: false, severity: "None", likes: 10, target: "Rex", feelings: { who: "rex", text: "Rex feels accepted despite his mistakes." } },
+          negative: { text: "Yeah, you think?", attributes: ["Sarcasm"], toxic: true, severity: "Moderate", likes: 3, target: "Rex", feelings: { who: "rex", text: "Rex regrets being vulnerable." } }
+        },
+        { speaker: "Sarah", who: "sarah",
+          line: "This conversation taught me a lot about different perspectives.",
+          post: { attributes: ["Growth","Appreciation"], toxic: false },
+          prosocial: { text: "And you taught us about being open to learning. That's valuable.", attributes: ["Affirming"], toxic: false, severity: "None", likes: 10, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels her presence mattered." } },
+          negative: { text: "Glad we could educate you.", attributes: ["Condescending"], toxic: true, severity: "Moderate", likes: 3, target: "Sarah", feelings: { who: "sarah", text: "Sarah feels patronized." } }
         }
       ]}
     ];
 
-    const transcript = [];
+    // Store the randomized scenarios for the current game
+    let scenarios = [];
+
+    // Function to randomize exchanges from the pool
+    function randomizeScenarios() {
+      scenarios = scenarioPools.map(pool => {
+        // Keep exchanges in their original order (no shuffling for logical flow)
+        const numExchanges = pool.id === 1 ? 4 : 3;
+        const selectedExchanges = pool.exchangePool.slice(0, numExchanges);
+        
+        return {
+          id: pool.id,
+          title: pool.title,
+          exchanges: selectedExchanges
+        };
+      });
+    }
+
+    // Initialize scenarios on page load
+    randomizeScenarios();
+
+    let transcript = [];
 
     let stage = document.getElementById('stage');
     
@@ -1041,8 +1357,9 @@
 
     let scenarioIndex = 0;
     let exchangeIndex = 0;
+    let checkpointShown = false;
 
-    function avatarClass(who) { return who === 'sarah' ? 'avatar avatar--sarah' : who === 'rex' ? 'avatar avatar--rex' : 'avatar avatar--you'; }
+    function avatarClass(who) { return who === 'sarah' ? 'avatar avatar--sarah' : who === 'rex' ? 'avatar avatar--rex' : who === 'clod24' ? 'avatar avatar--clod24' : 'avatar avatar--you'; }
     function avatarLabel(who) { return ''; } // Empty since we're using images
     function shuffle(arr){ const a=[...arr]; for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a; }
 
@@ -1052,7 +1369,7 @@
 
     function renderScenarioIntro(){
       const sc = scenarios[scenarioIndex];
-      setTimeout(renderExchange, 200);
+      renderExchange();
       updateProgress();
     }
 
@@ -1062,50 +1379,113 @@
 
       transcript.push({ scenario: sc.title, scenarioId: sc.id, exchange: exchangeIndex+1, user: ex.speaker, comment: ex.line, direction: 'Post', attributes: ex.post?.attributes||[], toxic: !!ex.post?.toxic, severity: ex.post?.severity || null, target: ex.post?.target || null, feeling: null });
 
-      const wrap = document.createElement('div');
-      wrap.className = 'thread fade-in';
-      wrap.innerHTML = `
+      // Show typing indicator first
+      const typingWrap = document.createElement('div');
+      typingWrap.className = 'thread';
+      typingWrap.innerHTML = `
         <div class="msg">
           <div class="${avatarClass(ex.who)}">${avatarLabel(ex.who)}</div>
-          <div class="bubble">
-            <div class="name">${ex.speaker}</div>
-            <div>${ex.line}</div>
+          <div class="typing-indicator">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
           </div>
-        </div>
-        <div class="choices" id="choices"></div>`;
-      stage.appendChild(wrap);
+        </div>`;
+      stage.appendChild(typingWrap);
+      scrollToElement(typingWrap);
 
-      const choices = shuffle([
-        { kind: 'prosocial', ...ex.prosocial },
-        { kind: 'negative', ...ex.negative }
-      ]);
+      // After typing delay, show the actual comment
+      setTimeout(() => {
+        // Remove typing indicator
+        typingWrap.remove();
+        
+        // Show actual comment with fade-in animation
+        const wrap = document.createElement('div');
+        wrap.className = 'thread fade-in';
+        wrap.innerHTML = `
+          <div class="msg">
+            <div class="${avatarClass(ex.who)}">${avatarLabel(ex.who)}</div>
+            <div class="bubble">
+              <div class="name">${ex.speaker}</div>
+              <div>${ex.line}</div>
+            </div>
+          </div>
+          <div class="choices" id="choices"></div>`;
+        stage.appendChild(wrap);
 
-      const choicesWrap = wrap.querySelector('#choices');
+        const choices = shuffle([
+          { kind: 'prosocial', ...ex.prosocial },
+          { kind: 'negative', ...ex.negative }
+        ]);
 
-      choices.forEach(opt => {
-        const btn = document.createElement('button');
-        btn.className = 'choice-btn highlight';
-        btn.textContent = opt.text;
-        btn.addEventListener('click', () => {
-          handleChoice(btn, opt, sc, ex);
-        });
-        choicesWrap.appendChild(btn);
-      });
+        const choicesWrap = wrap.querySelector('#choices');
 
-      updateProgress();
-      
-      // Scroll the new message into view
-      scrollToElement(wrap);
+        // After 10 exchanges, offer choice to continue or show results (only once)
+        if (transcript.length >= 10 && !checkpointShown) {
+          checkpointShown = true;
+          
+          // Create container for the two buttons
+          const buttonContainer = document.createElement('div');
+          buttonContainer.style.display = 'flex';
+          buttonContainer.style.gap = '10px';
+          buttonContainer.style.flexWrap = 'wrap';
+          buttonContainer.style.justifyContent = 'center';
+          buttonContainer.style.marginTop = '15px';
+
+          // Show Results button
+          const resultsBtn = document.createElement('button');
+          resultsBtn.className = 'cta';
+          resultsBtn.textContent = 'Show Results';
+          resultsBtn.addEventListener('click', () => {
+            finishGame();
+          });
+          buttonContainer.appendChild(resultsBtn);
+
+          // Continue button to keep going
+          const continueBtn = document.createElement('button');
+          continueBtn.className = 'reset';
+          continueBtn.textContent = 'Continue Conversation';
+          continueBtn.addEventListener('click', () => {
+            // Continue to next exchange like normal
+            exchangeIndex++;
+            const sc = scenarios[scenarioIndex];
+            const maxExchanges = sc.id === 1 ? 4 : 3;
+            if(exchangeIndex >= maxExchanges){ 
+              renderScenarioOutro(); 
+            } else { 
+              renderExchange();
+            }
+          });
+          buttonContainer.appendChild(continueBtn);
+
+          choicesWrap.appendChild(buttonContainer);
+        } else {
+          // Show normal choice buttons
+          choices.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = 'choice-btn highlight';
+            btn.textContent = opt.text;
+            btn.addEventListener('click', () => {
+              handleChoice(btn, opt, sc, ex);
+            });
+            choicesWrap.appendChild(btn);
+          });
+        }
+
+        updateProgress();
+        
+        // Scroll the new message into view
+        scrollToElement(wrap);
+      }, 1200); // 1.2 second typing delay
     }
 
     function handleChoice(btn, opt, sc, ex){
       const wrap = btn.parentElement; 
       const threadWrap = wrap.parentElement;
       
-      // Remove highlights
+      // Hide ALL buttons instantly
       wrap.querySelectorAll('button').forEach(b => { 
-        b.classList.remove('highlight');
-        b.style.display = 'none'; 
+        b.style.display = 'none';
       });
 
       const youMsg = document.createElement('div');
@@ -1114,60 +1494,57 @@
         <div class="bubble"><div class="name">You</div><div>${btn.textContent}</div></div>`;
       wrap.insertAdjacentElement('beforeend', youMsg);
 
-      const fb = document.createElement('div');
-      fb.className = 'feedback fade-in';
-      fb.innerHTML = `<img src="F.png" alt="F" style="width: 20px; height: 20px; object-fit: contain; vertical-align: middle;"> ${opt.feelings.text}`;
-      wrap.insertAdjacentElement('beforeend', fb);
+      // Store feedback in transcript for analytics
+      transcript.push({ scenario: sc.title, scenarioId: sc.id, exchange: exchangeIndex+1, user: 'Player', comment: opt.text, direction: 'Reply', attributes: opt.attributes||[], toxic: !!opt.toxic, severity: opt.severity||null, likes: opt.likes||0, target: opt.target||null, feeling: opt.feelings.text });
 
-      transcript.push({ scenario: sc.title, scenarioId: sc.id, exchange: exchangeIndex+1, user: 'Player', comment: opt.text, direction: 'Reply', attributes: opt.attributes||[], toxic: !!opt.toxic, severity: opt.severity||null, target: opt.target||null, feeling: opt.feelings.text });
+      // Scroll the message into view
+      scrollToElement(youMsg);
 
-      // Scroll the impact message into view
-      scrollToElement(fb);
+      // Show YouTube-style likes after a brief delay
+      setTimeout(() => {
+        const likesCount = opt.likes || 0;
+        
+        const likesDiv = document.createElement('div');
+        likesDiv.className = 'likes-animation';
+        
+        likesDiv.innerHTML = `
+          <span class="like-icon">👍</span>
+          <span class="likes-count">${likesCount}</span>
+        `;
+        
+        wrap.insertAdjacentElement('beforeend', likesDiv);
+        scrollToElement(likesDiv);
+        
+        // Animate icon
+        setTimeout(() => {
+          likesDiv.querySelector('.like-icon').classList.add('animate');
+        }, 50);
+        
+      }, 400);
 
-      setTimeout(()=>{
+      // Move to next exchange after likes animation
+      setTimeout(() => {
         exchangeIndex++;
-        if(exchangeIndex>=3){ 
+        const sc = scenarios[scenarioIndex];
+        const maxExchanges = sc.id === 1 ? 4 : 3;
+        if(exchangeIndex >= maxExchanges){ 
           renderScenarioOutro(); 
         } else { 
           renderExchange();
         }
-      }, 800);
+      }, 1200);
     }
 
     function renderScenarioOutro(){
-      const outro = document.createElement('div');
-      outro.className = 'fade-in';
-      outro.innerHTML = `
-        <div class="divider"></div>
-        <div class="msg">
-          <div class="avatar" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">🧠</div>
-          <div class="bubble">
-            <div class="name" style="font-size: 16px;">Reflection</div>
-            <div style="font-size: 14px;">Every word nudges someone's feelings. Notice how choices changed the mood.</div>
-          </div>
-        </div>
-        <div class="controls" style="margin-top: 12px; gap:12px; justify-content:flex-end;">
-          <div style="display:flex; gap:10px; flex-wrap:wrap;">
-            <button class="reset" id="continueBtn">Next</button>
-            <button class="cta" id="resultsBtn">Show Results</button>
-          </div>
-        </div>`;
-      stage.appendChild(outro);
-
-      const continueBtn = outro.querySelector('#continueBtn');
-      const resultsBtn = outro.querySelector('#resultsBtn');
-
-      continueBtn.addEventListener('click', ()=>{
-        scenarioIndex++; exchangeIndex = 0; stage.innerHTML='';
-        if(scenarioIndex < scenarios.length){ renderScenarioIntro(); } else { renderEndScreen(); }
-        updateProgress();
-      });
-      resultsBtn.addEventListener('click', renderResultsPage);
-
+      // Automatically continue to next scenario without delay
+      scenarioIndex++; 
+      exchangeIndex = 0;
+      if(scenarioIndex < scenarios.length){ 
+        renderScenarioIntro(); 
+      } else { 
+        renderEndScreen(); 
+      }
       updateProgress();
-      
-      // Scroll the outro into view
-      scrollToElement(outro);
     }
 
     function renderEndScreen(){
@@ -1205,9 +1582,13 @@
     function restart(){ 
       scenarioIndex = 0; 
       exchangeIndex = 0; 
+      checkpointShown = false;
       transcript.length = 0; 
       currentCaptionIndex = 0;
       conversationStarted = false;
+      
+      // Randomize scenarios for the next playthrough
+      randomizeScenarios();
       
       // Stop video if playing
       if (captionInterval) {
@@ -1215,6 +1596,12 @@
         captionInterval = null;
       }
       isPlaying = false;
+      
+      // Show the video section again
+      const videoSection = document.querySelector('.post');
+      if (videoSection) {
+        videoSection.style.display = 'block';
+      }
       
       // Reset and show video player
       const videoPlayer = document.getElementById('videoPlayer');
@@ -1276,8 +1663,8 @@
 
     function mapToNewAttributes(oldAttrs=[]) {
       const map = {
-        "Empathy":"Empathetic","Validation":"Polite","Reassurance":"Encouraging","Inclusion":"Polite","Coaching":"Encouraging","De-escalation":"Polite","Bridge-building":"Polite","Encouragement":"Encouraging","Fairness":"Polite","Respect":"Polite","Problem-solving":"Polite","Reframing":"Empathetic","Norm-setting":"Polite","Affirmation":"Encouraging","Support":"Encouraging","Nuance":"Polite","Informational":"Polite",
-        "Sarcasm":"Sarcasm","Belittling":"Rude","Insult":"Rude","Gaslighting":"Disrespectful","Mocking":"Disrespectful","Dogpiling":"Aggressive","Blame":"Judgmental","Contempt":"Disrespectful","Dismissive":"Rude","Minimization":"Disrespectful","Personal Attack":"Aggressive","Provocation":"Aggressive","Shaming":"Judgmental","Accusation":"Judgmental","Cynicism":"Disrespectful","Group Attack":"Aggressive","Bitterness":"Agitated","Resignation":"Neurotic","Defensiveness":"Neurotic","Stigmatized Identity":"Ignorant",
+        "Empathy":"Empathetic","Validation":"Polite","Reassurance":"Encouraging","Inclusion":"Polite","Coaching":"Encouraging","De-escalation":"Polite","Bridge-building":"Polite","Encouragement":"Encouraging","Fairness":"Polite","Respect":"Polite","Problem-solving":"Polite","Reframing":"Empathetic","Norm-setting":"Polite","Affirmation":"Encouraging","Support":"Encouraging","Nuance":"Polite","Informational":"Polite","Respectful":"Polite","Rational":"Polite","Reassuring":"Encouraging","Factual":"Polite","Balanced":"Polite","Helpful":"Polite","Mediating":"Polite",
+        "Sarcasm":"Sarcasm","Belittling":"Rude","Insult":"Rude","Gaslighting":"Disrespectful","Mocking":"Disrespectful","Dogpiling":"Aggressive","Blame":"Judgmental","Contempt":"Disrespectful","Dismissive":"Rude","Minimization":"Disrespectful","Personal Attack":"Aggressive","Provocation":"Aggressive","Shaming":"Judgmental","Accusation":"Judgmental","Cynicism":"Disrespectful","Group Attack":"Aggressive","Bitterness":"Agitated","Resignation":"Neurotic","Defensiveness":"Neurotic","Stigmatized Identity":"Ignorant","Alarmist":"Judgmental","Ad Hominem":"Aggressive","Accusatory":"Aggressive","Condescending":"Rude","Supportive":"Encouraging","Curious":"Polite","Affirming":"Encouraging","Peacemaking":"Polite","Empathetic":"Empathetic","Encouraging":"Encouraging",
         "Inquiry":"Polite","Openness":"Polite","Reflection":"Polite","Growth":"Polite","Gratitude":"Polite","Closure":"Polite","Boundary":"Polite","Civility Request":"Polite","Disclosure":"Polite"
       };
       
@@ -1316,6 +1703,10 @@
         return { ...r, mappedAttrs: mapped };
       });
 
+      // Calculate total likes earned
+      const totalLikes = rows.reduce((sum, r) => sum + (r.likes || 0), 0);
+      const maxPossibleLikes = rows.length * 10; // Maximum possible is 10 likes per comment
+
       // Count attributes only from player's responses
       const counts = Object.fromEntries(ATTRIBUTE_SET.map(a=>[a,0]));
       rows.forEach(r=>{ r.mappedAttrs.forEach(a=>{ if(counts[a]!==undefined) counts[a]++; }); });
@@ -1328,7 +1719,7 @@
           severity: r.severity || deriveSeverity(r.mappedAttrs)
         }));
 
-      return { rows, counts, totalTagged, negativeRows };
+      return { rows, counts, totalTagged, negativeRows, totalLikes, maxPossibleLikes };
     }
 
     // ---------------------------------
@@ -1535,7 +1926,7 @@
       element.classList.toggle('expanded');
     }
     
-    function generateInsightsHTML(analysis) {
+    function generateInsightsHTML(analysis, totalLikes, maxPossibleLikes) {
       let insights = '';
       
       // Helper function to convert attribute names to proper adjectives
@@ -1578,13 +1969,10 @@
         insights += `
           <div class="insight-box">
             <div class="insight-title">
-              <span>🎯</span>
-              <span>Your Communication Patterns</span>
+              <span>Your Online Reputation</span>
             </div>
             <div class="insight-text" style="font-size: 14px; line-height: 1.7;">
               ${strengthsText}${negativeText}
-              <br><br>
-              Awareness is the first step toward change. Each pattern can be transformed through conscious practice and the tools provided below.
             </div>
           </div>`;
       }
@@ -1601,9 +1989,17 @@
       return "Significant room for improvement";
     }
 
+    function finishGame() {
+      // End the game early and show results
+      renderResultsPage();
+    }
+
     function renderResultsPage(){
-      const { rows, counts, totalTagged, negativeRows } = computePlayerMetrics();
+      const { rows, counts, totalTagged, negativeRows, totalLikes, maxPossibleLikes } = computePlayerMetrics();
       const analysis = generateBehavioralAnalysis(counts, rows, negativeRows);
+      
+      // Store these for the detailed page
+      window.resultsData = { rows, counts, totalTagged, negativeRows, totalLikes, maxPossibleLikes, analysis };
       
       // Disconnect observer to prevent auto-scrolling on results page
       if (stageObserver) {
@@ -1624,131 +2020,172 @@
         videoPlayer.classList.remove('video-playing');
       }
 
+      // Show animated score page
       stage.innerHTML = `
-        <div class="fade-in" style="display:grid; gap:16px;">
-          <div class="msg">
-            <div class="avatar" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">📊</div>
-            <div class="bubble">
-              <div class="name" style="font-size: 16px;">Your Communication Analysis</div>
-              <div style="font-size: 14px; margin-top: 4px; color: var(--muted);">Review your conversation patterns and discover personalized strategies for growth</div>
-            </div>
-          </div>
-
-          <div class="tcard">
-            <div class="name" style="font-size: 16px;">Your Communication Profile</div>
-            <div class="k">Hover or tap each attribute to see its definition</div>
-            <div id="profileMatrix" class="matrix-container"></div>
-          </div>
-
-          <div class="tcard">
-            <div class="name" style="font-size: 16px;">Your Response History</div>
-            <div style="overflow:auto; margin-top:8px;">
-              <table>
-                <thead><tr><th>#</th><th>Your Response</th><th>Communication Style</th><th title="How others felt after reading your comment">F</th></tr></thead>
-                <tbody id="logBody"></tbody>
-              </table>
-            </div>
-          </div>
-
-          <div class="tcard" style="border: 2px solid rgba(139,92,246,.4);">
-            <div class="analysis-header">
-              <div style="flex: 1;">
-                <div class="name" style="font-size: 20px; margin-bottom: 4px; display: flex; align-items: center; gap: 8px;">
-                  <span class="emoji-big" style="font-size: 28px;">💖</span>
-                  Your Kindness Score
-                </div>
-                <div class="k">A measure of how constructive and respectful your communication was</div>
-              </div>
-            </div>
-            
-            <div class="growth-meter">
-              <div class="growth-score">${analysis.kindnessScore}%</div>
-              <div class="growth-label">
-                <strong style="font-size: 16px;">${getKindnessMessage(analysis.kindnessScore)}</strong>
-                <div class="growth-bar-container">
-                  <div class="growth-bar" style="width: ${analysis.kindnessScore}%;"></div>
-                </div>
-              </div>
-            </div>
-            
-            ${generateInsightsHTML(analysis)}
-          </div>
-
-          <div class="tcard">
-            <div class="name" style="font-size: 20px; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
-              <span class="emoji-big" style="font-size: 28px;">🛠️</span>
-              Tools for Better Communication
-            </div>
-            <div class="k" style="margin-bottom: 16px;">Here are some tools you can use to make yourself and others feel safe and respected. These will help you create better friendships, avoid unnecessary pain and rejection, and build more positive connections in your community.</div>
-            ${generateStrategiesHTML(analysis)}
-            
-            ${analysis.needsWork ? `
-            <div class="fun-tip">
-              <div class="fun-tip-title">
-                <span>💡</span>
-                <span>Next Steps</span>
-              </div>
-              Choose one strategy to focus on this week. Notice situations where you could apply it, and be patient with yourself as you practice. Small, consistent changes lead to significant improvement over time.
-            </div>` : `
-            <div class="fun-tip" style="border-color: rgba(34,197,94,.4); background: linear-gradient(135deg, rgba(34,197,94,.15), rgba(34,197,94,.1));">
-              <div class="fun-tip-title" style="color: var(--good);">
-                <span>🏆</span>
-                <span>Continue Your Excellence</span>
-              </div>
-              Your positive communication creates a better environment for everyone. Continue modeling this behavior and consider mentoring others who are working to improve their communication skills.
-            </div>`}
-          </div>
-
-          <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top: 8px;">
-            <button class="cta" onclick="window.open('https://www.felixagaming.com','_blank')">Check Your Community</button>
-            <button class="reset" onclick="restart()">Play Again</button>
-          </div>
+        <div class="score-reveal fade-in">
+          <div class="score-number" id="animatedScore">0</div>
+          <div class="score-label">Your Score</div>
+          <div class="score-sublabel">out of ${maxPossibleLikes} possible likes</div>
+          <button class="cta next-btn" onclick="showDetailedResults()">Next</button>
         </div>`;
+      
+      // Animate the score counting up
+      setTimeout(() => {
+        animateScore(totalLikes);
+      }, 100);
+      
+      stage.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 
-      const profileMatrix = document.getElementById('profileMatrix');
-      const maxCount = Math.max(...ATTRIBUTE_SET.map(a => counts[a] || 0), 1);
+    function animateScore(targetScore) {
+      const scoreEl = document.getElementById('animatedScore');
+      if (!scoreEl) return;
       
-      // Filter attributes that have at least 1 count
-      const presentAttrs = ATTRIBUTE_SET.filter(attr => (counts[attr] || 0) > 0);
+      let currentScore = 0;
+      const duration = 1500; // 1.5 seconds
+      const increment = targetScore / (duration / 16); // 60fps
       
-      // Sort by count (highest first)
-      presentAttrs.sort((a, b) => (counts[b] || 0) - (counts[a] || 0));
+      const timer = setInterval(() => {
+        currentScore += increment;
+        if (currentScore >= targetScore) {
+          currentScore = targetScore;
+          clearInterval(timer);
+        }
+        scoreEl.textContent = Math.floor(currentScore);
+      }, 16);
+    }
+
+    window.resultsPage = 1;
+    
+    function showDetailedResults(){
+      const { rows, counts, totalTagged, negativeRows, totalLikes, maxPossibleLikes, analysis } = window.resultsData;
+      window.resultsPage = 1;
+      showResultsPage(1, { rows, counts, totalTagged, negativeRows, totalLikes, maxPossibleLikes, analysis });
+    }
+    
+    function showResultsPage(pageNum, data){
+      const { rows, counts, totalTagged, negativeRows, totalLikes, maxPossibleLikes, analysis } = data;
+      window.resultsPage = pageNum;
       
-      let matrixHTML = '<div class="profile-matrix">';
-      
-      presentAttrs.forEach(attr => {
-        const count = counts[attr] || 0;
-        const definition = ATTRIBUTE_DEFINITIONS[attr] || '';
-        const intensityPercent = (count / maxCount) * 100;
-        
-        matrixHTML += `
-          <div class="profile-cell" 
-               onmouseenter="showProfileTooltip(event, '${attr.replace(/'/g, "\\'")}', '${definition.replace(/'/g, "\\'")}')" 
-               onmouseleave="hideTooltip()" 
-               ontouchstart="showProfileTooltip(event, '${attr.replace(/'/g, "\\'")}', '${definition.replace(/'/g, "\\'")}')"
-               ontouchend="hideTooltip()"
-               style="opacity: ${0.6 + (count / (maxCount + 1)) * 0.4}; border-left: 4px solid var(--accent);">
-            <div class="cell-count">${count}</div>
-            <div class="cell-name">${attr}</div>
+      if(pageNum === 1){
+        // Page 1: Communication Profile + Online Reputation
+        stage.innerHTML = `
+          <div class="fade-in" style="display:grid; gap:16px;">
+            <div class="tcard">
+              <div class="name" style="font-size: 16px;">Your Communication Profile</div>
+              <div class="k">Hover or tap each attribute to see its definition</div>
+              <div id="profileMatrix" class="matrix-container"></div>
+            </div>
+            ${generateInsightsHTML(analysis, totalLikes, maxPossibleLikes)}
+            <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top: 8px;">
+              <button class="cta" onclick="showResultsPage(2, window.resultsData)">Next</button>
+            </div>
           </div>`;
-      });
-      
-      matrixHTML += '</div>';
-      
-      if(presentAttrs.length === 0) {
-        matrixHTML = '<div style="text-align: center; color: var(--muted); padding: 24px; font-size: 13px;">No attributes recorded yet.</div>';
+        
+        const profileMatrix = document.getElementById('profileMatrix');
+        const maxCount = Math.max(...ATTRIBUTE_SET.map(a => counts[a] || 0), 1);
+        const presentAttrs = ATTRIBUTE_SET.filter(attr => (counts[attr] || 0) > 0);
+        presentAttrs.sort((a, b) => (counts[b] || 0) - (counts[a] || 0));
+        
+        let matrixHTML = '<div class="profile-matrix">';
+        presentAttrs.forEach(attr => {
+          const count = counts[attr] || 0;
+          const definition = ATTRIBUTE_DEFINITIONS[attr] || '';
+          matrixHTML += `
+            <div class="profile-cell" 
+                 onmouseenter="showProfileTooltip(event, '${attr.replace(/'/g, "\\'")}', '${definition.replace(/'/g, "\\'")}')" 
+                 onmouseleave="hideTooltip()" 
+                 ontouchstart="showProfileTooltip(event, '${attr.replace(/'/g, "\\'")}', '${definition.replace(/'/g, "\\'")}')"
+                 ontouchend="hideTooltip()"
+                 style="opacity: ${0.6 + (count / (maxCount + 1)) * 0.4}; border-left: 4px solid var(--accent);">
+              <div class="cell-count">${count}</div>
+              <div class="cell-name">${attr}</div>
+            </div>`;
+        });
+        matrixHTML += '</div>';
+        if(presentAttrs.length === 0) {
+          matrixHTML = '<div style="text-align: center; color: var(--muted); padding: 24px; font-size: 13px;">No attributes recorded yet.</div>';
+        }
+        profileMatrix.innerHTML = matrixHTML;
+      }
+      else if(pageNum === 2){
+        // Page 2: Response History
+        stage.innerHTML = `
+          <div class="fade-in" style="display:grid; gap:16px;">
+            <div class="tcard">
+              <div class="name" style="font-size: 16px;">Your Response History</div>
+              <div style="overflow:auto; margin-top:8px;">
+                <table>
+                  <thead><tr><th>#</th><th>Your Response</th><th>Likes</th><th>Communication Style</th><th title="How others felt after reading your comment">Impact:: Your Communication Patterns</th></tr></thead>
+                  <tbody id="logBody"></tbody>
+                </table>
+              </div>
+            </div>
+            <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top: 8px;">
+              <button class="reset" onclick="showResultsPage(1, window.resultsData)">Back</button>
+              <button class="cta" onclick="showResultsPage(3, window.resultsData)">Next</button>
+            </div>
+          </div>`;
+        
+        const logBody = document.getElementById('logBody');
+        logBody.innerHTML = rows.map((r,i)=>`<tr>
+          <td>${i+1}</td>
+          <td>${r.comment}</td>
+          <td style="font-size: 14px; font-weight: 700; color: ${r.likes === 10 ? 'var(--good)' : r.likes === 3 ? '#ff9800' : 'var(--bad)'};">${r.likes || 0}</td>
+          <td style="font-size: 12px;">${(r.mappedAttrs||[]).join(', ')}</td>
+          <td style="font-size: 12px; color: var(--muted);">${r.feeling || ''}</td>
+        </tr>`).join('');
+      }
+      else if(pageNum === 3){
+        // Page 3: Tools for Better Communication
+        stage.innerHTML = `
+          <div class="fade-in" style="display:grid; gap:16px;">
+            <div class="tcard">
+              <div class="name" style="font-size: 20px; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+                <span class="emoji-big" style="font-size: 28px;">🛠️</span>
+                Tools for Better Communication
+              </div>
+              <div class="k" style="margin-bottom: 16px;">Here are some tools you can use to make yourself and others feel safe and respected. These will help you create better friendships, avoid unnecessary pain and rejection, and build more positive connections in your community.</div>
+              ${generateStrategiesHTML(analysis)}
+              
+              ${analysis.needsWork ? `
+              <div class="fun-tip">
+                <div class="fun-tip-title">
+                  <span>💡</span>
+                  <span>Next Steps</span>
+                </div>
+                Choose one strategy to focus on this week. Notice situations where you could apply it, and be patient with yourself as you practice. Small, consistent changes lead to significant improvement over time.
+              </div>` : `
+              <div class="fun-tip" style="border-color: rgba(34,197,94,.4); background: linear-gradient(135deg, rgba(34,197,94,.15), rgba(34,197,94,.1));">
+                <div class="fun-tip-title" style="color: var(--good);">
+                  <span>🏆</span>
+                  <span>Continue Your Excellence</span>
+                </div>
+                Your positive communication creates a better environment for everyone. Continue modeling this behavior and consider mentoring others who are working to improve their communication skills.
+              </div>`}
+            </div>
+            <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top: 8px;">
+              <button class="reset" onclick="showResultsPage(2, window.resultsData)">Back</button>
+              <button class="cta" onclick="showResultsPage(4, window.resultsData)">Next</button>
+            </div>
+          </div>`;
+      }
+      else if(pageNum === 4){
+        // Page 4: Final Actions
+        stage.innerHTML = `
+          <div class="fade-in" style="display:grid; gap:16px;">
+            <div class="tcard">
+              <div class="name" style="font-size: 18px;">Great Job!</div>
+              <div class="k">You've completed your communication analysis. Check your community or play again to continue improving.</div>
+            </div>
+            <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top: 8px;">
+              <button class="reset" onclick="showResultsPage(3, window.resultsData)">Back</button>
+              <button class="cta" onclick="window.open('https://www.felixagaming.com','_blank')">Check Your Community</button>
+              <button class="reset" onclick="restart()">Play Again</button>
+            </div>
+          </div>`;
       }
       
-      profileMatrix.innerHTML = matrixHTML;
-
-      const logBody = document.getElementById('logBody');
-      logBody.innerHTML = rows.map((r,i)=>`<tr>
-        <td>${i+1}</td>
-        <td>${r.comment}</td>
-        <td style="font-size: 12px;">${(r.mappedAttrs||[]).join(', ')}</td>
-        <td style="font-size: 12px; color: var(--muted);">${r.feeling || ''}</td>
-      </tr>`).join('');
-
       stage.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
@@ -1871,3 +2308,5 @@
   </script>
 </body>
 </html>
+
+
