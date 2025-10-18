@@ -979,8 +979,8 @@
         </div>
         <button class="cta" onclick="startGameFromButton()" style="font-size: 18px; padding: 16px 32px;">▶ START CHATTING</button>
         <div style="display: flex; gap: 16px; margin-top: 16px; justify-content: center; flex-wrap: wrap;">
-          <a onclick="openHowToPlayModal()" style="color: #FFD700; text-decoration: none; font-weight: 600; font-size: 14px; padding: 8px 12px; border: 1px solid rgba(255,215,0,0.3); border-radius: 6px; transition: all 0.2s ease; cursor: pointer;" onmouseover="this.style.background='rgba(255,215,0,0.1)'; this.style.borderColor='#FFD700';" onmouseout="this.style.background='transparent'; this.style.borderColor='rgba(255,215,0,0.3)';">How to play</a>
-          <a onclick="openAboutModal()" style="color: #FFD700; text-decoration: none; font-weight: 600; font-size: 14px; padding: 8px 12px; border: 1px solid rgba(255,215,0,0.3); border-radius: 6px; transition: all 0.2s ease; cursor: pointer;" onmouseover="this.style.background='rgba(255,215,0,0.1)'; this.style.borderColor='#FFD700';" onmouseout="this.style.background='transparent'; this.style.borderColor='rgba(255,215,0,0.3)';">About the game</a>
+          <a onclick="openHowToPlayModal()" style="color: #000000; text-decoration: none; font-weight: 600; font-size: 14px; padding: 8px 12px; border: 1px solid rgba(255,215,0,0.3); border-radius: 6px; transition: all 0.2s ease; cursor: pointer;" onmouseover="this.style.background='rgba(255,215,0,0.1)'; this.style.borderColor='#FFD700';" onmouseout="this.style.background='transparent'; this.style.borderColor='rgba(255,215,0,0.3)';">How to play</a>
+          <a onclick="openAboutModal()" style="color: #000000; text-decoration: none; font-weight: 600; font-size: 14px; padding: 8px 12px; border: 1px solid rgba(255,215,0,0.3); border-radius: 6px; transition: all 0.2s ease; cursor: pointer;" onmouseover="this.style.background='rgba(255,215,0,0.1)'; this.style.borderColor='#FFD700';" onmouseout="this.style.background='transparent'; this.style.borderColor='rgba(255,215,0,0.3)';">About the game</a>
         </div>
         <div class="play-count-display">0 people have played</div>
       </div>
@@ -1075,7 +1075,10 @@
     <script>
     // Modal functions
     function openHowToPlayModal() {
-      trackModalView('how_to_play');
+      // Track with Google Analytics if available
+      if (typeof gtag !== 'undefined') {
+        gtag('event', 'modal_view', { modal_name: 'how_to_play' });
+      }
       const modal = document.getElementById('howToPlayModal');
       if (modal) {
         modal.classList.add('show');
@@ -1090,7 +1093,10 @@
     }
     
     function openAboutModal() {
-      trackModalView('about_game');
+      // Track with Google Analytics if available
+      if (typeof gtag !== 'undefined') {
+        gtag('event', 'modal_view', { modal_name: 'about_game' });
+      }
       const modal = document.getElementById('aboutModal');
       if (modal) {
         modal.classList.add('show');
@@ -1119,126 +1125,94 @@
     // ---------------------------------
     // ANALYTICS - Google Sheets Integration
     // ---------------------------------
-    const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzUocVRndPIOinhLWgYZYCW1822xLxFtkaApIVDNPaPHk7Gc906Uqxd8llX5d9a3O2Usg/exec';
+    const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbwlYa_mhv-ZbxHKOGVUlfJ4IxLyd0YH_BYXPCvDyhoybOOozZw6R3ZT__T4vZOUgUI2/exec'; // Your Google Apps Script Web App URL
     
-    // Session data aggregation
-    window.sessionData = {
-      sessionId: null,
-      startTime: null,
-      choices: [],
-      totalLikes: 0,
-      attributes: {},
-      scenariosPlayed: []
-    };
-    
-    // Get or create anonymous session ID
-    function getSessionId() {
-      if (window.sessionData.sessionId) {
-        return window.sessionData.sessionId;
-      }
-      
-      let sessionId = sessionStorage.getItem('whp_sessionId');
-      if (!sessionId) {
-        sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-        sessionStorage.setItem('whp_sessionId', sessionId);
-      }
-      window.sessionData.sessionId = sessionId;
-      return sessionId;
+    // Generate unique user ID (persists across sessions)
+    let userId = localStorage.getItem('userId');
+    if (!userId) {
+      userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+      localStorage.setItem('userId', userId);
     }
     
-    // Initialize session
-    function initializeSession() {
-      window.sessionData = {
-        sessionId: getSessionId(),
-        startTime: Date.now(),
-        choices: [],
-        totalLikes: 0,
-        attributes: {},
-        scenariosPlayed: [],
-        positiveCount: 0,
-        toxicCount: 0
-      };
-    }
+    let gameStartTime = Date.now();
+    let clickedCheckCommunity = false;
+    let clickedPlayAgain = false;
     
-    // Track a choice during gameplay
-    function addChoiceToSession(choiceType, scenarioId, attributes, likes) {
-      window.sessionData.choices.push({
-        type: choiceType,
-        scenario: scenarioId,
-        attributes: attributes || [],
-        likes: likes || 0
-      });
-      
-      // Count positive/toxic
-      if (choiceType === 'toxic') {
-        window.sessionData.toxicCount++;
-      } else {
-        window.sessionData.positiveCount++;
-      }
-      
-      // Add to total likes
-      window.sessionData.totalLikes += (likes || 0);
-      
-      // Track attributes (count occurrences)
-      if (attributes && Array.isArray(attributes)) {
-        attributes.forEach(attr => {
-          window.sessionData.attributes[attr] = (window.sessionData.attributes[attr] || 0) + 1;
-        });
-      }
-      
-      // Track scenarios
-      if (scenarioId && !window.sessionData.scenariosPlayed.includes(scenarioId)) {
-        window.sessionData.scenariosPlayed.push(scenarioId);
+    // Track link clicks
+    function trackLinkClick(linkName) {
+      if (linkName === 'Check Community') {
+        clickedCheckCommunity = true;
+      } else if (linkName === 'Play Again' || linkName === 'Restart Game') {
+        clickedPlayAgain = true;
       }
     }
     
-    // Send final aggregated session data to Google Sheets
-    function sendFinalSessionData(totalTime) {
+    // Send complete game data to Google Sheets
+    function sendGameDataToSheets(resultsData) {
       try {
-        const attributesList = Object.keys(window.sessionData.attributes)
-          .map(attr => `${attr}(${window.sessionData.attributes[attr]})`)
+        const sessionDuration = Math.round((Date.now() - gameStartTime) / 1000);
+        
+        // Calculate average likes
+        const totalLikes = resultsData.rows.reduce((sum, r) => sum + (r.likes || 0), 0);
+        const avgLikes = resultsData.rows.length > 0 ? (totalLikes / resultsData.rows.length).toFixed(1) : 0;
+        
+        // Format all responses (optional detailed data)
+        const allResponsesStr = resultsData.rows
+          .map((r, i) => `#${i+1}: "${r.comment}" [${r.mappedAttrs.join(', ')}] (${r.likes} likes)`)
+          .join(' | ');
+        
+        // Create profile summary (top 3 attributes)
+        const topAttributes = Object.entries(resultsData.counts)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 3)
+          .map(([attr, count]) => `${attr} (${count})`)
           .join(', ');
         
-        const payload = {
-          event: 'session_complete',
-          sessionId: window.sessionData.sessionId,
-          totalChoices: window.sessionData.choices.length,
-          positiveChoices: window.sessionData.positiveCount,
-          toxicChoices: window.sessionData.toxicCount,
-          totalLikes: window.sessionData.totalLikes,
-          attributesUsed: attributesList || 'none',
-          scenariosPlayed: window.sessionData.scenariosPlayed.join(',') || '',
-          timeSpent: totalTime,
-          timestamp: new Date().toLocaleString()
+        // Prepare data to send
+        const dataToSend = {
+          userId: userId,
+          timestamp: new Date().toISOString(),
+          sessionDuration: sessionDuration,
+          attributes: resultsData.counts, // Object with all attribute counts
+          totalResponses: resultsData.rows.length,
+          averageLikes: avgLikes,
+          completed: 'Yes',
+          clickedCheckCommunity: clickedCheckCommunity ? 'Yes' : 'No',
+          clickedPlayAgain: clickedPlayAgain ? 'Yes' : 'No',
+          allResponses: allResponsesStr,
+          profileSummary: topAttributes || 'No attributes'
         };
         
         // Send to Google Sheets
-        fetch(SHEET_URL, {
+        fetch(GOOGLE_SHEET_URL, {
           method: 'POST',
           mode: 'no-cors',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
-          body: JSON.stringify(payload)
-        }).catch(err => console.log('Session data sent'));
-      } catch(err) {
-        console.log('Analytics error (non-critical):', err);
+          body: JSON.stringify(dataToSend)
+        }).then(() => {
+          console.log('Analytics sent successfully');
+        }).catch(err => {
+          console.log('Analytics error:', err);
+        });
+      } catch(error) {
+        console.error('Error sending analytics:', error);
+        // Don't stop the game if analytics fails
       }
     }
     
-    // Track when game starts
+    // Legacy compatibility functions (kept for backward compatibility)
     function trackGameStart() {
-      initializeSession();
+      gameStartTime = Date.now();
     }
     
-    // Track when player makes a choice
     function trackChoice(choiceType, scenarioNum, attributes, likes) {
-      addChoiceToSession(choiceType, scenarioNum, attributes, likes);
+      // This function is called during gameplay but data is sent at the end
     }
     
-    // Track when game is completed
     function trackGameCompleted(totalTime) {
-      sendFinalSessionData(totalTime);
+      // Data will be sent via sendGameDataToSheets when results are shown
     }
     
     // ---------------------------------
@@ -1962,8 +1936,8 @@
           <div class="end-sub">Every click shaped someone's feelings. Prosocial tone builds trust; negativity breaks it.</div>
           <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
             <button class="cta" onclick="renderResultsPage()">Show Results</button>
-            <button class="cta" onclick="window.open('https://www.felixagaming.com','_blank')">Check Your Community</button>
-            <button class="reset" onclick="restart()">Restart Game</button>
+            <button class="cta" onclick="trackLinkClick('Check Community'); window.open('https://www.felixagaming.com','_blank')">Check Your Community</button>
+            <button class="reset" onclick="trackLinkClick('Restart Game'); restart()">Restart Game</button>
           </div>
         </div>`;
     }
@@ -2038,6 +2012,11 @@
       
       // Scroll back to top
       window.scrollTo({ top: 0, behavior: 'smooth' });
+      
+      // Reset analytics tracking
+      gameStartTime = Date.now();
+      clickedCheckCommunity = false;
+      clickedPlayAgain = false;
       
       updateProgress(); 
     }
@@ -2444,6 +2423,8 @@
       // Analytics: Track game completion on first results page
       if(pageNum === 1) {
         trackGameCompleted(Math.round((Date.now() - window.gameStartTime) / 1000));
+        // Send complete data to Google Sheets
+        sendGameDataToSheets(data);
       }
       
       if(pageNum === 1){
@@ -2555,8 +2536,8 @@
             </div>
             <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top: 8px;">
               <button class="reset" onclick="showResultsPage(3, window.resultsData)">Back</button>
-              <button class="cta" onclick="window.open('https://www.felixagaming.com/report/p/felixa-online-safety-report-for-parents-ptt5b','_blank')">Check Your Community</button>
-              <button class="reset" onclick="restart()">Play Again</button>
+              <button class="cta" onclick="trackLinkClick('Check Community'); window.open('https://www.felixagaming.com/report/p/felixa-online-safety-report-for-parents-ptt5b','_blank')">Check Your Community</button>
+              <button class="reset" onclick="trackLinkClick('Play Again'); restart()">Play Again</button>
             </div>
           </div>`;
       }
