@@ -1110,30 +1110,100 @@
     // ---------------------------------
     // ANALYTICS - Google Sheets Integration
     // ---------------------------------
-    const SHEET_URL = 'https://script.google.com/macros/s/AKfycbw7fgsnu-xif19gHjx0VSQg4pg3FzFv44GRPcHAt0fkN5T3w2j9E4R589rHF9UeMr7DQQ/exec';
+    const SHEET_URL = 'https://script.google.com/macros/s/AKfycbwjhPq6pcxqX-bfp9q6fWuWrSpYkx5Ii7dKjBAoDdF4bc4tWI9hi0qjra4OrmnXzYDEVQ/exec';
+    
+    // Session data aggregation
+    window.sessionData = {
+      sessionId: null,
+      startTime: null,
+      choices: [],
+      totalLikes: 0,
+      attributes: {},
+      scenariosPlayed: []
+    };
     
     // Get or create anonymous session ID
     function getSessionId() {
+      if (window.sessionData.sessionId) {
+        return window.sessionData.sessionId;
+      }
+      
       let sessionId = sessionStorage.getItem('whp_sessionId');
       if (!sessionId) {
         sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
         sessionStorage.setItem('whp_sessionId', sessionId);
       }
+      window.sessionData.sessionId = sessionId;
       return sessionId;
     }
     
-    // Send analytics to Google Sheets
-    function sendAnalytics(eventName, eventData = {}) {
+    // Initialize session
+    function initializeSession() {
+      window.sessionData = {
+        sessionId: getSessionId(),
+        startTime: Date.now(),
+        choices: [],
+        totalLikes: 0,
+        attributes: {},
+        scenariosPlayed: [],
+        positiveCount: 0,
+        toxicCount: 0
+      };
+    }
+    
+    // Track a choice during gameplay
+    function addChoiceToSession(choiceType, scenarioId, attributes, likes) {
+      window.sessionData.choices.push({
+        type: choiceType,
+        scenario: scenarioId,
+        attributes: attributes || [],
+        likes: likes || 0
+      });
+      
+      // Count positive/toxic
+      if (choiceType === 'toxic') {
+        window.sessionData.toxicCount++;
+      } else {
+        window.sessionData.positiveCount++;
+      }
+      
+      // Add to total likes
+      window.sessionData.totalLikes += (likes || 0);
+      
+      // Track attributes (count occurrences)
+      if (attributes && Array.isArray(attributes)) {
+        attributes.forEach(attr => {
+          window.sessionData.attributes[attr] = (window.sessionData.attributes[attr] || 0) + 1;
+        });
+      }
+      
+      // Track scenarios
+      if (scenarioId && !window.sessionData.scenariosPlayed.includes(scenarioId)) {
+        window.sessionData.scenariosPlayed.push(scenarioId);
+      }
+    }
+    
+    // Send final aggregated session data to Google Sheets
+    function sendFinalSessionData(totalTime) {
       try {
+        const attributesList = Object.keys(window.sessionData.attributes)
+          .map(attr => `${attr}(${window.sessionData.attributes[attr]})`)
+          .join(', ');
+        
         const payload = {
-          event: eventName,
-          choiceType: eventData.choiceType || '',
-          scenario: eventData.scenario || '',
-          timeSpent: eventData.timeSpent || '',
-          sessionId: getSessionId()
+          event: 'session_complete',
+          sessionId: window.sessionData.sessionId,
+          totalChoices: window.sessionData.choices.length,
+          positiveChoices: window.sessionData.positiveCount,
+          toxicChoices: window.sessionData.toxicCount,
+          totalLikes: window.sessionData.totalLikes,
+          attributesUsed: attributesList || 'none',
+          scenariosPlayed: window.sessionData.scenariosPlayed.join(',') || '',
+          timeSpent: totalTime,
+          timestamp: new Date().toLocaleString()
         };
         
-        // Send to Google Sheets via webhook (non-blocking)
+        // Send to Google Sheets
         fetch(SHEET_URL, {
           method: 'POST',
           mode: 'no-cors',
@@ -1141,7 +1211,7 @@
             'Content-Type': 'application/json'
           },
           body: JSON.stringify(payload)
-        }).catch(err => console.log('Analytics sent'));
+        }).catch(err => console.log('Session data sent'));
       } catch(err) {
         console.log('Analytics error (non-critical):', err);
       }
@@ -1149,29 +1219,17 @@
     
     // Track when game starts
     function trackGameStart() {
-      sendAnalytics('game_started', {});
+      initializeSession();
     }
     
     // Track when player makes a choice
-    function trackChoice(choiceType, scenarioNum) {
-      sendAnalytics('choice_made', {
-        choiceType: choiceType,
-        scenario: scenarioNum
-      });
+    function trackChoice(choiceType, scenarioNum, attributes, likes) {
+      addChoiceToSession(choiceType, scenarioNum, attributes, likes);
     }
     
     // Track when game is completed
     function trackGameCompleted(totalTime) {
-      sendAnalytics('game_completed', {
-        timeSpent: totalTime
-      });
-    }
-    
-    // Track modal views
-    function trackModalView(modalName) {
-      sendAnalytics('modal_viewed', {
-        scenario: modalName
-      });
+      sendFinalSessionData(totalTime);
     }
     
     // ---------------------------------
@@ -1816,8 +1874,8 @@
       // Store feedback in transcript for analytics
       transcript.push({ scenario: sc.title, scenarioId: sc.id, exchange: exchangeIndex+1, user: 'Player', comment: opt.text, direction: 'Reply', attributes: opt.attributes||[], toxic: !!opt.toxic, severity: opt.severity||null, likes: opt.likes||0, target: opt.target||null, feeling: opt.feelings.text });
       
-      // Analytics: Track player choice
-      trackChoice(opt.toxic ? 'toxic' : 'positive', sc.id);
+      // Analytics: Track player choice with attributes and likes
+      trackChoice(opt.toxic ? 'toxic' : 'positive', sc.id, opt.attributes || [], opt.likes || 0);
 
       // Scroll the message into view
       scrollToElement(youMsg);
