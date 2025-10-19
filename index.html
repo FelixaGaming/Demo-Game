@@ -2332,12 +2332,37 @@
         videoPlayer.classList.remove('video-playing');
       }
 
+      // Calculate score percentage and tier
+      const scorePercentage = Math.round((totalLikes / maxPossibleLikes) * 100);
+      const tierMessage = getKindnessMessage(scorePercentage);
+      
+      // Determine tier name
+      let tierName = '';
+      let showWellDone = false;
+      if (scorePercentage >= 90) {
+        tierName = 'Empathy Master';
+        showWellDone = true;
+      } else if (scorePercentage >= 75) {
+        tierName = 'Positive Vibes Pro';
+        showWellDone = true;
+      } else if (scorePercentage >= 60) {
+        tierName = 'Kind Communicator';
+        showWellDone = true;
+      } else if (scorePercentage >= 40) {
+        tierName = 'On the Rise';
+      } else if (scorePercentage >= 20) {
+        tierName = 'Starter Level';
+      } else {
+        tierName = 'Time to Reflect';
+      }
+      
       // Show animated score page
       stage.innerHTML = `
         <div class="score-reveal fade-in">
           <div class="score-number" id="animatedScore">0</div>
           <div class="score-label">Your Score</div>
           <div class="score-sublabel">out of ${maxPossibleLikes} possible likes</div>
+          ${showWellDone ? `<div class="score-tier-message" style="margin-top: 20px; font-size: 16px; font-weight: 600; color: var(--good);">Well done! You are ${tierName}!</div>` : `<div class="score-tier-message" style="margin-top: 20px; font-size: 16px; font-weight: 600; color: var(--text);">${tierMessage}</div>`}
           <button class="cta next-btn" onclick="showDetailedResults()">Next</button>
         </div>`;
       
